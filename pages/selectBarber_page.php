@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choose Barber | TrimBook</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .gradient-text {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .barber-card {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .barber-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(102, 126, 234, 0.4);
+    }
+
+    .barber-card.selected {
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+    }
+  </style>
+</head>
+<body class="bg-black text-white antialiased min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-black/80 backdrop-blur-lg border-b border-gray-800">
+    <nav class="container mx-auto flex justify-between items-center py-5 px-6">
+      <a href="/trimbook/index.php" class="text-2xl font-black tracking-tight">TRIMBOOK</a>
+      <a href="/trimbook/dashboards/client_dashboard.php" class="text-sm font-medium text-gray-300 hover:text-white transition">← Back to Dashboard</a>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="min-h-screen bg-gradient-to-b from-zinc-950 to-black py-12 px-6">
+    <div class="container mx-auto max-w-6xl">
+      
+      <!-- Page Header -->
+      <div class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-black mb-4">
+          Choose Your <span class="gradient-text">Barber</span>
+        </h1>
+        <p class="text-gray-400 text-lg">Select an expert barber to book your appointment</p>
+      </div>
+
+      <!-- Barber Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+
+        <!-- Barber 1 -->
+       <div class="barber-card bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-gray-700 rounded-2xl p-6 flex items-center gap-6" onclick="selectBarber(this, 'CJ Cindana')">
+          <div class="relative">
+            <div class="w-20 h-20 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-3xl font-bold border-4 border-purple-600">
+              IC
+            </div>
+            <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-gray-900"></div>
+          </div>
+          <div class="flex-1">
+            <h2 class="text-xl font-bold mb-2">Ivan Chen</h2>
+            <p class="text-gray-400 text-sm mb-2">Senior Stylist</p>
+            <div class="flex items-center gap-2">
+              <div class="flex text-yellow-500">
+                <span>★★★★</span><span class="text-gray-600">★</span>
+              </div>
+              <span class="text-sm text-gray-400">(4.0)</span>
+            </div>
+          </div>
+          <div class="hidden selected-icon">
+            <svg class="w-8 h-8 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            </svg>
+          </div>
+        </div>
+
+
+        <!-- Barber 2 -->
+        <div class="barber-card bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-gray-700 rounded-2xl p-6 flex items-center gap-6" onclick="selectBarber(this, 'CJ Cindana')">
+          <div class="relative">
+            <div class="w-20 h-20 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-3xl font-bold border-4 border-purple-600">
+              CJ
+            </div>
+            <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-gray-900"></div>
+          </div>
+          <div class="flex-1">
+            <h2 class="text-xl font-bold mb-2">CJ Cindana</h2>
+            <p class="text-gray-400 text-sm mb-2">Senior Stylist</p>
+            <div class="flex items-center gap-2">
+              <div class="flex text-yellow-500">
+                <span>★★★★</span><span class="text-gray-600">★</span>
+              </div>
+              <span class="text-sm text-gray-400">(4.0)</span>
+            </div>
+          </div>
+          <div class="hidden selected-icon">
+            <svg class="w-8 h-8 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Barber 3 -->
+        <div class="barber-card bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-gray-700 rounded-2xl p-6 flex items-center gap-6" onclick="selectBarber(this, 'CJ Cindana')">
+          <div class="relative">
+            <div class="w-20 h-20 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-3xl font-bold border-4 border-purple-600">
+              DM
+            </div>
+            <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-gray-900"></div>
+          </div>
+          <div class="flex-1">
+            <h2 class="text-xl font-bold mb-2">Denzel Manalo</h2>
+            <p class="text-gray-400 text-sm mb-2">Senior Stylist</p>
+            <div class="flex items-center gap-2">
+              <div class="flex text-yellow-500">
+                <span>★★★★</span><span class="text-gray-600">★</span>
+              </div>
+              <span class="text-sm text-gray-400">(4.0)</span>
+            </div>
+          </div>
+          <div class="hidden selected-icon">
+            <svg class="w-8 h-8 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            </svg>
+          </div>
+        </div>
+
+
+        <!-- Barber 4 -->
+        <div class="barber-card bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-gray-700 rounded-2xl p-6 flex items-center gap-6" onclick="selectBarber(this, 'CJ Cindana')">
+          <div class="relative">
+            <div class="w-20 h-20 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-3xl font-bold border-4 border-purple-600">
+              BC
+            </div>
+            <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-gray-900"></div>
+          </div>
+          <div class="flex-1">
+            <h2 class="text-xl font-bold mb-2">Brenan Cervantes</h2>
+            <p class="text-gray-400 text-sm mb-2">Senior Stylist</p>
+            <div class="flex items-center gap-2">
+              <div class="flex text-yellow-500">
+                <span>★★★★</span><span class="text-gray-600">★</span>
+              </div>
+              <span class="text-sm text-gray-400">(4.0)</span>
+            </div>
+          </div>
+          <div class="hidden selected-icon">
+            <svg class="w-8 h-8 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Continue Button -->
+      <div class="text-center mt-12">
+        <button id="continueBtn" disabled
+                class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-10 py-4 rounded-full text-lg font-bold hover:shadow-xl hover:shadow-purple-500/50 transition transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none">
+          Continue
+        </button>
+        <p id="selectedBarber" class="text-gray-500 text-sm mt-4">Please select a barber to continue</p>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-zinc-950 border-t border-gray-800 py-8 text-center">
+    <p class="text-gray-500 text-sm">&copy; 2024 TrimBook. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    let selectedBarberName = '';
+
+    function selectBarber(card, barberName) {
+      // Remove selected class from all cards
+      document.querySelectorAll('.barber-card').forEach(c => {
+        c.classList.remove('selected');
+        c.querySelector('.selected-icon').classList.add('hidden');
+      });
+
+      // Add selected class to clicked card
+      card.classList.add('selected');
+      card.querySelector('.selected-icon').classList.remove('hidden');
+
+      // Update selected barber
+      selectedBarberName = barberName;
+
+      // Enable continue button
+      const continueBtn = document.getElementById('continueBtn');
+      const selectedText = document.getElementById('selectedBarber');
+      continueBtn.disabled = false;
+      selectedText.textContent = `Selected: ${barberName}`;
+      selectedText.classList.remove('text-gray-500');
+      selectedText.classList.add('text-blue-400');
+    }
+
+    // Continue button action
+    document.getElementById('continueBtn').addEventListener('click', function() {
+      if (selectedBarberName) {
+        // Redirect to booking page with selected barber
+        window.location.href = 'book_application_page.php?barber=' + encodeURIComponent(selectedBarberName);
+      }
+    });
+  </script>
+
+</body>
+</html>
