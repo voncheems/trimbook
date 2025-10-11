@@ -9,6 +9,7 @@ $title = "Sign Up | TrimBook";
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= $title ?></title>
   <script src="https://cdn.tailwindcss.com"></script>
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
     
@@ -16,6 +17,7 @@ $title = "Sign Up | TrimBook";
       font-family: 'Inter', sans-serif;
     }
   </style>
+  
 </head>
 <body class="bg-black text-white antialiased">
 
@@ -61,6 +63,21 @@ $title = "Sign Up | TrimBook";
                 placeholder="Last Name"
               >
             </div>
+          </div>
+
+          <!-- Email -->
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-300 mb-2">
+              Email
+            </label>
+            <input 
+              type="email" 
+              id="email" 
+              name="email" 
+              required
+              class="w-full px-4 py-3 bg-zinc-800 text-white rounded-lg border border-zinc-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition placeholder-gray-500"
+              placeholder="Email"
+            >
           </div>
 
           <!-- Username -->
@@ -132,7 +149,7 @@ $title = "Sign Up | TrimBook";
 
         <!-- Login Link -->
         <p class="text-center text-gray-400 mt-6">
-          Already have a TRIMBOOK Account? <a href="login.php" class="text-blue-500 hover:text-blue-400 font-medium">Log in</a>
+          Already have a TRIMBOOK Account? <a href="login_page.php" class="text-blue-500 hover:text-blue-400 font-medium">Log in</a>
         </p>
       </div>
     </div>
@@ -152,12 +169,6 @@ $title = "Sign Up | TrimBook";
         return false;
       }
 
-      // If you want to redirect immediately without server processing (for testing):
-      // e.preventDefault();
-      // window.location.href = '/trimbook/client_dashboard.php';
-      
-      // Otherwise, let the form submit normally to process_register.php
-      // and handle the redirect there after successful registration
     });
   </script>
 
