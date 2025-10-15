@@ -1,6 +1,20 @@
 <?php
 // index.php (Logged in version)
+// At the top of EVERY protected page
 session_start();
+
+// Check if user is logged in
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_type'])) {
+    header('Location: /trimbook/pages/login_page.php');
+    exit;
+}
+
+// Check if user has correct role for THIS page
+if ($_SESSION['user_type'] !== 'customer') {
+    header('Location: /unauthorized.php'); // or their correct dashboard
+    exit;
+}
+
 
 // Get user data from session
 $first_name = $_SESSION['first_name'] ?? 'Guest';
