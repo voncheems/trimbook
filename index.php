@@ -285,7 +285,7 @@ $title = "TrimBook | Your Barber Appointment System";
       <p class="text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
         Join thousands of satisfied clients. Create your account and book your first appointment today.
       </p>
-      <a href="/trimbook/pages/signup_page.php" class="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-10 py-5 rounded-full text-lg font-bold hover:shadow-xl hover:shadow-purple-500/50 transition transform hover:scale-105">
+      <a href="/trimbook/pages/login_page.php" class="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-10 py-5 rounded-full text-lg font-bold hover:shadow-xl hover:shadow-purple-500/50 transition transform hover:scale-105">
         Get Started Free
       </a>
     </div>
