@@ -31,17 +31,17 @@ $title = "Login | TrimBook";
       <div class="bg-zinc-900 rounded-2xl p-8 shadow-2xl">
         <h2 class="text-2xl font-semibold mb-8">Let's get you signed in</h2>
 
-        <form action="process_login.php" method="POST" class="space-y-5">
+        <form action="/trimbook/auth/process_login.php" method="POST" class="space-y-5">
           
           <!-- Username or Email -->
           <div>
-            <label for="username" class="block text-sm font-medium text-gray-300 mb-2">
+            <label for="username_or_email" class="block text-sm font-medium text-gray-300 mb-2">
               Username or Email
             </label>
             <input 
               type="text" 
-              id="username" 
-              name="username" 
+              id="username_or_email" 
+              name="username_or_email" 
               required
               class="w-full px-4 py-3 bg-zinc-800 text-white rounded-lg border border-zinc-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition placeholder-gray-500"
               placeholder="Username or Email"
