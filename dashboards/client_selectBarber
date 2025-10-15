@@ -1,3 +1,30 @@
+<?php
+// index.php (Logged in version)
+// At the top of EVERY protected page
+session_start();
+
+// Check if user is logged in
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_type'])) {
+    header('Location: /trimbook/pages/login_page.php');
+    exit;
+}
+
+// Check if user has correct role for THIS page
+if ($_SESSION['user_type'] !== 'customer') {
+    header('Location: /unauthorized.php'); // or their correct dashboard
+    exit;
+}
+
+
+// Get user data from session
+$first_name = $_SESSION['first_name'] ?? 'Guest';
+$last_name = $_SESSION['last_name'] ?? '';
+$username = $_SESSION['username'] ?? 'guest';
+$full_name = trim($first_name . ' ' . $last_name);
+
+$title = "TrimBook | Your Barber Appointment System";
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,7 +67,7 @@
   <!-- Header -->
   <header class="bg-black/80 backdrop-blur-lg border-b border-gray-800">
     <nav class="container mx-auto flex justify-between items-center py-5 px-6">
-      <a href="/trimbook/index.php" class="text-2xl font-black tracking-tight">TRIMBOOK</a>
+      <a href="/trimbook/pages/homepage_loggedin.php" class="text-2xl font-black tracking-tight">TRIMBOOK <span class="text-blue-500 text-sm">CLIENT</span></a>
       <a href="/trimbook/dashboards/client_dashboard.php" class="text-sm font-medium text-gray-300 hover:text-white transition">← Back to Dashboard</a>
     </nav>
   </header>
