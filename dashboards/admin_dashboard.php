@@ -254,11 +254,13 @@ $initials = strtoupper(substr($admin_name, 0, 2));
             <h2 class="text-2xl font-bold">Quick Actions</h2>
           </div>
           <div class="p-8 space-y-3">
+            <a href="/trimbook/pages/addnew_barber.php">
             <button class="w-full bg-gray-800/50 hover:bg-gray-800 text-white px-6 py-4 rounded-xl font-medium transition flex items-center space-x-3 group">
               <svg class="w-5 h-5 text-purple-400 group-hover:text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
               </svg>
               <span>Add New Barber</span>
+                </a>
             </button>
             <button class="w-full bg-gray-800/50 hover:bg-gray-800 text-white px-6 py-4 rounded-xl font-medium transition flex items-center space-x-3 group">
               <svg class="w-5 h-5 text-purple-400 group-hover:text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
