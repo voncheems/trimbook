@@ -88,7 +88,7 @@ $title = "TrimBook | Your Barber Appointment System";
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
 
         <!-- Barber 1 -->
-       <div class="barber-card bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-gray-700 rounded-2xl p-6 flex items-center gap-6" onclick="selectBarber(this, 'CJ Cindana')">
+       <div class="barber-card bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-gray-700 rounded-2xl p-6 flex items-center gap-6" onclick="selectBarber(this, 'Ivan Chen')">
           <div class="relative">
             <div class="w-20 h-20 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-3xl font-bold border-4 border-purple-600">
               IC
@@ -114,7 +114,7 @@ $title = "TrimBook | Your Barber Appointment System";
 
 
         <!-- Barber 2 -->
-        <div class="barber-card bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-gray-700 rounded-2xl p-6 flex items-center gap-6" onclick="selectBarber(this, 'CJ Cindana')">
+        <div class="barber-card bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-gray-700 rounded-2xl p-6 flex items-center gap-6" onclick="selectBarber(this, 'CJ Cendana')">
           <div class="relative">
             <div class="w-20 h-20 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-3xl font-bold border-4 border-purple-600">
               CJ
@@ -122,7 +122,7 @@ $title = "TrimBook | Your Barber Appointment System";
             <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-gray-900"></div>
           </div>
           <div class="flex-1">
-            <h2 class="text-xl font-bold mb-2">CJ Cindana</h2>
+            <h2 class="text-xl font-bold mb-2">CJ Cendana</h2>
             <p class="text-gray-400 text-sm mb-2">Senior Stylist</p>
             <div class="flex items-center gap-2">
               <div class="flex text-yellow-500">
@@ -139,7 +139,7 @@ $title = "TrimBook | Your Barber Appointment System";
         </div>
 
         <!-- Barber 3 -->
-        <div class="barber-card bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-gray-700 rounded-2xl p-6 flex items-center gap-6" onclick="selectBarber(this, 'CJ Cindana')">
+        <div class="barber-card bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-gray-700 rounded-2xl p-6 flex items-center gap-6" onclick="selectBarber(this, 'Denzel Manalo')">
           <div class="relative">
             <div class="w-20 h-20 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-3xl font-bold border-4 border-purple-600">
               DM
@@ -165,7 +165,7 @@ $title = "TrimBook | Your Barber Appointment System";
 
 
         <!-- Barber 4 -->
-        <div class="barber-card bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-gray-700 rounded-2xl p-6 flex items-center gap-6" onclick="selectBarber(this, 'CJ Cindana')">
+        <div class="barber-card bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-gray-700 rounded-2xl p-6 flex items-center gap-6" onclick="selectBarber(this, 'Brenan Cervantes')">
           <div class="relative">
             <div class="w-20 h-20 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-3xl font-bold border-4 border-purple-600">
               BC
