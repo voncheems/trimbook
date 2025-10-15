@@ -465,6 +465,18 @@ $initials = strtoupper(substr($admin_name, 0, 2));
               </label>
               <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <label class="flex items-center space-x-2 cursor-pointer p-3 bg-gray-800/30 rounded-lg hover:bg-gray-800/50 transition">
+                  <input type="checkbox" name="working_days[]" value="Monday" class="w-4 h-4 bg-gray-800 border-gray-600 rounded text-purple-600 focus:ring-purple-500 focus:ring-offset-0">
+                  <span class="text-sm">Monday</span>
+                </label>
+                <label class="flex items-center space-x-2 cursor-pointer p-3 bg-gray-800/30 rounded-lg hover:bg-gray-800/50 transition">
+                  <input type="checkbox" name="working_days[]" value="Tuesday" class="w-4 h-4 bg-gray-800 border-gray-600 rounded text-purple-600 focus:ring-purple-500 focus:ring-offset-0">
+                  <span class="text-sm">Tuesday</span>
+                </label>
+                <label class="flex items-center space-x-2 cursor-pointer p-3 bg-gray-800/30 rounded-lg hover:bg-gray-800/50 transition">
+                  <input type="checkbox" name="working_days[]" value="Wednesday" class="w-4 h-4 bg-gray-800 border-gray-600 rounded text-purple-600 focus:ring-purple-500 focus:ring-offset-0">
+                  <span class="text-sm">Wednesday</span>
+                </label>
+                <label class="flex items-center space-x-2 cursor-pointer p-3 bg-gray-800/30 rounded-lg hover:bg-gray-800/50 transition">
                   <input type="checkbox" name="working_days[]" value="Thursday" class="w-4 h-4 bg-gray-800 border-gray-600 rounded text-purple-600 focus:ring-purple-500 focus:ring-offset-0">
                   <span class="text-sm">Thursday</span>
                 </label>
@@ -499,7 +511,7 @@ $initials = strtoupper(substr($admin_name, 0, 2));
           <!-- Action Buttons -->
           <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-700">
             <a 
-              href="admin_dashboard.php" 
+              href="/trimbook/dashboards/admin_dashboard.php" 
               class="px-8 py-3 bg-gray-800 text-white rounded-xl font-semibold hover:bg-gray-700 transition"
             >
               Cancel
@@ -605,16 +617,4 @@ $initials = strtoupper(substr($admin_name, 0, 2));
   </script>
 
 </body>
-</html>bg-gray-800/50 transition">
-                  <input type="checkbox" name="working_days[]" value="Monday" class="w-4 h-4 bg-gray-800 border-gray-600 rounded text-purple-600 focus:ring-purple-500 focus:ring-offset-0">
-                  <span class="text-sm">Monday</span>
-                </label>
-                <label class="flex items-center space-x-2 cursor-pointer p-3 bg-gray-800/30 rounded-lg hover:bg-gray-800/50 transition">
-                  <input type="checkbox" name="working_days[]" value="Tuesday" class="w-4 h-4 bg-gray-800 border-gray-600 rounded text-purple-600 focus:ring-purple-500 focus:ring-offset-0">
-                  <span class="text-sm">Tuesday</span>
-                </label>
-                <label class="flex items-center space-x-2 cursor-pointer p-3 bg-gray-800/30 rounded-lg hover:bg-gray-800/50 transition">
-                  <input type="checkbox" name="working_days[]" value="Wednesday" class="w-4 h-4 bg-gray-800 border-gray-600 rounded text-purple-600 focus:ring-purple-500 focus:ring-offset-0">
-                  <span class="text-sm">Wednesday</span>
-                </label>
-                <label class="flex items-center space-x-2 cursor-pointer p-3 bg-gray-800/30 rounded-lg hover:
+</html>
