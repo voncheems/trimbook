@@ -43,24 +43,25 @@
 </head>
 <body class="bg-black text-white antialiased">
 
-  <!-- Navigation -->
-  <header class="fixed w-full top-0 left-0 z-50 bg-black/80 backdrop-blur-lg border-b border-gray-800">
-    <nav class="container mx-auto flex justify-between items-center py-5 px-6">
-      <a href="index.php" class="text-2xl font-black tracking-tight">TRIMBOOK</a>
-      <ul class="hidden md:flex space-x-8 font-medium text-sm">
-        <li><a href="./index.php class="text-gray-300 hover:text-white transition">Home</a></li>
-        <li><a href="index.php#about" class="text-gray-300 hover:text-white transition">About</a></li>
-        <li><a href="./pages/services.php" class="text-white font-semibold">Services</a></li>
-        <li><a href="./pages/ourBarbers_page.php" class="text-gray-300 hover:text-white transition">Our Barbers</a></li>
-        <li><a href="index.php#contact" class="text-gray-300 hover:text-white transition">Contact</a></li>
-      </ul>
-      <div class="flex items-center space-x-4">
-        <a href="Bookapp.php" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition">
-          Book Now
-        </a>
-      </div>
-    </nav>
-  </header>
+<!-- Navigation - Consistent with index.php -->
+<header class="fixed w-full top-0 left-0 z-50 bg-black/80 backdrop-blur-lg border-b border-gray-800">
+  <nav class="container mx-auto flex justify-between items-center py-5 px-6">
+    <a href="/trimbook/index.php" class="text-2xl font-black tracking-tight">TRIMBOOK</a>
+    <ul class="hidden md:flex space-x-8 font-medium text-sm">
+      <li><a href="/trimbook/index.php" class="text-gray-300 hover:text-white transition">Home</a></li>
+      <li><a href="/trimbook/index.php#about" class="text-gray-300 hover:text-white transition">About</a></li>
+      <li><a href="/trimbook/pages/services.php" class="text-white font-semibold">Services</a></li>
+      <li><a href="/trimbook/pages/ourBarbers_page.php" class="text-gray-300 hover:text-white transition">Our Barbers</a></li>
+      <li><a href="/trimbook/index.php#contact" class="text-gray-300 hover:text-white transition">Contact</a></li>
+    </ul>
+    <div class="flex items-center space-x-4">
+      <a href="/trimbook/pages/login_page.php" class="text-sm font-medium text-gray-300 hover:text-white transition">Login</a>
+      <a href="/trimbook/pages/signup_page.php" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition">
+        Sign Up
+      </a>
+    </div>
+  </nav>
+</header>
 
   <!-- Hero Section -->
   <section class="hero-gradient min-h-[40vh] flex items-center justify-center px-6 pt-32 pb-16">
