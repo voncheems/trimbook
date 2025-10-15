@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Get and sanitize form data
     $first_name = trim($_POST['first_name'] ?? '');
     $last_name = trim($_POST['last_name'] ?? '');
+    $email = trim($_POST['email'] ?? '');
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
@@ -28,6 +29,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     if (empty($last_name)) {
         $errors[] = 'Last name is required';
+    }
+    
+    if (empty($email)) {
+        $errors[] = 'Email is required';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = 'Invalid email format';
     }
     
     if (empty($username)) {
@@ -66,6 +73,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         mysqli_stmt_close($stmt);
+        
+        // Check if email already exists
+        $stmt = mysqli_prepare($conn, "SELECT user_id FROM users WHERE email = ?");
+        mysqli_stmt_bind_param($stmt, "s", $email);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_store_result($stmt);
+        
+        if (mysqli_stmt_num_rows($stmt) > 0) {
+            $errors[] = 'Email already registered';
+        }
+        
+        mysqli_stmt_close($stmt);
     }
     
     // If still no errors, insert the user
@@ -75,8 +94,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
         
         // Insert new user into database
-        $stmt = mysqli_prepare($conn, "INSERT INTO users (first_name, last_name, username, password, user_type, created_at) VALUES (?, ?, ?, ?, ?, NOW())");
-        mysqli_stmt_bind_param($stmt, "sssss", $first_name, $last_name, $username, $hashed_password, $user_type);
+        $stmt = mysqli_prepare($conn, "INSERT INTO users (first_name, last_name, email, username, password, user_type, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");
+        mysqli_stmt_bind_param($stmt, "ssssss", $first_name, $last_name, $email, $username, $hashed_password, $user_type);
         
         if (mysqli_stmt_execute($stmt)) {
             // Registration successful
@@ -87,6 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['username'] = $username;
             $_SESSION['first_name'] = $first_name;
             $_SESSION['last_name'] = $last_name;
+            $_SESSION['email'] = $email;
             $_SESSION['user_type'] = $user_type;
             $_SESSION['success_message'] = 'Welcome to TrimBook! Your account has been created successfully.';
             
@@ -110,6 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['form_data'] = [
             'first_name' => $first_name,
             'last_name' => $last_name,
+            'email' => $email,
             'username' => $username
         ];
         
