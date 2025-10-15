@@ -16,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $first_name = trim($_POST['first_name'] ?? '');
     $last_name = trim($_POST['last_name'] ?? '');
     $email = trim($_POST['email'] ?? '');
+    $phone_no = trim($_POST['phone_no'] ?? '');
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
@@ -35,6 +36,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'Email is required';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'Invalid email format';
+    }
+    
+    // Phone is optional - only validate format if provided
+    if (!empty($phone_no) && !preg_match('/^[0-9+\-\s()]+$/', $phone_no)) {
+        $errors[] = 'Invalid phone number format';
     }
     
     if (empty($username)) {
@@ -85,6 +91,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         mysqli_stmt_close($stmt);
+        
+        // Check if phone_no already exists (only if phone was provided)
+        if (!empty($phone_no)) {
+            $stmt = mysqli_prepare($conn, "SELECT user_id FROM users WHERE phone_no = ?");
+            mysqli_stmt_bind_param($stmt, "s", $phone_no);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_store_result($stmt);
+            
+            if (mysqli_stmt_num_rows($stmt) > 0) {
+                $errors[] = 'Phone number already registered';
+            }
+            
+            mysqli_stmt_close($stmt);
+        }
     }
     
     // If still no errors, insert the user
@@ -93,20 +113,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Hash the password
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
         
-        // Insert new user into database
-        $stmt = mysqli_prepare($conn, "INSERT INTO users (first_name, last_name, email, username, password, user_type, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");
-        mysqli_stmt_bind_param($stmt, "ssssss", $first_name, $last_name, $email, $username, $hashed_password, $user_type);
+        // Insert new user into database (with phone_no column)
+        $stmt = mysqli_prepare($conn, "INSERT INTO users (first_name, last_name, email, phone_no, username, password, user_type, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
+        mysqli_stmt_bind_param($stmt, "sssssss", $first_name, $last_name, $email, $phone_no, $username, $hashed_password, $user_type);
         
         if (mysqli_stmt_execute($stmt)) {
             // Registration successful
             $user_id = mysqli_insert_id($conn);
             
-            // **OPTION 1 APPLIED HERE - Set session variables and redirect to client dashboard**
+            // Set session variables and redirect to client dashboard
             $_SESSION['user_id'] = $user_id;
             $_SESSION['username'] = $username;
             $_SESSION['first_name'] = $first_name;
             $_SESSION['last_name'] = $last_name;
             $_SESSION['email'] = $email;
+            $_SESSION['phone_no'] = $phone_no;
             $_SESSION['user_type'] = $user_type;
             $_SESSION['success_message'] = 'Welcome to TrimBook! Your account has been created successfully.';
             
@@ -131,6 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'first_name' => $first_name,
             'last_name' => $last_name,
             'email' => $email,
+            'phone_no' => $phone_no,
             'username' => $username
         ];
         
