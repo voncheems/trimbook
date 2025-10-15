@@ -80,6 +80,20 @@ $title = "Sign Up | TrimBook";
             >
           </div>
 
+          <!-- Phone Number -->
+          <div>
+            <label for="phone" class="block text-sm font-medium text-gray-300 mb-2">
+              Phone Number
+            </label>
+            <input 
+              type="tel" 
+              id="phone" 
+              name="phone_no" 
+              class="w-full px-4 py-3 bg-zinc-800 text-white rounded-lg border border-zinc-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition placeholder-gray-500"
+              placeholder="Phone Number"
+            >
+          </div>
+
           <!-- Username -->
           <div>
             <label for="username" class="block text-sm font-medium text-gray-300 mb-2">
