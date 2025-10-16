@@ -187,8 +187,18 @@ $title = "Sign Up | TrimBook";
       }
 
     });
+
+      function blockNumbersOnly(input) {
+    input.addEventListener('input', function () {
+      // Remove digits from input in real-time
+      this.value = this.value.replace(/[0-9]/g, '');
+    });
+  }
+
+    blockNumbersOnly(document.getElementById('first_name'));
+    blockNumbersOnly(document.getElementById('last_name'));
     
-     const phoneInput = document.getElementById('phone');
+    const phoneInput = document.getElementById('phone');
 
   phoneInput.addEventListener('input', function () {
     // Remove any non-digit character as the user types or pastes
