@@ -200,11 +200,11 @@ $initials = strtoupper(substr($admin_name, 0, 2));
         </div>
 
         <!-- Form -->
-        <form action="process_add_barber.php" method="POST" enctype="multipart/form-data" class="p-8 space-y-6">
+       <form id="barber-form" action="../auth/process_addnew_barber.php" method="POST" class="p-8 space-y-6">
           
-          <!-- Personal Information Section -->
+          <!-- User Account Information (for users table) -->
           <div>
-            <h3 class="text-xl font-bold mb-4 text-purple-400">Personal Information</h3>
+            <h3 class="text-xl font-bold mb-4 text-purple-400">Account Information</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               
               <!-- First Name -->
@@ -254,27 +254,19 @@ $initials = strtoupper(substr($admin_name, 0, 2));
 
               <!-- Phone -->
               <div>
-                <label for="phone" class="block text-sm font-semibold text-gray-300 mb-2">
+                <label for="phone_no" class="block text-sm font-semibold text-gray-300 mb-2">
                   Phone Number <span class="text-red-400">*</span>
                 </label>
                 <input 
                   type="tel" 
-                  id="phone" 
-                  name="phone" 
+                  id="phone_no" 
+                  name="phone_no" 
                   required
                   class="form-input w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500"
                   placeholder="+63 912 345 6789"
                 >
               </div>
 
-            </div>
-          </div>
-
-          <!-- Account Information Section -->
-          <div class="pt-6 border-t border-gray-700">
-            <h3 class="text-xl font-bold mb-4 text-purple-400">Account Information</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              
               <!-- Username -->
               <div>
                 <label for="username" class="block text-sm font-semibold text-gray-300 mb-2">
@@ -318,115 +310,50 @@ $initials = strtoupper(substr($admin_name, 0, 2));
               </div>
 
             </div>
-
-            <!-- Auto-generate Password Option -->
-            <div class="mt-4">
-              <label class="flex items-center space-x-3 cursor-pointer">
-                <input 
-                  type="checkbox" 
-                  id="auto_generate"
-                  onchange="toggleAutoGenerate()"
-                  class="w-5 h-5 bg-gray-800 border-gray-600 rounded text-purple-600 focus:ring-purple-500 focus:ring-offset-0"
-                >
-                <span class="text-sm text-gray-300">Auto-generate secure password</span>
-              </label>
-            </div>
           </div>
 
-          <!-- Professional Information Section -->
+          <!-- Barber-Specific Information (for barbers table) -->
           <div class="pt-6 border-t border-gray-700">
             <h3 class="text-xl font-bold mb-4 text-purple-400">Professional Information</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               
-              <!-- Specialty -->
+              <!-- Specialization -->
               <div>
-                <label for="specialty" class="block text-sm font-semibold text-gray-300 mb-2">
-                  Specialty <span class="text-red-400">*</span>
+                <label for="specialization" class="block text-sm font-semibold text-gray-300 mb-2">
+                  Specialization
                 </label>
-                <select 
-                  id="specialty" 
-                  name="specialty" 
-                  required
-                  class="form-input w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-purple-500"
+                <input 
+                  type="text" 
+                  id="specialization" 
+                  name="specialization" 
+                  class="form-input w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500"
+                  placeholder="e.g., Haircut, Beard Styling"
                 >
-                  <option value="">Select specialty</option>
-                  <option value="Haircut">Haircut Specialist</option>
-                  <option value="Shave">Shaving Expert</option>
-                  <option value="Beard">Beard Styling</option>
-                  <option value="Color">Hair Coloring</option>
-                  <option value="All">All Services</option>
-                </select>
               </div>
 
-              <!-- Experience -->
+              <!-- Experience Years -->
               <div>
-                <label for="experience" class="block text-sm font-semibold text-gray-300 mb-2">
-                  Years of Experience <span class="text-red-400">*</span>
+                <label for="experience_years" class="block text-sm font-semibold text-gray-300 mb-2">
+                  Years of Experience
                 </label>
                 <input 
                   type="number" 
-                  id="experience" 
-                  name="experience" 
+                  id="experience_years" 
+                  name="experience_years" 
                   min="0" 
                   max="50"
-                  required
                   class="form-input w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500"
                   placeholder="e.g., 5"
                 >
               </div>
 
-              <!-- Hourly Rate -->
-              <div>
-                <label for="hourly_rate" class="block text-sm font-semibold text-gray-300 mb-2">
-                  Hourly Rate (PHP) <span class="text-red-400">*</span>
-                </label>
-                <input 
-                  type="number" 
-                  id="hourly_rate" 
-                  name="hourly_rate" 
-                  min="0" 
-                  step="0.01"
-                  required
-                  class="form-input w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500"
-                  placeholder="e.g., 500.00"
-                >
-              </div>
-
-              <!-- Profile Photo -->
-              <div>
-                <label for="profile_photo" class="block text-sm font-semibold text-gray-300 mb-2">
-                  Profile Photo
-                </label>
-                <input 
-                  type="file" 
-                  id="profile_photo" 
-                  name="profile_photo" 
-                  accept="image/*"
-                  class="form-input w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-purple-600 file:text-white file:font-semibold hover:file:bg-purple-700 file:cursor-pointer focus:outline-none focus:border-purple-500"
-                >
-              </div>
-
-            </div>
-
-            <!-- Bio -->
-            <div class="mt-6">
-              <label for="bio" class="block text-sm font-semibold text-gray-300 mb-2">
-                Bio/Description
-              </label>
-              <textarea 
-                id="bio" 
-                name="bio" 
-                rows="4"
-                class="form-input w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 resize-none"
-                placeholder="Tell us about this barber's skills and experience..."
-              ></textarea>
             </div>
           </div>
 
-          <!-- Working Schedule Section -->
+          <!-- Working Schedule (for schedules table) -->
           <div class="pt-6 border-t border-gray-700">
             <h3 class="text-xl font-bold mb-4 text-purple-400">Working Schedule</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               
               <!-- Start Time -->
               <div>
@@ -459,7 +386,7 @@ $initials = strtoupper(substr($admin_name, 0, 2));
             </div>
 
             <!-- Working Days -->
-            <div class="mt-6">
+            <div>
               <label class="block text-sm font-semibold text-gray-300 mb-3">
                 Working Days <span class="text-red-400">*</span>
               </label>
@@ -496,22 +423,10 @@ $initials = strtoupper(substr($admin_name, 0, 2));
             </div>
           </div>
 
-          <!-- Status Section -->
-          <div class="pt-6 border-t border-gray-700">
-            <h3 class="text-xl font-bold mb-4 text-purple-400">Account Status</h3>
-            <div class="flex items-center space-x-3">
-              <label class="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" name="is_active" value="1" checked class="sr-only peer">
-                <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
-                <span class="ml-3 text-sm font-medium text-gray-300">Active (Barber can receive bookings)</span>
-              </label>
-            </div>
-          </div>
-
           <!-- Action Buttons -->
           <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-700">
             <a 
-              href="/trimbook/dashboards/admin_dashboard.php" 
+              href="admin_dashboard.php" 
               class="px-8 py-3 bg-gray-800 text-white rounded-xl font-semibold hover:bg-gray-700 transition"
             >
               Cancel
@@ -576,44 +491,20 @@ $initials = strtoupper(substr($admin_name, 0, 2));
       }
     }
 
-    // Auto-generate password
-    function toggleAutoGenerate() {
-      const checkbox = document.getElementById('auto_generate');
-      const passwordInput = document.getElementById('password');
-      
-      if (checkbox.checked) {
-        const generatedPassword = generatePassword();
-        passwordInput.value = generatedPassword;
-        passwordInput.readOnly = true;
-        passwordInput.classList.add('bg-gray-700/50');
-      } else {
-        passwordInput.value = '';
-        passwordInput.readOnly = false;
-        passwordInput.classList.remove('bg-gray-700/50');
-      }
-    }
+// Form validation before submit
+document.getElementById('barber-form').addEventListener('submit', function(e) {
+  const workingDays = document.querySelectorAll('input[name="working_days[]"]:checked');
+  
+  if (workingDays.length === 0) {
+    e.preventDefault();
+    alert('Please select at least one working day.');
+    return false;
+  }
+  
+  // If validation passes, the form submits normally
+  // The PHP file will handle the redirect
+});
 
-    // Generate secure password
-    function generatePassword() {
-      const length = 12;
-      const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
-      let password = "";
-      for (let i = 0; i < length; i++) {
-        password += charset.charAt(Math.floor(Math.random() * charset.length));
-      }
-      return password;
-    }
-
-    // Form validation before submit
-    document.querySelector('form').addEventListener('submit', function(e) {
-      const workingDays = document.querySelectorAll('input[name="working_days[]"]:checked');
-      
-      if (workingDays.length === 0) {
-        e.preventDefault();
-        alert('Please select at least one working day.');
-        return false;
-      }
-    });
   </script>
 
 </body>
