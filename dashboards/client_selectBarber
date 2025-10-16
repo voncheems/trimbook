@@ -1,6 +1,5 @@
 <?php
-// index.php (Logged in version)
-// At the top of EVERY protected page
+// choose_barber.php
 session_start();
 
 // Check if user is logged in
@@ -9,20 +8,41 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_type'])) {
     exit;
 }
 
-// Check if user has correct role for THIS page
+// Check if user has correct role
 if ($_SESSION['user_type'] !== 'customer') {
-    header('Location: /unauthorized.php'); // or their correct dashboard
+    header('Location: /unauthorized.php');
     exit;
 }
 
+// Database connection
+require_once '../includes/dbconfig.php';
 
 // Get user data from session
 $first_name = $_SESSION['first_name'] ?? 'Guest';
 $last_name = $_SESSION['last_name'] ?? '';
-$username = $_SESSION['username'] ?? 'guest';
 $full_name = trim($first_name . ' ' . $last_name);
 
-$title = "TrimBook | Your Barber Appointment System";
+// Fetch all barbers from database
+$query = "
+SELECT 
+  b.barber_id,
+  u.user_id,
+  CONCAT(u.first_name, ' ', u.last_name) AS full_name,
+  b.specialization,
+  b.experience_years
+FROM barbers b
+JOIN users u ON b.user_id = u.user_id
+WHERE u.user_type = 'barber'
+ORDER BY b.barber_id ASC
+";
+
+$result = mysqli_query($conn, $query);
+
+if (!$result) {
+    die('Database query failed: ' . mysqli_error($conn));
+}
+
+$barbers = mysqli_fetch_all($result, MYSQLI_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -60,6 +80,25 @@ $title = "TrimBook | Your Barber Appointment System";
       border-color: #667eea;
       box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
     }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .empty-state {
+      animation: fadeIn 0.5s ease;
+    }
   </style>
 </head>
 <body class="bg-black text-white antialiased min-h-screen">
@@ -84,133 +123,98 @@ $title = "TrimBook | Your Barber Appointment System";
         <p class="text-gray-400 text-lg">Select an expert barber to book your appointment</p>
       </div>
 
-      <!-- Barber Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-
-        <!-- Barber 1 -->
-       <div class="barber-card bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-gray-700 rounded-2xl p-6 flex items-center gap-6" onclick="selectBarber(this, 'Ivan Chen')">
-          <div class="relative">
-            <div class="w-20 h-20 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-3xl font-bold border-4 border-purple-600">
-              IC
-            </div>
-            <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-gray-900"></div>
-          </div>
-          <div class="flex-1">
-            <h2 class="text-xl font-bold mb-2">Ivan Chen</h2>
-            <p class="text-gray-400 text-sm mb-2">Senior Stylist</p>
-            <div class="flex items-center gap-2">
-              <div class="flex text-yellow-500">
-                <span>★★★★</span><span class="text-gray-600">★</span>
+      <?php if (count($barbers) > 0): ?>
+        <!-- Barber Grid -->
+        <div id="barber-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          <?php 
+          $colors = [
+            ['gradient' => 'from-purple-600 to-pink-600', 'stars' => 5],
+            ['gradient' => 'from-blue-600 to-purple-600', 'stars' => 4],
+            ['gradient' => 'from-pink-600 to-orange-600', 'stars' => 5],
+            ['gradient' => 'from-orange-600 to-red-600', 'stars' => 4]
+          ];
+          
+          foreach ($barbers as $index => $barber): 
+            $color = $colors[$index % 4];
+            $initials = strtoupper(substr($barber['full_name'], 0, 1) . substr(explode(' ', $barber['full_name'])[1] ?? '', 0, 1));
+            $stars = $color['stars'];
+          ?>
+          
+          <div class="fade-in barber-card bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-gray-700 rounded-2xl p-6 flex items-center gap-6" 
+               onclick="selectBarber(this, <?= htmlspecialchars(json_encode($barber)) ?>)">
+            <div class="relative">
+              <div class="w-20 h-20 rounded-full bg-gradient-to-br <?= $color['gradient'] ?> flex items-center justify-center text-3xl font-bold border-4 border-gray-700">
+                <?= htmlspecialchars($initials) ?>
               </div>
-              <span class="text-sm text-gray-400">(4.0)</span>
+              <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-gray-900"></div>
+            </div>
+            
+            <div class="flex-1">
+              <h2 class="text-xl font-bold mb-2"><?= htmlspecialchars($barber['full_name']) ?></h2>
+              
+              <?php if ($barber['specialization']): ?>
+              <p class="text-gray-400 text-sm mb-2"><?= htmlspecialchars($barber['specialization']) ?></p>
+              <?php endif; ?>
+              
+              <div class="flex items-center gap-2">
+                <div class="flex text-yellow-500">
+                  <?php for ($i = 0; $i < 5; $i++): ?>
+                    <span><?= $i < $stars ? '★' : '☆' ?></span>
+                  <?php endfor; ?>
+                </div>
+                <span class="text-sm text-gray-400">(<?= $stars ?>.0)</span>
+              </div>
+              
+              <?php if ($barber['experience_years']): ?>
+              <p class="text-gray-500 text-xs mt-2"><?= htmlspecialchars($barber['experience_years']) ?> years experience</p>
+              <?php endif; ?>
+            </div>
+            
+            <div class="hidden selected-icon">
+              <svg class="w-8 h-8 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+              </svg>
             </div>
           </div>
-          <div class="hidden selected-icon">
-            <svg class="w-8 h-8 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-            </svg>
-          </div>
+          
+          <?php endforeach; ?>
         </div>
 
-
-        <!-- Barber 2 -->
-        <div class="barber-card bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-gray-700 rounded-2xl p-6 flex items-center gap-6" onclick="selectBarber(this, 'CJ Cendana')">
-          <div class="relative">
-            <div class="w-20 h-20 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-3xl font-bold border-4 border-purple-600">
-              CJ
-            </div>
-            <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-gray-900"></div>
-          </div>
-          <div class="flex-1">
-            <h2 class="text-xl font-bold mb-2">CJ Cendana</h2>
-            <p class="text-gray-400 text-sm mb-2">Senior Stylist</p>
-            <div class="flex items-center gap-2">
-              <div class="flex text-yellow-500">
-                <span>★★★★</span><span class="text-gray-600">★</span>
-              </div>
-              <span class="text-sm text-gray-400">(4.0)</span>
-            </div>
-          </div>
-          <div class="hidden selected-icon">
-            <svg class="w-8 h-8 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-            </svg>
-          </div>
+        <!-- Continue Button -->
+        <div class="text-center mt-12">
+          <button id="continueBtn" disabled
+                  class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-10 py-4 rounded-full text-lg font-bold hover:shadow-xl hover:shadow-purple-500/50 transition transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none">
+            Continue
+          </button>
+          <p id="selectedBarber" class="text-gray-500 text-sm mt-4">Please select a barber to continue</p>
         </div>
 
-        <!-- Barber 3 -->
-        <div class="barber-card bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-gray-700 rounded-2xl p-6 flex items-center gap-6" onclick="selectBarber(this, 'Denzel Manalo')">
-          <div class="relative">
-            <div class="w-20 h-20 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-3xl font-bold border-4 border-purple-600">
-              DM
-            </div>
-            <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-gray-900"></div>
-          </div>
-          <div class="flex-1">
-            <h2 class="text-xl font-bold mb-2">Denzel Manalo</h2>
-            <p class="text-gray-400 text-sm mb-2">Senior Stylist</p>
-            <div class="flex items-center gap-2">
-              <div class="flex text-yellow-500">
-                <span>★★★★</span><span class="text-gray-600">★</span>
-              </div>
-              <span class="text-sm text-gray-400">(4.0)</span>
-            </div>
-          </div>
-          <div class="hidden selected-icon">
-            <svg class="w-8 h-8 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-            </svg>
-          </div>
+      <?php else: ?>
+        <!-- Empty State -->
+        <div class="empty-state text-center py-20 max-w-2xl mx-auto">
+          <svg class="w-24 h-24 text-gray-600 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+          </svg>
+          <h3 class="text-2xl font-bold mb-2">No Barbers Available</h3>
+          <p class="text-gray-400 mb-6">Our barber team is currently unavailable. Please check back soon.</p>
+          <a href="/trimbook/dashboards/client_dashboard.php" class="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition">
+            Back to Dashboard
+          </a>
         </div>
-
-
-        <!-- Barber 4 -->
-        <div class="barber-card bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-gray-700 rounded-2xl p-6 flex items-center gap-6" onclick="selectBarber(this, 'Brenan Cervantes')">
-          <div class="relative">
-            <div class="w-20 h-20 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-3xl font-bold border-4 border-purple-600">
-              BC
-            </div>
-            <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-gray-900"></div>
-          </div>
-          <div class="flex-1">
-            <h2 class="text-xl font-bold mb-2">Brenan Cervantes</h2>
-            <p class="text-gray-400 text-sm mb-2">Senior Stylist</p>
-            <div class="flex items-center gap-2">
-              <div class="flex text-yellow-500">
-                <span>★★★★</span><span class="text-gray-600">★</span>
-              </div>
-              <span class="text-sm text-gray-400">(4.0)</span>
-            </div>
-          </div>
-          <div class="hidden selected-icon">
-            <svg class="w-8 h-8 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-            </svg>
-          </div>
-        </div>
-      </div>
-
-      <!-- Continue Button -->
-      <div class="text-center mt-12">
-        <button id="continueBtn" disabled
-                class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-10 py-4 rounded-full text-lg font-bold hover:shadow-xl hover:shadow-purple-500/50 transition transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none">
-          Continue
-        </button>
-        <p id="selectedBarber" class="text-gray-500 text-sm mt-4">Please select a barber to continue</p>
-      </div>
+      <?php endif; ?>
 
     </div>
   </main>
 
   <!-- Footer -->
   <footer class="bg-zinc-950 border-t border-gray-800 py-8 text-center">
-    <p class="text-gray-500 text-sm">&copy; 2024 TrimBook. All Rights Reserved.</p>
+    <p class="text-gray-500 text-sm">&copy; <?= date("Y") ?> TrimBook. All Rights Reserved.</p>
   </footer>
 
   <script>
-    let selectedBarberName = '';
+    let selectedBarber = null;
 
-    function selectBarber(card, barberName) {
+    function selectBarber(card, barberData) {
       // Remove selected class from all cards
       document.querySelectorAll('.barber-card').forEach(c => {
         c.classList.remove('selected');
@@ -222,22 +226,22 @@ $title = "TrimBook | Your Barber Appointment System";
       card.querySelector('.selected-icon').classList.remove('hidden');
 
       // Update selected barber
-      selectedBarberName = barberName;
+      selectedBarber = barberData;
 
       // Enable continue button
       const continueBtn = document.getElementById('continueBtn');
       const selectedText = document.getElementById('selectedBarber');
       continueBtn.disabled = false;
-      selectedText.textContent = `Selected: ${barberName}`;
+      selectedText.textContent = `Selected: ${barberData.full_name}`;
       selectedText.classList.remove('text-gray-500');
       selectedText.classList.add('text-blue-400');
     }
 
     // Continue button action
     document.getElementById('continueBtn').addEventListener('click', function() {
-      if (selectedBarberName) {
-        // Redirect to booking page with selected barber
-        window.location.href = 'client_booking.php?barber=' + encodeURIComponent(selectedBarberName);
+      if (selectedBarber) {
+        // Redirect to booking page with selected barber ID
+        window.location.href = 'client_booking.php?barber_id=' + selectedBarber.barber_id;
       }
     });
   </script>
