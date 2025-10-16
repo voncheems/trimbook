@@ -39,7 +39,7 @@ $title = "Sign Up | TrimBook";
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label for="first_name" class="block text-sm font-medium text-gray-300 mb-2">
-                First Name
+                First Name*
               </label>
               <input 
                 type="text" 
@@ -52,7 +52,7 @@ $title = "Sign Up | TrimBook";
             </div>
             <div>
               <label for="last_name" class="block text-sm font-medium text-gray-300 mb-2">
-                Last Name
+                Last Name*
               </label>
               <input 
                 type="text" 
@@ -68,7 +68,7 @@ $title = "Sign Up | TrimBook";
           <!-- Email -->
           <div>
             <label for="email" class="block text-sm font-medium text-gray-300 mb-2">
-              Email
+              Email*
             </label>
             <input 
               type="email" 
@@ -83,11 +83,14 @@ $title = "Sign Up | TrimBook";
           <!-- Phone Number -->
           <div>
             <label for="phone" class="block text-sm font-medium text-gray-300 mb-2">
-              Phone Number
+              Phone Number (Optional)
             </label>
             <input 
-              type="tel" 
+              type="text" 
               id="phone" 
+              inputmode="numeric"
+              pattern="[0-9]*"
+              maxlength="11"
               name="phone_no" 
               class="w-full px-4 py-3 bg-zinc-800 text-white rounded-lg border border-zinc-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition placeholder-gray-500"
               placeholder="Phone Number"
@@ -97,7 +100,7 @@ $title = "Sign Up | TrimBook";
           <!-- Username -->
           <div>
             <label for="username" class="block text-sm font-medium text-gray-300 mb-2">
-              Username
+              Username*
             </label>
             <input 
               type="text" 
@@ -112,7 +115,7 @@ $title = "Sign Up | TrimBook";
           <!-- Password -->
           <div>
             <label for="password" class="block text-sm font-medium text-gray-300 mb-2">
-              Password
+              Password*
             </label>
             <input 
               type="password" 
@@ -127,7 +130,7 @@ $title = "Sign Up | TrimBook";
           <!-- Confirm Password -->
           <div>
             <label for="confirm_password" class="block text-sm font-medium text-gray-300 mb-2">
-              Confirm Password
+              Confirm Password*
             </label>
             <input 
               type="password" 
@@ -184,6 +187,14 @@ $title = "Sign Up | TrimBook";
       }
 
     });
+    
+     const phoneInput = document.getElementById('phone');
+
+  phoneInput.addEventListener('input', function () {
+    // Remove any non-digit character as the user types or pastes
+    this.value = this.value.replace(/\D/g, '');
+  });
+
   </script>
 
 </body>
