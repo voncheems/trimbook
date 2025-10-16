@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once('includes/dbconfig.php');
 
 // Redirect logged-in users to their appropriate dashboard
 if (isset($_SESSION['user_id']) && isset($_SESSION['user_type'])) {
@@ -8,17 +9,28 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['user_type'])) {
             header('Location: /trimbook/pages/homepage_loggedin.php');
             exit;
         case 'barber':
-            header('Location: /trimbook/pages/barber_dashboard.php'); // Adjust path as needed
+            header('Location: /trimbook/pages/barber_dashboard.php');
             exit;
         case 'admin':
-            header('Location: /trimbook/pages/admin_dashboard.php'); // Adjust path as needed
+            header('Location: /trimbook/pages/admin_dashboard.php');
             exit;
-        default:
-            // If unknown user type, destroy session and continue
-            session_destroy();
-            break;
     }
 }
+
+// Get count of expert barbers
+$barber_result = $conn->query("SELECT COUNT(*) as barber_count FROM barbers");
+$barber_row = $barber_result->fetch_assoc();
+$expert_barbers = $barber_row['barber_count'] ?? 0;
+
+// Get count of happy clients (customers with any appointment)
+$customer_result = $conn->query("
+    SELECT COUNT(DISTINCT u.user_id) as customer_count 
+    FROM users u
+    INNER JOIN appointments a ON u.user_id = a.customer_user_id
+    WHERE u.user_type = 'customer'
+");
+$customer_row = $customer_result->fetch_assoc();
+$happy_clients = $customer_row['customer_count'] ?? 0;
 
 $title = "TrimBook | Your Barber Appointment System";
 ?>
@@ -113,11 +125,11 @@ $title = "TrimBook | Your Barber Appointment System";
     <div class="container mx-auto px-6">
       <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto text-center">
         <div>
-          <div class="text-4xl font-black gradient-text mb-2">50+</div>
+          <div class="text-4xl font-black gradient-text mb-2"><?= $expert_barbers ?></div>
           <p class="text-gray-400">Expert Barbers</p>
         </div>
         <div>
-          <div class="text-4xl font-black gradient-text mb-2">10K+</div>
+          <div class="text-4xl font-black gradient-text mb-2"><?= $happy_clients ?></div>
           <p class="text-gray-400">Happy Clients</p>
         </div>
         <div>
