@@ -7,6 +7,40 @@ $admin_username = $_SESSION['admin_username'] ?? 'admin';
 
 // Get initials for avatar
 $initials = strtoupper(substr($admin_name, 0, 2));
+
+// Include database configuration
+require_once '../includes/dbconfig.php'; // Adjust path based on your file structure
+
+// Initialize stats with default values
+$stats = [
+    'total_appointments' => 0,
+    'active_barbers' => 0,
+    'total_clients' => 0
+];
+
+// Check if connection exists
+if (isset($conn) && $conn) {
+    // Count total appointments
+    $result = $conn->query("SELECT COUNT(*) as count FROM appointments");
+    if ($result) {
+        $row = $result->fetch_assoc();
+        $stats['total_appointments'] = $row['count'];
+    }
+    
+    // Count active barbers
+    $result = $conn->query("SELECT COUNT(*) as count FROM barbers");
+    if ($result) {
+        $row = $result->fetch_assoc();
+        $stats['active_barbers'] = $row['count'];
+    }
+    
+    // Count total clients (users with user_type = 'customer')
+    $result = $conn->query("SELECT COUNT(*) as count FROM users WHERE user_type = 'customer'");
+    if ($result) {
+        $row = $result->fetch_assoc();
+        $stats['total_clients'] = $row['count'];
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -68,6 +102,21 @@ $initials = strtoupper(substr($admin_name, 0, 2));
       transform: translateY(-2px);
       border-color: rgba(102, 126, 234, 0.4);
       box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+    }
+
+    .count-up {
+      animation: countUp 0.5s ease-out;
+    }
+
+    @keyframes countUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
@@ -205,7 +254,7 @@ $initials = strtoupper(substr($admin_name, 0, 2));
           <div class="flex items-center justify-between">
             <div>
               <p class="text-gray-400 text-sm font-medium mb-1">Total Appointments</p>
-              <p class="text-4xl font-black gradient-text">43</p>
+              <p class="text-4xl font-black gradient-text count-up"><?= $stats['total_appointments'] ?></p>
             </div>
             <div class="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
               <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -220,7 +269,7 @@ $initials = strtoupper(substr($admin_name, 0, 2));
           <div class="flex items-center justify-between">
             <div>
               <p class="text-gray-400 text-sm font-medium mb-1">Active Barbers</p>
-              <p class="text-4xl font-black gradient-text">3</p>
+              <p class="text-4xl font-black gradient-text count-up"><?= $stats['active_barbers'] ?></p>
             </div>
             <div class="w-16 h-16 bg-gradient-to-br from-green-600 to-teal-600 rounded-xl flex items-center justify-center">
               <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -230,16 +279,16 @@ $initials = strtoupper(substr($admin_name, 0, 2));
           </div>
         </div>
 
-        <!-- Monthly Revenue -->
+        <!-- Total Clients -->
         <div class="stat-card rounded-2xl p-6">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-gray-400 text-sm font-medium mb-1">This Month</p>
-              <p class="text-4xl font-black gradient-text">$2,000</p>
+              <p class="text-gray-400 text-sm font-medium mb-1">Total Clients</p>
+              <p class="text-4xl font-black gradient-text count-up"><?= $stats['total_clients'] ?></p>
             </div>
-            <div class="w-16 h-16 bg-gradient-to-br from-orange-600 to-pink-600 rounded-xl flex items-center justify-center">
+            <div class="w-16 h-16 bg-gradient-to-br from-orange-600 to-red-600 rounded-xl flex items-center justify-center">
               <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
               </svg>
             </div>
           </div>
@@ -254,27 +303,29 @@ $initials = strtoupper(substr($admin_name, 0, 2));
             <h2 class="text-2xl font-bold">Quick Actions</h2> 
           </div>
           <div class="p-8 space-y-3">
-    <!-- Add New Barber - Fixed Link -->
-    <a href="/trimbook/dashboards/admin_addBarber.php" class="block">
-      <button class="w-full bg-gray-800/50 hover:bg-gray-800 text-white px-6 py-4 rounded-xl font-medium transition flex items-center space-x-3 group">
-        <svg class="w-5 h-5 text-purple-400 group-hover:text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-        </svg>
-        <span>Add New Barber</span>
-      </button>
-    </a>
+            <!-- Add New Barber -->
+            <a href="/trimbook/dashboards/admin_addBarber.php" class="block">
+              <button class="w-full bg-gray-800/50 hover:bg-gray-800 text-white px-6 py-4 rounded-xl font-medium transition flex items-center space-x-3 group">
+                <svg class="w-5 h-5 text-purple-400 group-hover:text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                <span>Add New Barber</span>
+              </button>
+            </a>
             <button class="w-full bg-gray-800/50 hover:bg-gray-800 text-white px-6 py-4 rounded-xl font-medium transition flex items-center space-x-3 group">
               <svg class="w-5 h-5 text-purple-400 group-hover:text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
               </svg>
               <span>Manage Services</span>
             </button>
-            <button class="w-full bg-gray-800/50 hover:bg-gray-800 text-white px-6 py-4 rounded-xl font-medium transition flex items-center space-x-3 group">
-              <svg class="w-5 h-5 text-purple-400 group-hover:text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-              </svg>
-              <span>View Reports</span>
-            </button>
+            <a href="../dashboards/admin_reportpage.php" class="block">
+              <button class="w-full bg-gray-800/50 hover:bg-gray-800 text-white px-6 py-4 rounded-xl font-medium transition flex items-center space-x-3 group">
+                <svg class="w-5 h-5 text-purple-400 group-hover:text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+                <span>View Reports</span>
+              </button>
+            </a>
           </div>
         </div>
 
@@ -326,65 +377,14 @@ $initials = strtoupper(substr($admin_name, 0, 2));
         <div class="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-6">
           <h2 class="text-2xl font-bold">Recent Appointments</h2>
         </div>
-        <div class="overflow-x-auto">
-          <table class="w-full">
-            <thead class="border-b border-gray-700">
-              <tr class="text-gray-400 text-sm font-semibold uppercase tracking-wider">
-                <th class="px-8 py-5 text-left">Client</th>
-                <th class="px-8 py-5 text-left">Barber</th>
-                <th class="px-8 py-5 text-left">Service</th>
-                <th class="px-8 py-5 text-left">Time</th>
-                <th class="px-8 py-5 text-left">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="border-b border-gray-800 hover:bg-gray-800/50 transition">
-                <td class="px-8 py-6 font-medium">John Doe</td>
-                <td class="px-8 py-6 text-gray-300">BOORATS</td>
-                <td class="px-8 py-6 text-gray-300">Haircut</td>
-                <td class="px-8 py-6 text-gray-300">10:00 AM</td>
-                <td class="px-8 py-6">
-                  <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-500/20 text-green-400 border border-green-500/30">
-                    Confirmed
-                  </span>
-                </td>
-              </tr>
-              <tr class="border-b border-gray-800 hover:bg-gray-800/50 transition">
-                <td class="px-8 py-6 font-medium">Jane Smith</td>
-                <td class="px-8 py-6 text-gray-300">ALEX</td>
-                <td class="px-8 py-6 text-gray-300">Shave</td>
-                <td class="px-8 py-6 text-gray-300">11:30 AM</td>
-                <td class="px-8 py-6">
-                  <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-500/20 text-yellow-400 border border-yellow-500/30">
-                    Pending
-                  </span>
-                </td>
-              </tr>
-              <tr class="border-b border-gray-800 hover:bg-gray-800/50 transition">
-                <td class="px-8 py-6 font-medium">Mike Johnson</td>
-                <td class="px-8 py-6 text-gray-300">TONY</td>
-                <td class="px-8 py-6 text-gray-300">Beard Trim</td>
-                <td class="px-8 py-6 text-gray-300">2:00 PM</td>
-                <td class="px-8 py-6">
-                  <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-500/20 text-green-400 border border-green-500/30">
-                    Confirmed
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="p-8">
+          <p class="text-gray-400">No appointments yet.</p>
         </div>
       </div>
 
     </div>
   </main>
 
-  <!-- Footer -->
-  <footer class="bg-zinc-950 border-t border-gray-800 py-8 text-center">
-    <p class="text-gray-500 text-sm">&copy; <?= date("Y") ?> TrimBook. All Rights Reserved.</p>
-  </footer>
-
-  <!-- JavaScript -->
   <script>
     function toggleSidebar() {
       const sidebar = document.getElementById('sidebar');
@@ -393,18 +393,6 @@ $initials = strtoupper(substr($admin_name, 0, 2));
       sidebar.classList.toggle('open');
       overlay.classList.toggle('show');
     }
-
-    // Close sidebar when pressing Escape key
-    document.addEventListener('keydown', function(event) {
-      if (event.key === 'Escape') {
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
-        if (sidebar.classList.contains('open')) {
-          sidebar.classList.remove('open');
-          overlay.classList.remove('show');
-        }
-      }
-    });
   </script>
 
 </body>
