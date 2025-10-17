@@ -1,5 +1,4 @@
 <?php
-// index.php (Logged in version)
 // At the top of EVERY protected page
 session_start();
 
@@ -64,7 +63,7 @@ $title = "TrimBook | Your Barber Appointment System";
   <!-- Navigation -->
   <header class="fixed w-full top-0 left-0 z-50 bg-black/80 backdrop-blur-lg border-b border-gray-800">
     <nav class="container mx-auto flex justify-between items-center py-5 px-6">
-      <a href="" class="text-2xl font-black tracking-tight">TRIMBOOK</a>
+      <a href="/trimbook/pages/homepage_loggedin.php" class="text-2xl font-black tracking-tight">TRIMBOOK <span class="text-blue-500 text-sm">CLIENT</span></a>
       <ul class="hidden md:flex space-x-8 font-medium text-sm">
         <li><a href="#home" class="text-gray-300 hover:text-white transition">Home</a></li>
         <li><a href="#services" class="text-gray-300 hover:text-white transition">Services</a></li>
@@ -99,7 +98,7 @@ $title = "TrimBook | Your Barber Appointment System";
       </p>
       
       <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-        <a href="./pages/Bookapp.php" class="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full text-lg font-bold hover:shadow-xl hover:shadow-purple-500/50 transition transform hover:scale-105">
+        <a href="../dashboards/client_dashboard.php" class="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full text-lg font-bold hover:shadow-xl hover:shadow-purple-500/50 transition transform hover:scale-105">
           Book Appointment Now
         </a>
         <a href="./pages/client_dashboard.php" class="inline-block bg-white/10 border border-white/20 text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-white/20 transition">
