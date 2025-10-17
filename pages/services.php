@@ -90,7 +90,7 @@
         <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
           <div class="relative h-48 overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-purple-600/20"></div>
-            <img src="classic-haircut.jpg" alt="Classic Haircut" class="service-image w-full h-full object-cover">
+            <img src="../assets/images/classic.jpeg" alt="Classic Haircut" class="service-image w-full h-full object-cover">
           </div>
           <div class="p-8">
             <div class="flex items-center justify-between mb-3">
@@ -121,7 +121,7 @@
         <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
           <div class="relative h-48 overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-pink-600/20"></div>
-            <img src="fade-lineup.jpg" alt="Fade & Line Up" class="service-image w-full h-full object-cover">
+            <img src="../assets/images/fade.jpeg" alt="Fade & Line Up" class="service-image w-full h-full object-cover">
           </div>
           <div class="p-8">
             <div class="flex items-center justify-between mb-3">
@@ -152,7 +152,7 @@
         <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
           <div class="relative h-48 overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-br from-pink-600/20 to-orange-600/20"></div>
-            <img src="kids-haircut.jpg" alt="Kid's Haircut" class="service-image w-full h-full object-cover">
+            <img src="../assets/images/kid.jpeg" alt="Kid's Haircut" class="service-image w-full h-full object-cover">
           </div>
           <div class="p-8">
             <div class="flex items-center justify-between mb-3">
@@ -183,7 +183,7 @@
         <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
           <div class="relative h-48 overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-br from-orange-600/20 to-red-600/20"></div>
-            <img src="shave-treatment.jpg" alt="Shave & Towel Treatment" class="service-image w-full h-full object-cover">
+            <img src="../assets/images/towel.jpeg" alt="Shave & Towel Treatment" class="service-image w-full h-full object-cover">
           </div>
           <div class="p-8">
             <div class="flex items-center justify-between mb-3">
@@ -214,7 +214,7 @@
         <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
           <div class="relative h-48 overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-br from-red-600/20 to-pink-600/20"></div>
-            <img src="modern-trendy.jpg" alt="Modern & Trendy Cuts" class="service-image w-full h-full object-cover">
+            <img src="../assets/images/modern.jpeg" alt="Modern & Trendy Cuts" class="service-image w-full h-full object-cover">
           </div>
           <div class="p-8">
             <div class="flex items-center justify-between mb-3">
@@ -245,7 +245,7 @@
         <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
           <div class="relative h-48 overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-br from-green-600/20 to-teal-600/20"></div>
-            <img src="beard-grooming.jpg" alt="Beard Grooming & Design" class="service-image w-full h-full object-cover">
+            <img src="../assets/images/beard.jpeg" alt="Beard Grooming & Design" class="service-image w-full h-full object-cover">
           </div>
           <div class="p-8">
             <div class="flex items-center justify-between mb-3">
