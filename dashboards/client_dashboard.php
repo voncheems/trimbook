@@ -5,12 +5,76 @@ session_start();
 $first_name = $_SESSION['first_name'] ?? 'Guest';
 $last_name = $_SESSION['last_name'] ?? '';
 $username = $_SESSION['username'] ?? 'guest';
+$user_id = $_SESSION['user_id'] ?? null;
 $full_name = trim($first_name . ' ' . $last_name);
 
 // Get initials for avatar
 $initials = strtoupper(substr($first_name, 0, 1) . substr($last_name, 0, 1));
 if (empty(trim($initials))) {
     $initials = strtoupper(substr($username, 0, 2));
+}
+
+// Fetch appointments from database
+$appointments = [];
+$db_error = null;
+
+if ($user_id) {
+    try {
+        $conn = new mysqli("localhost", "root", "", "trimbookdb");
+        
+        if ($conn->connect_error) {
+            $db_error = "Connection failed";
+        } else {
+            $query = "
+                SELECT 
+                    a.appointment_id,
+                    a.appointment_date,
+                    a.appointment_time,
+                    a.status,
+                    u.first_name as barber_first_name,
+                    u.last_name as barber_last_name,
+                    s.service_name,
+                    a.created_at
+                FROM appointments a
+                JOIN barbers b ON a.barber_id = b.barber_id
+                JOIN users u ON b.user_id = u.user_id
+                JOIN services s ON a.service_id = s.service_id
+                WHERE a.customer_user_id = ?
+                ORDER BY a.appointment_date DESC, a.appointment_time DESC
+            ";
+            
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("i", $user_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            
+            while ($row = $result->fetch_assoc()) {
+                $appointments[] = $row;
+            }
+            
+            $stmt->close();
+            $conn->close();
+        }
+    } catch (Exception $e) {
+        $db_error = "Error fetching appointments";
+    }
+}
+
+// Function to get status badge
+function getStatusBadge($status) {
+    $badges = [
+        'pending' => ['bg' => 'bg-yellow-500/20', 'text' => 'text-yellow-400', 'border' => 'border-yellow-500/30', 'label' => 'Pending'],
+        'confirmed' => ['bg' => 'bg-green-500/20', 'text' => 'text-green-400', 'border' => 'border-green-500/30', 'label' => 'Confirmed'],
+        'completed' => ['bg' => 'bg-blue-500/20', 'text' => 'text-blue-400', 'border' => 'border-blue-500/30', 'label' => 'Completed'],
+        'cancelled' => ['bg' => 'bg-red-500/20', 'text' => 'text-red-400', 'border' => 'border-red-500/30', 'label' => 'Cancelled']
+    ];
+    return $badges[$status] ?? $badges['pending'];
+}
+
+// Format date and time for display
+function formatDateTime($date, $time) {
+    $dateObj = new DateTime($date);
+    return $dateObj->format('M d, Y') . ' at ' . date('g:i A', strtotime($time));
 }
 ?>
 <!DOCTYPE html>
@@ -150,7 +214,7 @@ if (empty(trim($initials))) {
 
       <!-- Logout Button -->
       <div class="mt-8 pt-6 border-t border-gray-800">
-        <a href="/auth/logout.php" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 hover:text-red-300 transition">
+        <a href="../auth/logout.php" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 hover:text-red-300 transition">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
           </svg>
@@ -203,6 +267,13 @@ if (empty(trim($initials))) {
         </a>
       </div>
 
+      <!-- Database Error Alert -->
+      <?php if ($db_error): ?>
+        <div class="mb-6 bg-red-500/20 border border-red-500/30 text-red-400 px-6 py-4 rounded-xl">
+          <p><?= htmlspecialchars($db_error) ?></p>
+        </div>
+      <?php endif; ?>
+
       <!-- Appointments Card -->
       <div class="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
         <!-- Card Header -->
@@ -210,47 +281,48 @@ if (empty(trim($initials))) {
           <h2 class="text-2xl font-bold">Your Appointments</h2>
         </div>
 
-        <!-- Table -->
-        <div class="overflow-x-auto">
-          <table class="w-full">
-            <thead class="border-b border-gray-700">
-              <tr class="text-gray-400 text-sm font-semibold uppercase tracking-wider">
-                <th class="px-8 py-5 text-left">Barber</th>
-                <th class="px-8 py-5 text-left">Time</th>
-                <th class="px-8 py-5 text-left">Service</th>
-                <th class="px-8 py-5 text-left">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="border-b border-gray-800 hover:bg-gray-800/50 transition">
-                <td class="px-8 py-6 font-medium">BOORATS</td>
-                <td class="px-8 py-6 text-gray-300">9:00 AM</td>
-                <td class="px-8 py-6 text-gray-300">SHAVE</td>
-                <td class="px-8 py-6">
-                  <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-500/20 text-green-400 border border-green-500/30">
-                    Confirmed
-                  </span>
-                </td>
-              </tr>
-              <tr class="border-b border-gray-800 hover:bg-gray-800/50 transition">
-                <td class="px-8 py-6 text-gray-500 italic" colspan="4">
-                  No additional appointments scheduled
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Empty State (optional - show when no appointments) -->
-        <div class="px-8 py-12 text-center hidden">
-          <div class="w-20 h-20 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 opacity-50">
-            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-            </svg>
+        <!-- Table / Empty State -->
+        <?php if (count($appointments) > 0): ?>
+          <!-- Appointments Table -->
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead class="border-b border-gray-700">
+                <tr class="text-gray-400 text-sm font-semibold uppercase tracking-wider">
+                  <th class="px-8 py-5 text-left">Barber</th>
+                  <th class="px-8 py-5 text-left">Date & Time</th>
+                  <th class="px-8 py-5 text-left">Service</th>
+                  <th class="px-8 py-5 text-left">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php foreach ($appointments as $apt): ?>
+                  <tr class="border-b border-gray-800 hover:bg-gray-800/50 transition">
+                    <td class="px-8 py-6 font-medium"><?= htmlspecialchars($apt['barber_first_name'] . ' ' . $apt['barber_last_name']) ?></td>
+                    <td class="px-8 py-6 text-gray-300"><?= formatDateTime($apt['appointment_date'], $apt['appointment_time']) ?></td>
+                    <td class="px-8 py-6 text-gray-300"><?= htmlspecialchars(strtoupper($apt['service_name'])) ?></td>
+                    <td class="px-8 py-6">
+                      <?php $badge = getStatusBadge($apt['status']); ?>
+                      <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold <?= $badge['bg'] ?> <?= $badge['text'] ?> border <?= $badge['border'] ?>">
+                        <?= $badge['label'] ?>
+                      </span>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
           </div>
-          <p class="text-gray-400 text-lg">No appointments yet</p>
-          <p class="text-gray-500 text-sm mt-2">Book your first appointment to get started</p>
-        </div>
+        <?php else: ?>
+          <!-- Empty State -->
+          <div class="px-8 py-16 text-center">
+            <div class="w-20 h-20 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 opacity-50">
+              <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+            </div>
+            <p class="text-gray-400 text-lg font-medium">No appointments yet</p>
+            <p class="text-gray-500 text-sm mt-2">Book your first appointment to get started</p>
+          </div>
+        <?php endif; ?>
       </div>
 
     </div>
