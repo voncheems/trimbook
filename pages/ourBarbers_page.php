@@ -1,3 +1,22 @@
+<?php
+// Database connection
+require_once '../config/database.php'; // Adjust path as needed
+
+// Fetch all barbers from database
+$query = "
+SELECT 
+  b.barber_id,
+  CONCAT(u.first_name, ' ', u.last_name) AS full_name,
+  b.specialization,
+  b.experience_years
+FROM barbers b
+JOIN users u ON b.user_id = u.user_id
+WHERE u.user_type = 'barber'
+ORDER BY b.barber_id ASC
+";
+
+$result = mysqli_query($conn, $query);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,8 +61,8 @@
     <ul class="hidden md:flex space-x-8 font-medium text-sm">
       <li><a href="/trimbook/index.php" class="text-gray-300 hover:text-white transition">Home</a></li>
       <li><a href="/trimbook/index.php#about" class="text-gray-300 hover:text-white transition">About</a></li>
-      <li><a href="/trimbook/pages/services.php" class="text-white font-semibold">Services</a></li>
-      <li><a href="/trimbook/pages/ourBarbers_page.php" class="text-gray-300 hover:text-white transition">Our Barbers</a></li>
+      <li><a href="/trimbook/pages/services.php" class="text-gray-300 hover:text-white transition">Services</a></li>
+      <li><a href="/trimbook/pages/ourBarbers_page.php" class="text-white font-semibold">Our Barbers</a></li>
       <li><a href="/trimbook/index.php#contact" class="text-gray-300 hover:text-white transition">Contact</a></li>
     </ul>
     <div class="flex items-center space-x-4">
@@ -76,121 +95,92 @@
   <!-- Barbers Section -->
   <section id="barbers" class="py-24 bg-black">
     <div class="container mx-auto px-6">
-      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
-        
-        <!-- Barber 1 -->
-        <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl p-8 text-center">
-          <div class="relative mb-6">
-            <div class="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl blur-xl opacity-50"></div>
-            <img src="ivan.jpg" class="relative w-40 h-40 object-cover rounded-2xl mx-auto border-4 border-gray-700" alt="The Classic Master">
+      
+      <?php if (mysqli_num_rows($result) > 0): ?>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
+          
+          <?php 
+          $colors = [
+            ['from' => 'blue-600', 'to' => 'purple-600', 'badge' => 'blue'],
+            ['from' => 'purple-600', 'to' => 'pink-600', 'badge' => 'purple'],
+            ['from' => 'pink-600', 'to' => 'orange-600', 'badge' => 'pink'],
+            ['from' => 'orange-600', 'to' => 'red-600', 'badge' => 'orange']
+          ];
+          $colorIndex = 0;
+          
+          while($barber = mysqli_fetch_assoc($result)): 
+            $color = $colors[$colorIndex % 4];
+            $colorIndex++;
+          ?>
+          
+          <!-- Barber Card -->
+          <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl p-8 text-center">
+            <div class="relative mb-6">
+              <div class="absolute inset-0 bg-gradient-to-br from-<?= $color['from'] ?> to-<?= $color['to'] ?> rounded-2xl blur-xl opacity-50"></div>
+              <div class="relative w-40 h-40 bg-gray-700 rounded-2xl mx-auto border-4 border-gray-700 flex items-center justify-center">
+                <svg class="w-20 h-20 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                </svg>
+              </div>
+            </div>
+            
+            <?php if ($barber['specialization']): ?>
+            <div class="mb-3">
+              <span class="inline-block bg-<?= $color['badge'] ?>-600/20 text-<?= $color['badge'] ?>-300 text-xs font-semibold px-3 py-1 rounded-full border border-<?= $color['badge'] ?>-500/30">
+                <?= htmlspecialchars($barber['specialization']) ?>
+              </span>
+            </div>
+            <?php endif; ?>
+            
+            <h3 class="text-2xl font-bold mb-2"><?= htmlspecialchars($barber['full_name']) ?></h3>
+            
+            <?php if ($barber['experience_years']): ?>
+            <p class="text-gray-400 text-sm mb-4">
+              <?= htmlspecialchars($barber['experience_years']) ?> year<?= $barber['experience_years'] > 1 ? 's' : '' ?> of experience
+            </p>
+            <?php else: ?>
+            <p class="text-gray-400 text-sm mb-4">Professional barber</p>
+            <?php endif; ?>
+            
+            <div class="flex justify-center items-center space-x-1 mb-6">
+              <svg class="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+              </svg>
+              <span class="text-lg font-bold text-white">5.0</span>
+              <span class="text-sm text-gray-400">(New)</span>
+            </div>
+            
+            <a href="Bookapp.php?barber_id=<?= $barber['barber_id'] ?>" class="block w-full bg-gradient-to-r from-<?= $color['from'] ?> to-<?= $color['to'] ?> text-white py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-<?= $color['to'] ?>/50 transition">
+              Book Now
+            </a>
           </div>
-          <div class="mb-3">
-            <span class="inline-block bg-blue-600/20 text-blue-300 text-xs font-semibold px-3 py-1 rounded-full border border-blue-500/30">
-              The Classic Master
-            </span>
-          </div>
-          <h3 class="text-2xl font-bold mb-2 h-8">Barber Ivan</h3>
-          <p class="text-gray-400 text-sm mb-4 h-10">Traditional cuts with modern precision</p>
-          <div class="flex justify-center items-center space-x-1 mb-6">
-            <svg class="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-            </svg>
-            <span class="text-lg font-bold text-white">4.9</span>
-            <span class="text-sm text-gray-400">(127 reviews)</span>
-          </div>
-          <a href="Bookapp.php" class="block w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition">
-            Book Now
-          </a>
+          
+          <?php endwhile; ?>
+          
         </div>
-
-        <!-- Barber 2 -->
-        <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl p-8 text-center">
-          <div class="relative mb-6">
-            <div class="absolute inset-0 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl blur-xl opacity-50"></div>
-            <img src="denzel1.jpg" class="relative w-40 h-40 object-cover rounded-2xl mx-auto border-4 border-gray-700" alt="The Fade Specialist">
-          </div>
-          <div class="mb-3">
-            <span class="inline-block bg-purple-600/20 text-purple-300 text-xs font-semibold px-3 py-1 rounded-full border border-purple-500/30">
-              The Fade Specialist
-            </span>
-          </div>
-          <h3 class="text-2xl font-bold mb-2 h-8">Barber Denzel</h3>
-          <p class="text-gray-400 text-sm mb-4 h-10">Perfect fades every single time</p>
-          <div class="flex justify-center items-center space-x-1 mb-6">
-            <svg class="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-            </svg>
-            <span class="text-lg font-bold text-white">5.0</span>
-            <span class="text-sm text-gray-400">(203 reviews)</span>
-          </div>
-          <a href="Bookapp.php" class="block w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-pink-500/50 transition">
-            Book Now
-          </a>
+      <?php else: ?>
+        <!-- No Barbers Found -->
+        <div class="text-center py-20">
+          <svg class="w-24 h-24 text-gray-600 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+          </svg>
+          <h3 class="text-2xl font-bold mb-2">No Barbers Available</h3>
+          <p class="text-gray-400">Check back soon! Our team is growing.</p>
         </div>
-
-        <!-- Barber 3 -->
-        <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl p-8 text-center">
-          <div class="relative mb-6">
-            <div class="absolute inset-0 bg-gradient-to-br from-pink-600 to-orange-600 rounded-2xl blur-xl opacity-50"></div>
-            <img src="brenan.jpg" class="relative w-40 h-40 object-cover rounded-2xl mx-auto border-4 border-gray-700" alt="The Style Innovator">
-          </div>
-          <div class="mb-3">
-            <span class="inline-block bg-pink-600/20 text-pink-300 text-xs font-semibold px-3 py-1 rounded-full border border-pink-500/30">
-              The Style Innovator
-            </span>
-          </div>
-          <h3 class="text-2xl font-bold mb-2 h-8">Barber Brenan</h3>
-          <p class="text-gray-400 text-sm mb-4 h-10">Trendy styles and creative designs</p>
-          <div class="flex justify-center items-center space-x-1 mb-6">
-            <svg class="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-            </svg>
-            <span class="text-lg font-bold text-white">4.8</span>
-            <span class="text-sm text-gray-400">(156 reviews)</span>
-          </div>
-          <a href="Bookapp.php" class="block w-full bg-gradient-to-r from-pink-600 to-orange-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-orange-500/50 transition">
-            Book Now
-          </a>
-        </div>
-
-        <!-- Barber 4 -->
-        <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl p-8 text-center">
-          <div class="relative mb-6">
-            <div class="absolute inset-0 bg-gradient-to-br from-orange-600 to-red-600 rounded-2xl blur-xl opacity-50"></div>
-            <img src="denzel.jpg" class="relative w-40 h-40 object-cover rounded-2xl mx-auto border-4 border-gray-700" alt="The Grooming Expert">
-          </div>
-          <div class="mb-3">
-            <span class="inline-block bg-orange-600/20 text-orange-300 text-xs font-semibold px-3 py-1 rounded-full border border-orange-500/30">
-              The Grooming Expert
-            </span>
-          </div>
-          <h3 class="text-2xl font-bold mb-2 h-8">Barber Denzel</h3>
-          <p class="text-gray-400 text-sm mb-4 h-10">Full grooming and beard specialist</p>
-          <div class="flex justify-center items-center space-x-1 mb-6">
-            <svg class="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-            </svg>
-            <span class="text-lg font-bold text-white">4.9</span>
-            <span class="text-sm text-gray-400">(189 reviews)</span>
-          </div>
-          <a href="Bookapp.php" class="block w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-red-500/50 transition">
-            Book Now
-          </a>
-        </div>
-
-      </div>
+      <?php endif; ?>
+      
     </div>
   </section>
 
   <!-- CTA Section -->
   <section class="py-20 bg-gradient-to-b from-black to-zinc-950">
     <div class="container mx-auto px-6 text-center">
-      <h2 class="text-3xl md:text-4xl font-black mb-4">Can't Decide?</h2>
+      <h2 class="text-3xl md:text-4xl font-black mb-4">Ready to Get Started?</h2>
       <p class="text-lg text-gray-400 max-w-xl mx-auto mb-8">
-        Let our system match you with the perfect barber based on your preferences.
+        Book your appointment now and experience premium barbering services.
       </p>
       <a href="Bookapp.php" class="inline-block bg-white/10 border border-white/20 text-white px-8 py-4 rounded-full text-base font-bold hover:bg-white/20 transition">
-        Get Matched Now
+        Book Appointment
       </a>
     </div>
   </section>
@@ -206,9 +196,9 @@
         <div>
           <h4 class="font-bold mb-4">Quick Links</h4>
           <ul class="space-y-2 text-sm">
-            <li><a href="index.php#services" class="text-gray-400 hover:text-white transition">Services</a></li>
+            <li><a href="/trimbook/index.php#services" class="text-gray-400 hover:text-white transition">Services</a></li>
             <li><a href="#barbers" class="text-gray-400 hover:text-white transition">Our Barbers</a></li>
-            <li><a href="Bookapp.php" class="text-gray-400 hover:text-white transition">Book Appointment</a></li>
+            <li><a href="../dashboards/client_booking.php" class="text-gray-400 hover:text-white transition">Book Appointment</a></li>
           </ul>
         </div>
         <div>
