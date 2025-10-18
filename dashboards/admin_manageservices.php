@@ -317,7 +317,7 @@ try {
       </div>
 
       <!-- Modal Form -->
-      <form id="serviceForm" action="../auth/save_service.php" method="POST" class="p-8 space-y-6">
+      <form id="serviceForm" class="p-8 space-y-6">
         <input type="hidden" id="serviceId" name="service_id" value="">
 
         <!-- Service Name -->
