@@ -13,12 +13,9 @@ try{
                             
 }
 catch(mysqli_mysql_exception){
-    echo "Connection failed";
+    
 }
 
-if ($conn){
-    echo "You are connected to the database successfully";
-}
 
 
 ?>
