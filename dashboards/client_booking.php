@@ -322,34 +322,6 @@ try {
       });
     }
 
-    // Load and display browse services (informational)
-    function loadBrowseServices() {
-      fetch('../auth/get_services.php')
-        .then(response => response.json())
-        .then(data => {
-          const container = document.getElementById('browseServicesContainer');
-          container.innerHTML = '';
-          
-          if (data.success && data.services.length > 0) {
-            data.services.forEach(service => {
-              const card = document.createElement('div');
-              card.className = 'bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-xl p-4 hover:border-purple-500/50 transition';
-              card.innerHTML = `
-                <div class="flex justify-between items-start mb-2">
-                  <h3 class="font-bold text-white text-sm">${service.service_name}</h3>
-                  <span class="text-blue-400 font-bold text-sm">₱${parseFloat(service.price).toFixed(2)}</span>
-                </div>
-                <p class="text-gray-400 text-xs">${service.description || 'Professional barber service'}</p>
-              `;
-              container.appendChild(card);
-            });
-          } else {
-            container.innerHTML = '<div class="col-span-full text-center py-4"><p class="text-gray-400">No services available</p></div>';
-          }
-        })
-        .catch(err => console.error('Error loading services:', err));
-    }
-
     function selectService(card, serviceId, serviceName) {
       document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
@@ -424,7 +396,6 @@ try {
       for (let day = 1; day <= daysInMonth; day++) {
         const date = new Date(year, month, day);
         const isPast = date < today;
-        // Format date locally instead of using toISOString to avoid timezone issues
         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         const dayClass = isPast ? 'calendar-day disabled' : 'calendar-day';
         
@@ -465,7 +436,7 @@ try {
         
         console.log('Sending payload:', payload);
         
-        fetch('../auth/save_service.php', {
+        fetch('../auth/create_appointment.php', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -515,7 +486,6 @@ try {
     generateCalendar();
     loadServices();
     loadTimes();
-    loadBrowseServices();
   </script>
 
 </body>
