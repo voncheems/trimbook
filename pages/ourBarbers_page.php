@@ -1,6 +1,6 @@
 <?php
 // Database connection
-require_once '../config/database.php'; // Adjust path as needed
+require_once '../includes/dbconfig.php'; // Adjust path as needed
 
 // Fetch all barbers from database
 $query = "
@@ -179,7 +179,7 @@ $result = mysqli_query($conn, $query);
       <p class="text-lg text-gray-400 max-w-xl mx-auto mb-8">
         Book your appointment now and experience premium barbering services.
       </p>
-      <a href="Bookapp.php" class="inline-block bg-white/10 border border-white/20 text-white px-8 py-4 rounded-full text-base font-bold hover:bg-white/20 transition">
+      <a href="Bookapp.php" class="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full text-base font-bold hover:shadow-lg hover:shadow-purple-500/50 transition">
         Book Appointment
       </a>
     </div>
