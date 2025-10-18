@@ -181,7 +181,7 @@ if (isset($conn) && $conn) {
           <span>Manage Clients</span>
         </a>
 
-        <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition">
+        <a href="../dashboards/admin_manageservices.php" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
           </svg>
@@ -312,6 +312,7 @@ if (isset($conn) && $conn) {
                 <span>Add New Barber</span>
               </button>
             </a>
+            <a href="../dashboards/admin_manageservices.php" class="block">
             <button class="w-full bg-gray-800/50 hover:bg-gray-800 text-white px-6 py-4 rounded-xl font-medium transition flex items-center space-x-3 group">
               <svg class="w-5 h-5 text-purple-400 group-hover:text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
@@ -373,14 +374,86 @@ if (isset($conn) && $conn) {
       </div>
 
       <!-- Recent Appointments Table -->
-      <div class="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
-        <div class="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-6">
-          <h2 class="text-2xl font-bold">Recent Appointments</h2>
-        </div>
-        <div class="p-8">
-          <p class="text-gray-400">No appointments yet.</p>
-        </div>
-      </div>
+<?php
+// Fetch recent appointments
+$recent_appointments = [];
+if (isset($conn) && $conn) {
+    $apt_query = "
+        SELECT 
+            a.appointment_id,
+            a.appointment_date,
+            a.appointment_time,
+            a.status,
+            u_customer.first_name as customer_first_name,
+            u_customer.last_name as customer_last_name,
+            u_barber.first_name as barber_first_name,
+            u_barber.last_name as barber_last_name,
+            s.service_name
+        FROM appointments a
+        JOIN users u_customer ON a.customer_user_id = u_customer.user_id
+        JOIN barbers b ON a.barber_id = b.barber_id
+        JOIN users u_barber ON b.user_id = u_barber.user_id
+        JOIN services s ON a.service_id = s.service_id
+        ORDER BY a.created_at DESC
+        LIMIT 5
+    ";
+    
+    $result = $conn->query($apt_query);
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $recent_appointments[] = $row;
+        }
+    }
+}
+?>
+<div class="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
+  <div class="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-6">
+    <h2 class="text-2xl font-bold">Recent Appointments</h2>
+  </div>
+  
+  <?php if (count($recent_appointments) > 0): ?>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="border-b border-gray-700">
+          <tr class="text-gray-400 text-sm font-semibold uppercase tracking-wider">
+            <th class="px-8 py-5 text-left">Client</th>
+            <th class="px-8 py-5 text-left">Barber</th>
+            <th class="px-8 py-5 text-left">Service</th>
+            <th class="px-8 py-5 text-left">Date & Time</th>
+            <th class="px-8 py-5 text-center">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach ($recent_appointments as $apt): 
+            $status_colors = [
+              'pending' => 'bg-yellow-500/20 text-yellow-400',
+              'confirmed' => 'bg-green-500/20 text-green-400',
+              'completed' => 'bg-blue-500/20 text-blue-400',
+              'cancelled' => 'bg-red-500/20 text-red-400'
+            ];
+            $color = $status_colors[$apt['status']] ?? 'bg-gray-500/20 text-gray-400';
+          ?>
+            <tr class="border-b border-gray-800 hover:bg-gray-800/50 transition">
+              <td class="px-8 py-6 font-medium"><?= htmlspecialchars($apt['customer_first_name'] . ' ' . $apt['customer_last_name']) ?></td>
+              <td class="px-8 py-6 text-gray-300"><?= htmlspecialchars($apt['barber_first_name'] . ' ' . $apt['barber_last_name']) ?></td>
+              <td class="px-8 py-6 text-gray-300"><?= htmlspecialchars($apt['service_name']) ?></td>
+              <td class="px-8 py-6 text-gray-300"><?= htmlspecialchars((new DateTime($apt['appointment_date']))->format('M d, Y') . ' at ' . date('g:i A', strtotime($apt['appointment_time']))) ?></td>
+              <td class="px-8 py-6 text-center">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold <?= $color ?>">
+                  <?= ucfirst($apt['status']) ?>
+                </span>
+              </td>
+            </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div>
+  <?php else: ?>
+    <div class="p-8 text-center">
+      <p class="text-gray-400">No appointments yet.</p>
+    </div>
+  <?php endif; ?>
+</div>
 
     </div>
   </main>
@@ -393,6 +466,19 @@ if (isset($conn) && $conn) {
       sidebar.classList.toggle('open');
       overlay.classList.toggle('show');
     }
+
+    // Close sidebar when pressing Escape key
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        
+        if (sidebar.classList.contains('open')) {
+          sidebar.classList.remove('open');
+          overlay.classList.remove('show');
+        }
+      }
+    });
   </script>
 
 </body>
