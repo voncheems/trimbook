@@ -453,7 +453,7 @@ function getStatusColor($status) {
                         <p class="text-sm text-gray-400"><?= $service['booking_count'] ?> bookings</p>
                       </div>
                     </div>
-                    <p class="text-green-400 font-bold">₱<?= number_format($service['revenue'], 2) ?></p>
+                    <p class="text-green-400 font-bold"></p>
                   </div>
                 <?php endforeach; ?>
               </div>
@@ -482,7 +482,7 @@ function getStatusColor($status) {
                         <p class="text-sm text-gray-400"><?= $barber['appointment_count'] ?> appointments</p>
                       </div>
                     </div>
-                    <p class="text-green-400 font-bold">₱<?= number_format($barber['revenue'], 2) ?></p>
+                    <p class="text-green-400 font-bold"></p>
                   </div>
                 <?php endforeach; ?>
               </div>
@@ -511,7 +511,7 @@ function getStatusColor($status) {
                     <th class="text-left py-4 px-4 text-gray-400 font-medium">Service</th>
                     <th class="text-left py-4 px-4 text-gray-400 font-medium">Date</th>
                     <th class="text-left py-4 px-4 text-gray-400 font-medium">Time</th>
-                    <th class="text-right py-4 px-4 text-gray-400 font-medium">Price</th>
+                    
                     <th class="text-center py-4 px-4 text-gray-400 font-medium">Status</th>
                   </tr>
                 </thead>
@@ -524,7 +524,7 @@ function getStatusColor($status) {
                       <td class="py-4 px-4 text-gray-300"><?= htmlspecialchars($appointment['service_name']) ?></td>
                       <td class="py-4 px-4 text-gray-300"><?= date('M d, Y', strtotime($appointment['appointment_date'])) ?></td>
                       <td class="py-4 px-4 text-gray-300"><?= date('h:i A', strtotime($appointment['appointment_time'])) ?></td>
-                      <td class="py-4 px-4 text-right text-green-400 font-semibold">₱<?= number_format($appointment['price'], 2) ?></td>
+                      
                       <td class="py-4 px-4 text-center">
                         <span class="inline-block px-3 py-1 rounded-full text-xs font-medium border <?= getStatusColor($appointment['status']) ?>">
                           <?= ucfirst($appointment['status']) ?>
