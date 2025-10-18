@@ -492,7 +492,7 @@ $initials = strtoupper(substr($admin_name, 0, 2));
     }
 
 // Form validation before submit
-document.getElementById('barber-form').addEventListener('submit', function(e) {
+document.getElementById('barber-form').addEventListenerQA('submit', function(e) {
   const workingDays = document.querySelectorAll('input[name="working_days[]"]:checked');
   
   if (workingDays.length === 0) {
