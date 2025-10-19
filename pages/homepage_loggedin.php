@@ -72,7 +72,7 @@ $title = "TrimBook | Your Barber Appointment System";
       </ul>
       <div class="flex items-center space-x-4">
         <span class="text-sm text-gray-300 hidden lg:block">Hi, <span class="font-semibold text-white"><?= htmlspecialchars($first_name) ?></span></span>
-        <a href="./pages/client_dashboard.php" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition">
+        <a href="../dashboards/client_dashboard.php" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition">
           My Account
         </a>
       </div>
