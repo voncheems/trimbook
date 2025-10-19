@@ -9,7 +9,7 @@ $admin_username = $_SESSION['admin_username'] ?? 'admin';
 $initials = strtoupper(substr($admin_name, 0, 2));
 
 // Include database configuration
-require_once '../includes/dbconfig.php'; // Adjust path based on your file structure
+require_once '../includes/dbconfig.php';
 
 // Initialize stats with default values
 $stats = [
@@ -160,21 +160,21 @@ if (isset($conn) && $conn) {
           <span>Dashboard</span>
         </a>
 
-        <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition">
+        <a href="admin_allAppointment.php" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
           </svg>
           <span>All Appointments</span>
         </a>
 
-        <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition">
+        <a href="admin_allbarbers.php" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
           </svg>
           <span>Manage Barbers</span>
         </a>
 
-        <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition">
+        <a href="admin_manageClient.php" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
           </svg>
@@ -188,19 +188,25 @@ if (isset($conn) && $conn) {
           <span>Manage Services</span>
         </a>
 
-        <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition">
+        <a href="admin_reportpage.php" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
           </svg>
           <span>Reports & Analytics</span>
         </a>
-
-        <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition">
+        <a href="admin_addcontact.php" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
           </svg>
-          <span>Settings</span>
+          <span>Manage Contact</span>
+        </a>
+
+        <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+          </svg>
+          <span>Customer Feedback</span>
         </a>
       </nav>
 
@@ -220,7 +226,6 @@ if (isset($conn) && $conn) {
   <header class="bg-black/80 backdrop-blur-lg border-b border-gray-800">
     <nav class="container mx-auto flex justify-between items-center py-5 px-6">
       <div class="flex items-center space-x-4">
-        <!-- Hamburger Menu Button -->
         <button onclick="toggleSidebar()" class="text-white hover:text-purple-400 transition">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -241,9 +246,7 @@ if (isset($conn) && $conn) {
       
       <!-- Page Header -->
       <div class="mb-10">
-        <h1 class="text-4xl md:text-5xl font-black mb-4">
-          Admin Dashboard
-        </h1>
+        <h1 class="text-4xl md:text-5xl font-black mb-4">Admin Dashboard</h1>
         <p class="text-gray-400 text-lg">Overview of your barbershop operations</p>
       </div>
 
@@ -303,7 +306,6 @@ if (isset($conn) && $conn) {
             <h2 class="text-2xl font-bold">Quick Actions</h2> 
           </div>
           <div class="p-8 space-y-3">
-            <!-- Add New Barber -->
             <a href="/trimbook/dashboards/admin_addBarber.php" class="block">
               <button class="w-full bg-gray-800/50 hover:bg-gray-800 text-white px-6 py-4 rounded-xl font-medium transition flex items-center space-x-3 group">
                 <svg class="w-5 h-5 text-purple-400 group-hover:text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -313,12 +315,13 @@ if (isset($conn) && $conn) {
               </button>
             </a>
             <a href="../dashboards/admin_manageservices.php" class="block">
-            <button class="w-full bg-gray-800/50 hover:bg-gray-800 text-white px-6 py-4 rounded-xl font-medium transition flex items-center space-x-3 group">
-              <svg class="w-5 h-5 text-purple-400 group-hover:text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-              </svg>
-              <span>Manage Services</span>
-            </button>
+              <button class="w-full bg-gray-800/50 hover:bg-gray-800 text-white px-6 py-4 rounded-xl font-medium transition flex items-center space-x-3 group">
+                <svg class="w-5 h-5 text-purple-400 group-hover:text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                </svg>
+                <span>Manage Services</span>
+              </button>
+            </a>
             <a href="../dashboards/admin_reportpage.php" class="block">
               <button class="w-full bg-gray-800/50 hover:bg-gray-800 text-white px-6 py-4 rounded-xl font-medium transition flex items-center space-x-3 group">
                 <svg class="w-5 h-5 text-purple-400 group-hover:text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -374,86 +377,86 @@ if (isset($conn) && $conn) {
       </div>
 
       <!-- Recent Appointments Table -->
-<?php
-// Fetch recent appointments
-$recent_appointments = [];
-if (isset($conn) && $conn) {
-    $apt_query = "
-        SELECT 
-            a.appointment_id,
-            a.appointment_date,
-            a.appointment_time,
-            a.status,
-            u_customer.first_name as customer_first_name,
-            u_customer.last_name as customer_last_name,
-            u_barber.first_name as barber_first_name,
-            u_barber.last_name as barber_last_name,
-            s.service_name
-        FROM appointments a
-        JOIN users u_customer ON a.customer_user_id = u_customer.user_id
-        JOIN barbers b ON a.barber_id = b.barber_id
-        JOIN users u_barber ON b.user_id = u_barber.user_id
-        JOIN services s ON a.service_id = s.service_id
-        ORDER BY a.created_at DESC
-        LIMIT 5
-    ";
-    
-    $result = $conn->query($apt_query);
-    if ($result) {
-        while ($row = $result->fetch_assoc()) {
-            $recent_appointments[] = $row;
-        }
-    }
-}
-?>
-<div class="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
-  <div class="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-6">
-    <h2 class="text-2xl font-bold">Recent Appointments</h2>
-  </div>
-  
-  <?php if (count($recent_appointments) > 0): ?>
-    <div class="overflow-x-auto">
-      <table class="w-full">
-        <thead class="border-b border-gray-700">
-          <tr class="text-gray-400 text-sm font-semibold uppercase tracking-wider">
-            <th class="px-8 py-5 text-left">Client</th>
-            <th class="px-8 py-5 text-left">Barber</th>
-            <th class="px-8 py-5 text-left">Service</th>
-            <th class="px-8 py-5 text-left">Date & Time</th>
-            <th class="px-8 py-5 text-center">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php foreach ($recent_appointments as $apt): 
-            $status_colors = [
-              'pending' => 'bg-yellow-500/20 text-yellow-400',
-              'confirmed' => 'bg-green-500/20 text-green-400',
-              'completed' => 'bg-blue-500/20 text-blue-400',
-              'cancelled' => 'bg-red-500/20 text-red-400'
-            ];
-            $color = $status_colors[$apt['status']] ?? 'bg-gray-500/20 text-gray-400';
-          ?>
-            <tr class="border-b border-gray-800 hover:bg-gray-800/50 transition">
-              <td class="px-8 py-6 font-medium"><?= htmlspecialchars($apt['customer_first_name'] . ' ' . $apt['customer_last_name']) ?></td>
-              <td class="px-8 py-6 text-gray-300"><?= htmlspecialchars($apt['barber_first_name'] . ' ' . $apt['barber_last_name']) ?></td>
-              <td class="px-8 py-6 text-gray-300"><?= htmlspecialchars($apt['service_name']) ?></td>
-              <td class="px-8 py-6 text-gray-300"><?= htmlspecialchars((new DateTime($apt['appointment_date']))->format('M d, Y') . ' at ' . date('g:i A', strtotime($apt['appointment_time']))) ?></td>
-              <td class="px-8 py-6 text-center">
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold <?= $color ?>">
-                  <?= ucfirst($apt['status']) ?>
-                </span>
-              </td>
-            </tr>
-          <?php endforeach; ?>
-        </tbody>
-      </table>
-    </div>
-  <?php else: ?>
-    <div class="p-8 text-center">
-      <p class="text-gray-400">No appointments yet.</p>
-    </div>
-  <?php endif; ?>
-</div>
+      <?php
+      // Fetch recent appointments - LIMITED TO 3
+      $recent_appointments = [];
+      if (isset($conn) && $conn) {
+          $apt_query = "
+              SELECT 
+                  a.appointment_id,
+                  a.appointment_date,
+                  a.appointment_time,
+                  a.status,
+                  u_customer.first_name as customer_first_name,
+                  u_customer.last_name as customer_last_name,
+                  u_barber.first_name as barber_first_name,
+                  u_barber.last_name as barber_last_name,
+                  s.service_name
+              FROM appointments a
+              JOIN users u_customer ON a.customer_user_id = u_customer.user_id
+              JOIN barbers b ON a.barber_id = b.barber_id
+              JOIN users u_barber ON b.user_id = u_barber.user_id
+              JOIN services s ON a.service_id = s.service_id
+              ORDER BY a.created_at DESC
+              LIMIT 3
+          ";
+          
+          $result = $conn->query($apt_query);
+          if ($result) {
+              while ($row = $result->fetch_assoc()) {
+                  $recent_appointments[] = $row;
+              }
+          }
+      }
+      ?>
+      <div class="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
+        <div class="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-6">
+          <h2 class="text-2xl font-bold">Recent Appointments</h2>
+        </div>
+        
+        <?php if (count($recent_appointments) > 0): ?>
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead class="border-b border-gray-700">
+                <tr class="text-gray-400 text-sm font-semibold uppercase tracking-wider">
+                  <th class="px-8 py-5 text-left">Client</th>
+                  <th class="px-8 py-5 text-left">Barber</th>
+                  <th class="px-8 py-5 text-left">Service</th>
+                  <th class="px-8 py-5 text-left">Date & Time</th>
+                  <th class="px-8 py-5 text-center">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php foreach ($recent_appointments as $apt): 
+                  $status_colors = [
+                    'pending' => 'bg-yellow-500/20 text-yellow-400',
+                    'confirmed' => 'bg-green-500/20 text-green-400',
+                    'completed' => 'bg-blue-500/20 text-blue-400',
+                    'cancelled' => 'bg-red-500/20 text-red-400'
+                  ];
+                  $color = $status_colors[$apt['status']] ?? 'bg-gray-500/20 text-gray-400';
+                ?>
+                  <tr class="border-b border-gray-800 hover:bg-gray-800/50 transition">
+                    <td class="px-8 py-6 font-medium"><?= htmlspecialchars($apt['customer_first_name'] . ' ' . $apt['customer_last_name']) ?></td>
+                    <td class="px-8 py-6 text-gray-300"><?= htmlspecialchars($apt['barber_first_name'] . ' ' . $apt['barber_last_name']) ?></td>
+                    <td class="px-8 py-6 text-gray-300"><?= htmlspecialchars($apt['service_name']) ?></td>
+                    <td class="px-8 py-6 text-gray-300"><?= htmlspecialchars((new DateTime($apt['appointment_date']))->format('M d, Y') . ' at ' . date('g:i A', strtotime($apt['appointment_time']))) ?></td>
+                    <td class="px-8 py-6 text-center">
+                      <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold <?= $color ?>">
+                        <?= ucfirst($apt['status']) ?>
+                      </span>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+          </div>
+        <?php else: ?>
+          <div class="p-8 text-center">
+            <p class="text-gray-400">No appointments yet.</p>
+          </div>
+        <?php endif; ?>
+      </div>
 
     </div>
   </main>
@@ -467,7 +470,6 @@ if (isset($conn) && $conn) {
       overlay.classList.toggle('show');
     }
 
-    // Close sidebar when pressing Escape key
     document.addEventListener('keydown', function(event) {
       if (event.key === 'Escape') {
         const sidebar = document.getElementById('sidebar');
