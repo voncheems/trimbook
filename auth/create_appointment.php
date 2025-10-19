@@ -73,13 +73,13 @@ try {
     }
     $service_check->close();
     
-    // Check if time slot is available
+    // Check if time slot is available (only confirmed appointments block slots)
     $availability_check = $conn->prepare("
         SELECT appointment_id FROM appointments 
         WHERE barber_id = ? 
         AND appointment_date = ? 
         AND appointment_time = ? 
-        AND status != 'cancelled'
+        AND status = 'confirmed'
     ");
     $availability_check->bind_param("iss", $barber_id, $appointment_date, $appointment_time);
     $availability_check->execute();
@@ -88,10 +88,10 @@ try {
     }
     $availability_check->close();
     
-    // Insert appointment
+    // Insert appointment with 'confirmed' status
     $insert_query = $conn->prepare("
         INSERT INTO appointments (customer_user_id, barber_id, service_id, appointment_date, appointment_time, status)
-        VALUES (?, ?, ?, ?, ?, 'pending')
+        VALUES (?, ?, ?, ?, ?, 'confirmed')
     ");
     
     $insert_query->bind_param("iiiss", $customer_user_id, $barber_id, $service_id, $appointment_date, $appointment_time);
@@ -101,7 +101,7 @@ try {
         
         echo json_encode([
             'success' => true,
-            'message' => 'Appointment created successfully',
+            'message' => 'Appointment confirmed successfully',
             'appointment_id' => $appointment_id
         ]);
     } else {
