@@ -101,7 +101,7 @@ try {
       transition: all 0.3s ease;
     }
 
-    .time-btn:hover {
+    .time-btn:hover:not(:disabled) {
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
     }
@@ -110,6 +110,10 @@ try {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
       border-color: #667eea;
+    }
+
+    .time-btn:disabled {
+      cursor: not-allowed;
     }
 
     .calendar-day {
@@ -146,7 +150,7 @@ try {
   <header class="fixed w-full top-0 left-0 z-50 bg-black/80 backdrop-blur-lg border-b border-gray-800">
     <nav class="container mx-auto flex justify-between items-center py-5 px-6">
       <a href="/trimbook/index.php" class="text-2xl font-black tracking-tight">TRIMBOOK</a>
-      <a href="/trimbook/dashboards/client_dashboard.php" class="text-sm font-medium text-gray-300 hover:text-white transition">← Back to Dashboard</a>
+      <a href="/trimbook/dashboards/client_selectBarber.php" class="text-sm font-medium text-gray-300 hover:text-white transition">← Back</a>
     </nav>
   </header>
 
@@ -243,7 +247,7 @@ try {
             
             <div class="grid grid-cols-3 gap-3" id="timesContainer">
               <!-- Times will be loaded here -->
-              <p class="text-gray-400">Loading times...</p>
+              <p class="text-gray-400">Select a date first</p>
             </div>
           </div>
         </div>
@@ -303,23 +307,68 @@ try {
         .catch(err => console.error('Error loading services:', err));
     }
 
-    // Load available times
-    function loadTimes() {
+    // Load available times with booked slots disabled
+    function loadTimes(dateToFetch = null) {
       const container = document.getElementById('timesContainer');
       container.innerHTML = '';
       
       const times = [
         '9:00 AM', '9:30 AM', '10:00 AM', '10:30 AM', '11:00 AM',
-        '1:00 PM', '1:30 PM', '2:00 PM', '2:30 PM', '3:00 PM', '3:30 PM', '4:00 PM'
+        '1:00 PM', '1:30 PM', '2:00 PM', '2:30 PM', '3:00 PM', '3:30 PM', '4:00 PM',
+        '4:30 PM', '5:00 PM', '6:00 PM'
       ];
       
-      times.forEach(time => {
-        const btn = document.createElement('button');
-        btn.className = 'time-btn bg-white/10 border border-gray-700 rounded-lg px-4 py-3 font-medium hover:bg-white/20';
-        btn.textContent = time;
-        btn.onclick = () => selectTime(btn, time);
-        container.appendChild(btn);
-      });
+      // If a date is provided, fetch booked slots for that date
+      if (dateToFetch) {
+        fetch('../auth/get_booked_slots.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            barber_id: barber_id,
+            appointment_date: dateToFetch
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          const bookedTimes = data.success ? data.booked_times : [];
+          
+          times.forEach(time => {
+            const btn = document.createElement('button');
+            const isBooked = bookedTimes.includes(time);
+            
+            if (isBooked) {
+              btn.className = 'time-btn bg-red-500/20 border border-red-500/30 rounded-lg px-4 py-3 font-medium text-red-400 cursor-not-allowed opacity-60';
+              btn.textContent = time + ' (Booked)';
+              btn.disabled = true;
+            } else {
+              btn.className = 'time-btn bg-white/10 border border-gray-700 rounded-lg px-4 py-3 font-medium hover:bg-white/20';
+              btn.textContent = time;
+              btn.onclick = () => selectTime(btn, time);
+            }
+            
+            container.appendChild(btn);
+          });
+        })
+        .catch(err => {
+          console.error('Error loading booked slots:', err);
+          // Fallback: show all times if fetch fails
+          times.forEach(time => {
+            const btn = document.createElement('button');
+            btn.className = 'time-btn bg-white/10 border border-gray-700 rounded-lg px-4 py-3 font-medium hover:bg-white/20';
+            btn.textContent = time;
+            btn.onclick = () => selectTime(btn, time);
+            container.appendChild(btn);
+          });
+        });
+      } else {
+        // No date selected yet
+        const p = document.createElement('p');
+        p.className = 'text-gray-400 col-span-3';
+        p.textContent = 'Select a date first';
+        container.appendChild(p);
+      }
     }
 
     function selectService(card, serviceId, serviceName) {
@@ -342,6 +391,12 @@ try {
       document.querySelectorAll('.calendar-day').forEach(d => d.classList.remove('selected'));
       day.classList.add('selected');
       selectedDate = day.dataset.date;
+      
+      // Load times for this specific date (will show booked slots as disabled)
+      loadTimes(selectedDate);
+      
+      // Clear time selection when date changes
+      selectedTime = null;
       updateConfirmButton();
     }
 
