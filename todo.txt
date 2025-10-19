@@ -1,0 +1,31 @@
+-- HOMEPAGE -- (October 19, 2025)
+1. Homepage Linking - Fix
+3. Our Barbers Page - Picture not being seen yet
+
+-- CLIENT DASHBOARD --
+1. My Appointments Page --ex. Not Completed Appointments-- (Client) - Make One
+2. Profile Page (Client) - Make One
+3. Book Appointment (Sidebar) - Fix Linking, We already have booking page.
+4. Booking History Page --ex. All Appointments Made-- (Client) - Make One
+5. Settings Page - Make One
+6. Logout Confirmation - Make One
+7. Need Feature (Can Remove Completed Appointments / On the container only not the database) - Make One
+
+-- BARBER DASHBOARD --
+1. Linking - Fix
+2. My Appointments Page - Make One
+3. My Profile Page - Make One 
+4. Schedule Page - Make One (Should be changeable)
+
+-- ADMIN DASHBOARD --
+1. Recent Activities - Not yet Dynamic, Should be accurate atleast rather than real-time
+
+-- LOGIN & SIGNUP -- 
+1. Error Messages - Should Make some
+2. Processing Delay - Should add for design
+3. Process login for admin - in the works
+
+barber sample photos file name (laptop ni brenan):
+- samplebarber
+- samplebarber2
+- samplebarber3
