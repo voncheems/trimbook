@@ -22,14 +22,15 @@ $first_name = $_SESSION['first_name'] ?? 'Guest';
 $last_name = $_SESSION['last_name'] ?? '';
 $full_name = trim($first_name . ' ' . $last_name);
 
-// Fetch all barbers from database
+// Fetch all barbers from database with profile photos
 $query = "
 SELECT 
   b.barber_id,
   u.user_id,
   CONCAT(u.first_name, ' ', u.last_name) AS full_name,
   b.specialization,
-  b.experience_years
+  b.experience_years,
+  u.profile_photo
 FROM barbers b
 JOIN users u ON b.user_id = u.user_id
 WHERE u.user_type = 'barber'
@@ -99,6 +100,22 @@ $barbers = mysqli_fetch_all($result, MYSQLI_ASSOC);
     .empty-state {
       animation: fadeIn 0.5s ease;
     }
+
+    .barber-avatar {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+    }
+
+    .avatar-placeholder {
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body class="bg-black text-white antialiased min-h-screen">
@@ -128,24 +145,29 @@ $barbers = mysqli_fetch_all($result, MYSQLI_ASSOC);
         <div id="barber-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           <?php 
           $colors = [
-            ['gradient' => 'from-purple-600 to-pink-600', 'stars' => 5],
-            ['gradient' => 'from-blue-600 to-purple-600', 'stars' => 4],
-            ['gradient' => 'from-pink-600 to-orange-600', 'stars' => 5],
-            ['gradient' => 'from-orange-600 to-red-600', 'stars' => 4]
+            ['gradient' => 'from-purple-600 to-pink-600'],
+            ['gradient' => 'from-blue-600 to-purple-600'],
+            ['gradient' => 'from-pink-600 to-orange-600'],
+            ['gradient' => 'from-orange-600 to-red-600']
           ];
           
           foreach ($barbers as $index => $barber): 
             $color = $colors[$index % 4];
             $initials = strtoupper(substr($barber['full_name'], 0, 1) . substr(explode(' ', $barber['full_name'])[1] ?? '', 0, 1));
-            $stars = $color['stars'];
           ?>
           
           <div class="fade-in barber-card bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-gray-700 rounded-2xl p-6 flex items-center gap-6" 
                onclick="selectBarber(this, <?= htmlspecialchars(json_encode($barber)) ?>)">
-            <div class="relative">
-              <div class="w-20 h-20 rounded-full bg-gradient-to-br <?= $color['gradient'] ?> flex items-center justify-center text-3xl font-bold border-4 border-gray-700">
-                <?= htmlspecialchars($initials) ?>
-              </div>
+            <div class="relative flex-shrink-0">
+              <?php if (!empty($barber['profile_photo'])): ?>
+                <img src="../<?= htmlspecialchars($barber['profile_photo']) ?>" 
+                     alt="<?= htmlspecialchars($barber['full_name']) ?>" 
+                     class="w-20 h-20 rounded-full bg-gradient-to-br <?= $color['gradient'] ?> border-4 border-gray-700 barber-avatar object-cover">
+              <?php else: ?>
+                <div class="w-20 h-20 rounded-full bg-gradient-to-br <?= $color['gradient'] ?> flex items-center justify-center text-3xl font-bold border-4 border-gray-700 avatar-placeholder">
+                  <?= htmlspecialchars($initials) ?>
+                </div>
+              <?php endif; ?>
               <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-gray-900"></div>
             </div>
             
@@ -156,17 +178,8 @@ $barbers = mysqli_fetch_all($result, MYSQLI_ASSOC);
               <p class="text-gray-400 text-sm mb-2"><?= htmlspecialchars($barber['specialization']) ?></p>
               <?php endif; ?>
               
-              <div class="flex items-center gap-2">
-                <div class="flex text-yellow-500">
-                  <?php for ($i = 0; $i < 5; $i++): ?>
-                    <span><?= $i < $stars ? '★' : '☆' ?></span>
-                  <?php endfor; ?>
-                </div>
-                <span class="text-sm text-gray-400">(<?= $stars ?>.0)</span>
-              </div>
-              
               <?php if ($barber['experience_years']): ?>
-              <p class="text-gray-500 text-xs mt-2"><?= htmlspecialchars($barber['experience_years']) ?> years experience</p>
+              <p class="text-gray-500 text-xs"><?= htmlspecialchars($barber['experience_years']) ?> years experience</p>
               <?php endif; ?>
             </div>
             
