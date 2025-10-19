@@ -66,8 +66,8 @@ $title = "TrimBook | Your Barber Appointment System";
       <a href="/trimbook/pages/homepage_loggedin.php" class="text-2xl font-black tracking-tight">TRIMBOOK <span class="text-blue-500 text-sm">CLIENT</span></a>
       <ul class="hidden md:flex space-x-8 font-medium text-sm">
         <li><a href="#home" class="text-gray-300 hover:text-white transition">Home</a></li>
-        <li><a href="#services" class="text-gray-300 hover:text-white transition">Services</a></li>
-        <li><a href="#barbers" class="text-gray-300 hover:text-white transition">Our Barbers</a></li>
+        <li><a href="../pages/loggedin_services.php" class="text-gray-300 hover:text-white transition">Services</a></li>
+        <li><a href="../pages/loggedin_ourbarbers.php" class="text-gray-300 hover:text-white transition">Our Barbers</a></li>
         <li><a href="/trimbook/dashboards/client_dashboard.php" class="text-gray-300 hover:text-white transition">My Dashboard</a></li>
       </ul>
       <div class="flex items-center space-x-4">
