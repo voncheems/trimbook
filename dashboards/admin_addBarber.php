@@ -56,6 +56,14 @@ $initials = strtoupper(substr($admin_name, 0, 2));
     .form-input:focus {
       box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
     }
+
+    .photo-preview {
+      display: none;
+    }
+
+    .photo-preview.show {
+      display: block;
+    }
   </style>
 </head>
 <body class="bg-black text-white antialiased">
@@ -158,12 +166,12 @@ $initials = strtoupper(substr($admin_name, 0, 2));
   <header class="bg-black/80 backdrop-blur-lg border-b border-gray-800">
     <nav class="container mx-auto flex justify-between items-center py-5 px-6">
       <div class="flex items-center space-x-4">
-        <!-- Hamburger Menu Button -->
-        <button onclick="toggleSidebar()" class="text-white hover:text-purple-400 transition">
+        <!-- Back Arrow Button -->
+        <a href="admin_dashboard.php" class="text-white hover:text-purple-400 transition">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
           </svg>
-        </button>
+        </a>
         <a href="admin_dashboard.php" class="text-2xl font-black tracking-tight">TRIMBOOK <span class="text-purple-500 text-sm">ADMIN</span></a>
       </div>
       <div class="flex items-center space-x-6">
@@ -200,10 +208,40 @@ $initials = strtoupper(substr($admin_name, 0, 2));
         </div>
 
         <!-- Form -->
-       <form id="barber-form" action="../auth/process_addnew_barber.php" method="POST" class="p-8 space-y-6">
+       <form id="barber-form" action="../auth/process_addnew_barber.php" method="POST" enctype="multipart/form-data" class="p-8 space-y-6">
           
-          <!-- User Account Information (for users table) -->
+          <!-- Profile Photo Upload -->
           <div>
+            <h3 class="text-xl font-bold mb-4 text-purple-400">Profile Photo</h3>
+            <div class="flex flex-col items-center space-y-4">
+              <!-- Photo Preview -->
+              <div id="photoPreview" class="photo-preview w-32 h-32 rounded-full overflow-hidden border-4 border-purple-500">
+                <img id="previewImage" src="" alt="Preview" class="w-full h-full object-cover">
+              </div>
+              
+              <!-- Upload Button -->
+              <div class="flex flex-col items-center">
+                <label for="profile_photo" class="cursor-pointer bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-xl hover:shadow-purple-500/50 transition transform hover:scale-105 flex items-center space-x-2">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  </svg>
+                  <span>Upload Photo</span>
+                </label>
+                <input 
+                  type="file" 
+                  id="profile_photo" 
+                  name="profile_photo" 
+                  accept="image/jpeg,image/jpg,image/png"
+                  class="hidden"
+                  onchange="previewPhoto(event)"
+                >
+                <p class="text-xs text-gray-400 mt-2">JPG, JPEG or PNG (Max 2MB)</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- User Account Information (for users table) -->
+          <div class="pt-6 border-t border-gray-700">
             <h3 class="text-xl font-bold mb-4 text-purple-400">Account Information</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               
@@ -217,6 +255,9 @@ $initials = strtoupper(substr($admin_name, 0, 2));
                   id="first_name" 
                   name="first_name" 
                   required
+                  maxlength="50"
+                  pattern="[A-Za-z\s]+"
+                  title="Only letters and spaces allowed"
                   class="form-input w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500"
                   placeholder="Enter first name"
                 >
@@ -232,6 +273,9 @@ $initials = strtoupper(substr($admin_name, 0, 2));
                   id="last_name" 
                   name="last_name" 
                   required
+                  maxlength="50"
+                  pattern="[A-Za-z\s]+"
+                  title="Only letters and spaces allowed"
                   class="form-input w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500"
                   placeholder="Enter last name"
                 >
@@ -247,6 +291,7 @@ $initials = strtoupper(substr($admin_name, 0, 2));
                   id="email" 
                   name="email" 
                   required
+                  maxlength="100"
                   class="form-input w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500"
                   placeholder="barber@example.com"
                 >
@@ -262,9 +307,14 @@ $initials = strtoupper(substr($admin_name, 0, 2));
                   id="phone_no" 
                   name="phone_no" 
                   required
+                  pattern="[0-9]{11}"
+                  maxlength="11"
+                  title="Please enter exactly 11 digits"
                   class="form-input w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500"
-                  placeholder="+63 912 345 6789"
+                  placeholder="09123456789"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 11)"
                 >
+                <p class="text-xs text-gray-400 mt-1">11 digits only (e.g., 09123456789)</p>
               </div>
 
               <!-- Username -->
@@ -277,6 +327,9 @@ $initials = strtoupper(substr($admin_name, 0, 2));
                   id="username" 
                   name="username" 
                   required
+                  maxlength="50"
+                  pattern="[A-Za-z0-9_]+"
+                  title="Only letters, numbers and underscores allowed"
                   class="form-input w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500"
                   placeholder="Enter username"
                 >
@@ -293,6 +346,8 @@ $initials = strtoupper(substr($admin_name, 0, 2));
                     id="password" 
                     name="password" 
                     required
+                    minlength="6"
+                    maxlength="255"
                     class="form-input w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500"
                     placeholder="Enter password"
                   >
@@ -307,6 +362,7 @@ $initials = strtoupper(substr($admin_name, 0, 2));
                     </svg>
                   </button>
                 </div>
+                <p class="text-xs text-gray-400 mt-1">Minimum 6 characters</p>
               </div>
 
             </div>
@@ -325,7 +381,8 @@ $initials = strtoupper(substr($admin_name, 0, 2));
                 <input 
                   type="text" 
                   id="specialization" 
-                  name="specialization" 
+                  name="specialization"
+                  maxlength="100"
                   class="form-input w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500"
                   placeholder="e.g., Haircut, Beard Styling"
                 >
@@ -491,21 +548,59 @@ $initials = strtoupper(substr($admin_name, 0, 2));
       }
     }
 
-// Form validation before submit
-document.getElementById('barber-form').addEventListenerQA('submit', function(e) {
-  const workingDays = document.querySelectorAll('input[name="working_days[]"]:checked');
-  
-  if (workingDays.length === 0) {
-    e.preventDefault();
-    alert('Please select at least one working day.');
-    return false;
-  }
-  
-  // If validation passes, the form submits normally
-  // The PHP file will handle the redirect
-});
+    // Photo preview function
+    function previewPhoto(event) {
+      const file = event.target.files[0];
+      const preview = document.getElementById('photoPreview');
+      const previewImage = document.getElementById('previewImage');
+      
+      if (file) {
+        // Validate file type
+        const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+        if (!validTypes.includes(file.type)) {
+          alert('Please select a valid image file (JPG, JPEG, or PNG)');
+          event.target.value = '';
+          return;
+        }
+        
+        // Validate file size (2MB max)
+        if (file.size > 2 * 1024 * 1024) {
+          alert('File size must be less than 2MB');
+          event.target.value = '';
+          return;
+        }
+        
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          previewImage.src = e.target.result;
+          preview.classList.add('show');
+        };
+        reader.readAsDataURL(file);
+      }
+    }
 
+    // Form validation before submit
+    document.getElementById('barber-form').addEventListener('submit', function(e) {
+      const workingDays = document.querySelectorAll('input[name="working_days[]"]:checked');
+      
+      if (workingDays.length === 0) {
+        e.preventDefault();
+        alert('Please select at least one working day.');
+        return false;
+      }
+      
+      // Validate phone number
+      const phoneInput = document.getElementById('phone_no');
+      if (phoneInput.value.length !== 11) {
+        e.preventDefault();
+        alert('Phone number must be exactly 11 digits.');
+        return false;
+      }
+      
+      // If validation passes, the form submits normally
+    });
   </script>
 
 </body>
-</html>
+</html
