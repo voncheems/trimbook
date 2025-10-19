@@ -18,20 +18,27 @@ $first_name = $_SESSION['first_name'] ?? 'Guest';
 $last_name = $_SESSION['last_name'] ?? '';
 $username = $_SESSION['username'] ?? 'guest';
 $full_name = trim($first_name . ' ' . $last_name);
-$initials = strtoupper(substr($first_name, 0, 1) . substr($last_name, 0, 1));
 
 require_once('../includes/dbconfig.php');
 
-// Get services from database
-$services = [];
-$services_result = $conn->query("SELECT * FROM services");
-if ($services_result) {
-    while ($row = $services_result->fetch_assoc()) {
-        $services[] = $row;
-    }
-}
+// Fetch all barbers from database with profile photos
+$query = "
+SELECT 
+  b.barber_id,
+  u.user_id,
+  CONCAT(u.first_name, ' ', u.last_name) AS full_name,
+  b.specialization,
+  b.experience_years,
+  u.profile_photo
+FROM barbers b
+JOIN users u ON b.user_id = u.user_id
+WHERE u.user_type = 'barber'
+ORDER BY b.barber_id ASC
+";
 
-$title = "Services | TrimBook";
+$result = mysqli_query($conn, $query);
+
+$title = "Our Barbers | TrimBook";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -47,26 +54,6 @@ $title = "Services | TrimBook";
       font-family: 'Inter', sans-serif;
     }
 
-    .sidebar {
-      transform: translateX(-100%);
-      transition: transform 0.3s ease-in-out;
-    }
-
-    .sidebar.open {
-      transform: translateX(0);
-    }
-
-    .overlay {
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease-in-out;
-    }
-
-    .overlay.show {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
     .card-hover {
       transition: all 0.3s ease;
     }
@@ -76,18 +63,25 @@ $title = "Services | TrimBook";
       box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
     }
 
-    .service-image {
-      transition: all 0.3s ease;
+    /* Define gradient backgrounds as CSS classes */
+    .gradient-blue-purple {
+      background: linear-gradient(to bottom right, rgb(37, 99, 235), rgb(147, 51, 234));
     }
-
-    .card-hover:hover .service-image {
-      transform: scale(1.05);
+    
+    .gradient-purple-pink {
+      background: linear-gradient(to bottom right, rgb(147, 51, 234), rgb(219, 39, 119));
+    }
+    
+    .gradient-pink-orange {
+      background: linear-gradient(to bottom right, rgb(219, 39, 119), rgb(234, 88, 12));
+    }
+    
+    .gradient-orange-red {
+      background: linear-gradient(to bottom right, rgb(234, 88, 12), rgb(220, 38, 38));
     }
   </style>
 </head>
 <body class="bg-black text-white antialiased">
-
-
 
   <!-- Header -->
   <header class="fixed w-full top-0 left-0 z-40 bg-black/80 backdrop-blur-lg border-b border-gray-800">
@@ -95,8 +89,8 @@ $title = "Services | TrimBook";
       <a href="/trimbook/pages/homepage_loggedin.php" class="text-2xl font-black tracking-tight">TRIMBOOK <span class="text-blue-500 text-sm">CLIENT</span></a>
       <ul class="hidden md:flex space-x-8 font-medium text-sm">
         <li><a href="/trimbook/pages/homepage_loggedin.php" class="text-gray-300 hover:text-white transition">Home</a></li>
-        <li><a href="/trimbook/pages/services.php" class="text-white transition font-semibold">Services</a></li>
-        <li><a href="/trimbook/pages/ourBarbers_page.php" class="text-gray-300 hover:text-white transition">Our Barbers</a></li>
+        <li><a href="/trimbook/pages/loggedin_services.php" class="text-gray-300 hover:text-white transition">Services</a></li>
+        <li><a href="/trimbook/pages/loggedin_ourbarbers.php" class="text-white transition font-semibold">Our Barbers</a></li>
         <li><a href="/trimbook/dashboards/client_dashboard.php" class="text-gray-300 hover:text-white transition">My Dashboard</a></li>
       </ul>
       <div class="flex items-center space-x-4">
@@ -108,80 +102,134 @@ $title = "Services | TrimBook";
     </nav>
   </header>
 
+  <!-- Hero Section -->
+  <section class="min-h-[40vh] bg-gradient-to-b from-zinc-950 to-black flex items-center justify-center px-6 pt-32 pb-16">
+    <div class="container mx-auto text-center max-w-4xl">
+      <div class="inline-flex items-center space-x-2 bg-blue-600/20 border border-blue-500/30 rounded-full px-6 py-2 mb-6">
+        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+        <span class="text-sm font-medium text-blue-300">All Available for Booking</span>
+      </div>
+      
+      <h1 class="text-4xl md:text-6xl font-black leading-tight mb-4 tracking-tight">
+        MEET OUR <span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">EXPERT BARBERS</span>
+      </h1>
+      
+      <p class="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
+        Skilled professionals dedicated to your style. Choose the barber that fits you best.
+      </p>
+    </div>
+  </section>
+
   <!-- Main Content -->
-  <main class="min-h-screen bg-gradient-to-b from-zinc-950 to-black py-12 px-6 pt-32">
+  <main class="min-h-screen bg-gradient-to-b from-black to-zinc-950 py-24 px-6">
     <div class="container mx-auto max-w-7xl">
       
-      <!-- Page Header -->
-      <div class="mb-10">
-        <h1 class="text-4xl md:text-5xl font-black mb-2">Our Services</h1>
-        <p class="text-gray-400 text-lg">Premium grooming services tailored for you</p>
-      </div>
-
-      <!-- Services Grid -->
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-        
-        <?php if (!empty($services)): ?>
-          <?php foreach ($services as $service): ?>
-            <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
-              <div class="relative h-48 overflow-hidden">
-                <div class="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-purple-600/20"></div>
-                <?php if (!empty($service['image_path'])): ?>
-                  <img src="<?= htmlspecialchars($service['image_path']) ?>" alt="<?= htmlspecialchars($service['service_name']) ?>" class="service-image w-full h-full object-cover">
+      <?php if (mysqli_num_rows($result) > 0): ?>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          
+          <?php 
+          $colors = [
+            ['gradient' => 'gradient-blue-purple', 'badge_bg' => 'bg-blue-600/20', 'badge_text' => 'text-blue-300', 'badge_border' => 'border-blue-500/30', 'button' => 'gradient-blue-purple', 'shadow' => 'hover:shadow-purple-500/50'],
+            ['gradient' => 'gradient-purple-pink', 'badge_bg' => 'bg-purple-600/20', 'badge_text' => 'text-purple-300', 'badge_border' => 'border-purple-500/30', 'button' => 'gradient-purple-pink', 'shadow' => 'hover:shadow-pink-500/50'],
+            ['gradient' => 'gradient-pink-orange', 'badge_bg' => 'bg-pink-600/20', 'badge_text' => 'text-pink-300', 'badge_border' => 'border-pink-500/30', 'button' => 'gradient-pink-orange', 'shadow' => 'hover:shadow-orange-500/50'],
+            ['gradient' => 'gradient-orange-red', 'badge_bg' => 'bg-orange-600/20', 'badge_text' => 'text-orange-300', 'badge_border' => 'border-orange-500/30', 'button' => 'gradient-orange-red', 'shadow' => 'hover:shadow-red-500/50']
+          ];
+          $colorIndex = 0;
+          
+          while($barber = mysqli_fetch_assoc($result)): 
+            $color = $colors[$colorIndex % 4];
+            $colorIndex++;
+          ?>
+          
+          <!-- Barber Card -->
+          <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl p-8 text-center">
+            <div class="relative mb-6">
+              <div class="absolute inset-0 <?= $color['gradient'] ?> rounded-2xl blur-xl opacity-50"></div>
+              <div class="relative w-40 h-40 bg-gray-700 rounded-2xl mx-auto border-4 border-gray-700 overflow-hidden">
+                <?php 
+                if (!empty($barber['profile_photo'])): 
+                  $photoPath = '/trimbook/' . htmlspecialchars($barber['profile_photo']);
+                ?>
+                  <img src="<?= $photoPath ?>" 
+                       alt="<?= htmlspecialchars($barber['full_name']) ?>" 
+                       class="w-full h-full object-cover"
+                       style="object-position: center 20%;"
+                       onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                  <div style="display: none;" class="w-full h-full flex items-center justify-center bg-gray-700">
+                    <svg class="w-20 h-20 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                    </svg>
+                  </div>
                 <?php else: ?>
-                  <div class="service-image w-full h-full bg-gradient-to-br from-blue-600/30 to-purple-600/30 flex items-center justify-center">
-                    <svg class="w-16 h-16 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0l9.172 9.172M4 16l4.586-4.586a2 2 0 012.828 0l9.172 9.172m0 0L21 21m-4.586-4.586l4.586 4.586"></path>
+                  <div class="w-full h-full flex items-center justify-center bg-gray-700">
+                    <svg class="w-20 h-20 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
                     </svg>
                   </div>
                 <?php endif; ?>
               </div>
-              <div class="p-8">
-                <div class="flex items-center justify-between mb-3">
-                  <h3 class="text-2xl font-bold"><?= htmlspecialchars($service['service_name']) ?></h3>
-                  <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                  </div>
-                </div>
-                <p class="text-gray-400 leading-relaxed mb-4"><?= htmlspecialchars($service['description'] ?? 'Premium grooming service') ?></p>
-                <div class="flex items-center text-sm text-gray-400 mb-4">
-                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                  </svg>
-                  <?= htmlspecialchars($service['duration'] ?? '30-40 minutes') ?>
-                </div>
-                <div class="flex items-center justify-between">
-                  <p class="text-3xl font-bold gradient-text">₱<?= htmlspecialchars(number_format($service['price'], 2)) ?></p>
-                  <a href="/trimbook/dashboards/client_selectBarber.php" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
-                    Book
-                  </a>
-                </div>
-              </div>
             </div>
-          <?php endforeach; ?>
-        <?php else: ?>
-          <div class="col-span-full p-12 text-center">
-            <svg class="w-16 h-16 mx-auto text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-            </svg>
-            <p class="text-gray-400 text-lg">No services available at the moment</p>
+            
+            <?php if ($barber['specialization']): ?>
+            <div class="mb-3">
+              <span class="inline-block <?= $color['badge_bg'] ?> <?= $color['badge_text'] ?> text-xs font-semibold px-3 py-1 rounded-full border <?= $color['badge_border'] ?>">
+                <?= htmlspecialchars($barber['specialization']) ?>
+              </span>
+            </div>
+            <?php endif; ?>
+            
+            <h3 class="text-2xl font-bold mb-2"><?= htmlspecialchars($barber['full_name']) ?></h3>
+            
+            <?php if ($barber['experience_years']): ?>
+            <p class="text-gray-400 text-sm mb-4">
+              <?= htmlspecialchars($barber['experience_years']) ?> year<?= $barber['experience_years'] > 1 ? 's' : '' ?> of experience
+            </p>
+            <?php else: ?>
+            <p class="text-gray-400 text-sm mb-4">Professional barber</p>
+            <?php endif; ?>
+            
+            <div class="flex justify-center items-center space-x-1 mb-6">
+              <svg class="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+              </svg>
+              <span class="text-lg font-bold text-white">5.0</span>
+              <span class="text-sm text-gray-400">(New)</span>
+            </div>
+            
+            <a href="/trimbook/dashboards/client_selectBarber.php?barber_id=<?= $barber['barber_id'] ?>" class="block w-full <?= $color['button'] ?> text-white py-3 rounded-xl font-semibold hover:shadow-lg <?= $color['shadow'] ?> transition">
+              Book Now
+            </a>
           </div>
-        <?php endif; ?>
-      </div>
-
-      <!-- CTA Section -->
-      <div class="mt-20 bg-gradient-to-r from-blue-600/10 to-purple-600/10 border border-blue-500/20 rounded-3xl p-12 text-center">
-        <h2 class="text-3xl md:text-4xl font-black mb-4">Ready to Book?</h2>
-        <p class="text-gray-400 text-lg max-w-2xl mx-auto mb-8">Choose your preferred barber and time slot to get started</p>
-        <a href="/trimbook/dashboards/client_selectBarber.php" class="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-10 py-4 rounded-full font-bold hover:shadow-xl hover:shadow-purple-500/50 transition transform hover:scale-105">
-          Book Your Appointment
-        </a>
-      </div>
-
+          
+          <?php endwhile; ?>
+          
+        </div>
+      <?php else: ?>
+        <!-- No Barbers Found -->
+        <div class="text-center py-20">
+          <svg class="w-24 h-24 text-gray-600 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+          </svg>
+          <h3 class="text-2xl font-bold mb-2">No Barbers Available</h3>
+          <p class="text-gray-400">Check back soon! Our team is growing.</p>
+        </div>
+      <?php endif; ?>
+      
     </div>
   </main>
+
+  <!-- CTA Section -->
+  <section class="py-20 bg-gradient-to-b from-black to-zinc-950">
+    <div class="container mx-auto px-6 text-center">
+      <h2 class="text-3xl md:text-4xl font-black mb-4">Ready to Get Started?</h2>
+      <p class="text-lg text-gray-400 max-w-xl mx-auto mb-8">
+        Book your appointment now and experience premium barbering services.
+      </p>
+      <a href="/trimbook/dashboards/client_selectBarber.php" class="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full text-base font-bold hover:shadow-lg hover:shadow-purple-500/50 transition">
+        Book Appointment
+      </a>
+    </div>
+  </section>
 
   <!-- Footer -->
   <footer class="bg-zinc-950 border-t border-gray-800 py-12">
@@ -194,8 +242,8 @@ $title = "Services | TrimBook";
         <div>
           <h4 class="font-bold mb-4">Quick Links</h4>
           <ul class="space-y-2 text-sm">
-            <li><a href="/trimbook/pages/homepage_loggedin.php" class="text-gray-400 hover:text-white transition">Home</a></li>
-            <li><a href="/trimbook/pages/services.php" class="text-gray-400 hover:text-white transition">Services</a></li>
+            <li><a href="/trimbook/pages/loggedin_services.php" class="text-gray-400 hover:text-white transition">Services</a></li>
+            <li><a href="/trimbook/pages/loggedin_ourbarbers.php" class="text-gray-400 hover:text-white transition">Our Barbers</a></li>
             <li><a href="/trimbook/dashboards/client_selectBarber.php" class="text-gray-400 hover:text-white transition">Book Appointment</a></li>
           </ul>
         </div>
@@ -213,14 +261,6 @@ $title = "Services | TrimBook";
       </div>
     </div>
   </footer>
-
-  <script>
-    document.addEventListener('keydown', function(event) {
-      if (event.key === 'Escape') {
-        // No sidebar to close anymore
-      }
-    });
-  </script>
 
 </body>
 </html>
