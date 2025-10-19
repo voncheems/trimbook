@@ -1,5 +1,5 @@
 -- HOMEPAGE -- (October 19, 2025)
-1. Homepage Linking - Fix
+1. Homepage Design - Choose whether hardcoded or dynamic
 2. Our Barbers Page - Picture not being seen yet
 
 -- CLIENT DASHBOARD --
