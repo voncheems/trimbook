@@ -1,14 +1,9 @@
--- HOMEPAGE -- (October 19, 2025)
+-- HOMEPAGE -- (October 20, 2025)
 1. Homepage Design - Choose whether hardcoded or dynamic
 2. Our Barbers Page - Picture not being seen yet
 
 -- CLIENT DASHBOARD --
-1. My Appointments Page --ex. Not Completed Appointments-- (Client) - Make One
-2. Profile Page (Client) - Make One
-3. Booking History Page --ex. All Appointments Made-- (Client) - Make One / need filtering / completed appointments have a choice to leave a feedback
-4. Logout Confirmation - Make One
-5. Need Feature (Can Remove Completed Appointments / On the container only not the database) - Make One
-
+1. Logout Confirmation - Make One
 
 -- BARBER DASHBOARD --
 1. Linking - Fix
@@ -16,10 +11,9 @@
 3. My Profile Page - Make One 
 4. Schedule Page - Make One (Should be changeable)
 
-
 -- ADMIN DASHBOARD --
 1. Recent Activities - Not yet Dynamic, Should be accurate atleast rather than real-time
-2. Customer Feedback Page - Not done
+2. Phone number should be editable - manage barbers page
 
 -- LOGIN & SIGNUP -- 
 1. Error Messages - Should Make some
