@@ -1,6 +1,5 @@
 -- HOMEPAGE -- (October 20, 2025)
 1. Homepage Design - Choose whether hardcoded or dynamic
-2. Our Barbers Page - Picture not being seen yet
 
 -- CLIENT DASHBOARD --
 1. Logout Confirmation - Make One
