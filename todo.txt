@@ -5,9 +5,10 @@
 -- CLIENT DASHBOARD --
 1. My Appointments Page --ex. Not Completed Appointments-- (Client) - Make One
 2. Profile Page (Client) - Make One
-3. Booking History Page --ex. All Appointments Made-- (Client) - Make One
+3. Booking History Page --ex. All Appointments Made-- (Client) - Make One / need filtering / completed appointments have a choice to leave a feedback
 4. Logout Confirmation - Make One
 5. Need Feature (Can Remove Completed Appointments / On the container only not the database) - Make One
+
 
 -- BARBER DASHBOARD --
 1. Linking - Fix
@@ -18,6 +19,7 @@
 
 -- ADMIN DASHBOARD --
 1. Recent Activities - Not yet Dynamic, Should be accurate atleast rather than real-time
+2. Customer Feedback Page - Not done
 
 -- LOGIN & SIGNUP -- 
 1. Error Messages - Should Make some
