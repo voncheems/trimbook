@@ -40,8 +40,9 @@ if (empty(trim($initials))) {
     $initials = strtoupper(substr($username, 0, 2));
 }
 
-// Fetch barber's appointments from database
+// Fetch barber's appointments and profile photo from database
 $appointments = [];
+$profile_photo = null;
 $db_error = null;
 
 try {
@@ -56,7 +57,28 @@ try {
     
     error_log("Database connected successfully");
     
-    // Get barber_id from user_id
+    // Get profile_photo from users table
+    error_log("Getting profile_photo for user_id: " . $barber_user_id);
+    $user_query = "SELECT profile_photo FROM users WHERE user_id = ?";
+    $stmt = $conn->prepare($user_query);
+    
+    if (!$stmt) {
+        error_log("Prepare failed: " . $conn->error);
+        throw new Exception("Prepare failed: " . $conn->error);
+    }
+    
+    $stmt->bind_param("i", $barber_user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows > 0) {
+        $user_row = $result->fetch_assoc();
+        $profile_photo = $user_row['profile_photo'];
+        error_log("Profile photo: " . ($profile_photo ? $profile_photo : "NULL"));
+    }
+    $stmt->close();
+    
+    // Get barber_id from barbers table
     error_log("Getting barber_id for user_id: " . $barber_user_id);
     $barber_query = "SELECT barber_id FROM barbers WHERE user_id = ?";
     $stmt = $conn->prepare($barber_query);
@@ -213,8 +235,12 @@ function formatDateTime($date, $time) {
       <!-- Profile Section -->
       <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-6 mb-6">
         <div class="flex items-center space-x-4">
-          <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center text-2xl font-bold">
-            <?= htmlspecialchars($initials) ?>
+          <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center text-2xl font-bold overflow-hidden">
+            <?php if (!empty($profile_photo)): ?>
+              <img src="../<?= htmlspecialchars($profile_photo) ?>" alt="Profile" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentElement.innerHTML='<?= htmlspecialchars($initials) ?>';">
+            <?php else: ?>
+              <?= htmlspecialchars($initials) ?>
+            <?php endif; ?>
           </div>
           <div>
             <h3 class="font-bold text-lg"><?= htmlspecialchars($full_name) ?></h3>
