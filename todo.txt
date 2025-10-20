@@ -8,11 +8,9 @@
 1. Linking - Fix
 2. My Appointments Page - Make One
 3. My Profile Page - Make One 
-4. Schedule Page - Make One (Should be changeable)
 
 -- ADMIN DASHBOARD --
 1. Recent Activities - Not yet Dynamic, Should be accurate atleast rather than real-time
-2. Phone number should be editable - manage barbers page
 
 -- LOGIN & SIGNUP -- 
 1. Error Messages - Should Make some
