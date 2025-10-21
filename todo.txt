@@ -2,7 +2,7 @@
 1. Homepage Design - Choose whether hardcoded or dynamic
 
 -- CLIENT DASHBOARD --
-1. Logout Confirmation - Make One
+1. Barbers who are off schedule, should not appear at select barbers page - need feature
 
 -- BARBER DASHBOARD --
 1. Linking - Fix
