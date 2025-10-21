@@ -6,12 +6,11 @@
 1. Barbers who are off schedule, should not appear at select barbers page - need feature
 
 -- BARBER DASHBOARD --
-1. Linking - Fix
-2. My Appointments Page - Make One
-
+1. Front page appointments should be limited to 3 or 5 similar to client dashboard.
 
 -- ADMIN DASHBOARD --
 1. Recent Activities - Not yet Dynamic, Should be accurate atleast rather than real-time
+2. Manage Reports - Time is not accurate 
 
 -- LOGIN & SIGNUP -- 
 1. Error Messages - Should Make some
