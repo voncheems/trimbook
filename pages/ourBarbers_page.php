@@ -2,13 +2,14 @@
 // Database connection
 require_once '../includes/dbconfig.php'; // Adjust path as needed
 
-// Fetch all barbers from database
+// Fetch all barbers from database with profile photos
 $query = "
 SELECT 
   b.barber_id,
   CONCAT(u.first_name, ' ', u.last_name) AS full_name,
   b.specialization,
-  b.experience_years
+  b.experience_years,
+  u.profile_photo
 FROM barbers b
 JOIN users u ON b.user_id = u.user_id
 WHERE u.user_type = 'barber'
@@ -63,7 +64,7 @@ $result = mysqli_query($conn, $query);
       <li><a href="/trimbook/index.php#about" class="text-gray-300 hover:text-white transition">About</a></li>
       <li><a href="/trimbook/pages/services.php" class="text-gray-300 hover:text-white transition">Services</a></li>
       <li><a href="/trimbook/pages/ourBarbers_page.php" class="text-white font-semibold">Our Barbers</a></li>
-      <li><a href="/trimbook/index.php#contact" class="text-gray-300 hover:text-white transition">Contact</a></li>
+      <li><a href="/trimbook/pages/contact_page.php" class="text-gray-300 hover:text-white transition">Contact</a></li>
     </ul>
     <div class="flex items-center space-x-4">
       <a href="/trimbook/pages/login_page.php" class="text-sm font-medium text-gray-300 hover:text-white transition">Login</a>
@@ -117,10 +118,22 @@ $result = mysqli_query($conn, $query);
           <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl p-8 text-center">
             <div class="relative mb-6">
               <div class="absolute inset-0 bg-gradient-to-br from-<?= $color['from'] ?> to-<?= $color['to'] ?> rounded-2xl blur-xl opacity-50"></div>
-              <div class="relative w-40 h-40 bg-gray-700 rounded-2xl mx-auto border-4 border-gray-700 flex items-center justify-center">
-                <svg class="w-20 h-20 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-                </svg>
+              <div class="relative w-40 h-40 bg-gray-700 rounded-2xl mx-auto border-4 border-gray-700 flex items-center justify-center overflow-hidden">
+                <?php if (!empty($barber['profile_photo'])): ?>
+                  <img 
+                    src="../<?= htmlspecialchars($barber['profile_photo']) ?>" 
+                    alt="<?= htmlspecialchars($barber['full_name']) ?>" 
+                    class="w-full h-full object-cover"
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                  >
+                  <svg class="w-20 h-20 text-gray-500" style="display:none;" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                  </svg>
+                <?php else: ?>
+                  <svg class="w-20 h-20 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                  </svg>
+                <?php endif; ?>
               </div>
             </div>
             
