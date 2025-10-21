@@ -1,5 +1,6 @@
 -- HOMEPAGE -- (October 20, 2025)
 1. Homepage Design - Choose whether hardcoded or dynamic
+2. About page - not done yet
 
 -- CLIENT DASHBOARD --
 1. Barbers who are off schedule, should not appear at select barbers page - need feature
