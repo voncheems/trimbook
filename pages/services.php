@@ -300,8 +300,8 @@
         <div>
           <h4 class="font-bold mb-4">Quick Links</h4>
           <ul class="space-y-2 text-sm">
-            <li><a href="./pages/services.php" class="text-gray-400 hover:text-white transition">Services</a></li>
-            <li><a href="./pages/ourBarbers_page.php" class="text-gray-400 hover:text-white transition">Our Barbers</a></li>
+            <li><a href="../pages/services.php" class="text-gray-400 hover:text-white transition">Services</a></li>
+            <li><a href="../pages/ourBarbers_page.php" class="text-gray-400 hover:text-white transition">Our Barbers</a></li>
             <li><a href="../dashboards/client_selectBarber.php" class="text-gray-400 hover:text-white transition">Book Appointment</a></li>
           </ul>
         </div>
