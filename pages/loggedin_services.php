@@ -195,7 +195,7 @@ $title = "Services | TrimBook";
           <h4 class="font-bold mb-4">Quick Links</h4>
           <ul class="space-y-2 text-sm">
             <li><a href="/trimbook/pages/homepage_loggedin.php" class="text-gray-400 hover:text-white transition">Home</a></li>
-            <li><a href="/trimbook/pages/services.php" class="text-gray-400 hover:text-white transition">Services</a></li>
+            <li><a href="/trimbook/pages/loggedin_services.php" class="text-gray-400 hover:text-white transition">Services</a></li>
             <li><a href="/trimbook/dashboards/client_selectBarber.php" class="text-gray-400 hover:text-white transition">Book Appointment</a></li>
           </ul>
         </div>
