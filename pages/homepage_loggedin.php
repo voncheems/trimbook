@@ -225,7 +225,7 @@ $title = "TrimBook | Your Barber Appointment System";
       <p class="text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
         Book your appointment now and experience professional grooming at its finest.
       </p>
-      <a href="./pages/Bookapp.php" class="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-10 py-5 rounded-full text-lg font-bold hover:shadow-xl hover:shadow-purple-500/50 transition transform hover:scale-105">
+      <a href="../dashboards/client_selectBarber.php" class="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-10 py-5 rounded-full text-lg font-bold hover:shadow-xl hover:shadow-purple-500/50 transition transform hover:scale-105">
         Schedule Your Appointment
       </a>
     </div>
@@ -242,9 +242,9 @@ $title = "TrimBook | Your Barber Appointment System";
         <div>
           <h4 class="font-bold mb-4">Quick Links</h4>
           <ul class="space-y-2 text-sm">
-            <li><a href="./pages/client_dashboard.php" class="text-gray-400 hover:text-white transition">My Dashboard</a></li>
-            <li><a href="./pages/Bookapp.php" class="text-gray-400 hover:text-white transition">Book Appointment</a></li>
-            <li><a href="#services" class="text-gray-400 hover:text-white transition">Services</a></li>
+            <li><a href="../dashboards/client_dashboard.php" class="text-gray-400 hover:text-white transition">My Dashboard</a></li>
+            <li><a href="../dashboards/client_selectBarber.php" class="text-gray-400 hover:text-white transition">Book Appointment</a></li>
+            <li><a href="../pages/loggedin_services.php" class="text-gray-400 hover:text-white transition">Services</a></li>
           </ul>
         </div>
         <div>
