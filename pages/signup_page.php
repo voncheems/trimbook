@@ -93,8 +93,9 @@ $title = "Sign Up | TrimBook";
               maxlength="11"
               name="phone_no" 
               class="w-full px-4 py-3 bg-zinc-800 text-white rounded-lg border border-zinc-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition placeholder-gray-500"
-              placeholder="Phone Number"
+              placeholder="Phone Number (11 digits)"
             >
+            <p id="phoneError" class="text-red-500 text-sm mt-2 hidden">Phone number must be exactly 11 digits</p>
           </div>
 
           <!-- Username -->
@@ -174,8 +175,38 @@ $title = "Sign Up | TrimBook";
   </div>
 
   <script>
-    // Handle form submission and redirect to client dashboard
-    document.getElementById('registerForm').addEventListener('submit', function(e) {
+    const phoneInput = document.getElementById('phone');
+    const phoneError = document.getElementById('phoneError');
+    const registerForm = document.getElementById('registerForm');
+
+    // Handle phone input
+    phoneInput.addEventListener('input', function () {
+      // Remove any non-digit character as the user types or pastes
+      this.value = this.value.replace(/\D/g, '');
+      validatePhone();
+    });
+
+    phoneInput.addEventListener('blur', function () {
+      validatePhone();
+    });
+
+    function validatePhone() {
+      const phoneValue = phoneInput.value;
+      
+      // If phone is provided but not 11 digits, show error
+      if (phoneValue.length > 0 && phoneValue.length !== 11) {
+        phoneError.classList.remove('hidden');
+        phoneInput.classList.add('border-red-500');
+        return false;
+      } else {
+        phoneError.classList.add('hidden');
+        phoneInput.classList.remove('border-red-500');
+        return true;
+      }
+    }
+
+    // Handle form submission
+    registerForm.addEventListener('submit', function(e) {
       // Validate passwords match
       const password = document.getElementById('password').value;
       const confirmPassword = document.getElementById('confirm_password').value;
@@ -186,25 +217,23 @@ $title = "Sign Up | TrimBook";
         return false;
       }
 
+      // Validate phone if provided
+      if (!validatePhone()) {
+        e.preventDefault();
+        alert('Please enter a valid 11-digit phone number or leave it empty');
+        return false;
+      }
     });
 
-      function blockNumbersOnly(input) {
-    input.addEventListener('input', function () {
-      // Remove digits from input in real-time
-      this.value = this.value.replace(/[0-9]/g, '');
-    });
-  }
+    // Block numbers from first and last name
+    function blockNumbersOnly(input) {
+      input.addEventListener('input', function () {
+        this.value = this.value.replace(/[0-9]/g, '');
+      });
+    }
 
     blockNumbersOnly(document.getElementById('first_name'));
     blockNumbersOnly(document.getElementById('last_name'));
-    
-    const phoneInput = document.getElementById('phone');
-
-  phoneInput.addEventListener('input', function () {
-    // Remove any non-digit character as the user types or pastes
-    this.value = this.value.replace(/\D/g, '');
-  });
-
   </script>
 
 </body>
