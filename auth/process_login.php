@@ -40,6 +40,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['email'] = $user['email'];
                     $_SESSION['user_type'] = $user['user_type'];
                     
+                    // If barber, fetch and set barber_id
+                    if ($user['user_type'] === 'barber') {
+                        $barber_sql = "SELECT barber_id FROM barbers WHERE user_id = ?";
+                        $barber_stmt = $conn->prepare($barber_sql);
+                        $barber_stmt->bind_param("i", $user['user_id']);
+                        $barber_stmt->execute();
+                        $barber_result = $barber_stmt->get_result();
+                        
+                        if ($barber_result->num_rows == 1) {
+                            $barber = $barber_result->fetch_assoc();
+                            $_SESSION['barber_id'] = $barber['barber_id'];
+                        }
+                        $barber_stmt->close();
+                    }
+                    
                     // If admin, set admin session vars
                     if ($user['user_type'] === 'admin') {
                         $_SESSION['admin_name'] = $user['first_name'] . ' ' . $user['last_name'];
