@@ -7,7 +7,7 @@
 -- BARBER DASHBOARD --
 1. Linking - Fix
 2. My Appointments Page - Make One
-3. My Profile Page - Make One 
+
 
 -- ADMIN DASHBOARD --
 1. Recent Activities - Not yet Dynamic, Should be accurate atleast rather than real-time
