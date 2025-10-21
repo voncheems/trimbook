@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 19, 2025 at 11:26 AM
+-- Generation Time: Oct 21, 2025 at 02:05 PM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -32,7 +32,6 @@ CREATE TABLE `appointments` (
   `customer_user_id` int(11) NOT NULL,
   `barber_id` int(11) NOT NULL,
   `service_id` int(11) NOT NULL,
-  `schedule_id` int(11) DEFAULT NULL,
   `appointment_date` date NOT NULL,
   `appointment_time` time NOT NULL,
   `status` enum('pending','confirmed','completed','cancelled') DEFAULT 'pending',
@@ -43,14 +42,17 @@ CREATE TABLE `appointments` (
 -- Dumping data for table `appointments`
 --
 
-INSERT INTO `appointments` (`appointment_id`, `customer_user_id`, `barber_id`, `service_id`, `schedule_id`, `appointment_date`, `appointment_time`, `status`, `created_at`) VALUES
-(1, 1, 1, 2, NULL, '2025-10-18', '10:00:00', 'completed', '2025-10-18 11:05:50'),
-(2, 1, 1, 2, NULL, '2025-10-18', '09:30:00', 'completed', '2025-10-18 11:16:48'),
-(3, 1, 1, 2, NULL, '2025-10-18', '09:30:00', 'confirmed', '2025-10-18 13:02:08'),
-(4, 1, 1, 1, NULL, '2025-10-18', '09:00:00', 'confirmed', '2025-10-18 13:39:08'),
-(5, 1, 3, 1, NULL, '2025-10-25', '09:30:00', 'confirmed', '2025-10-18 14:50:56'),
-(6, 1, 2, 2, NULL, '2025-10-18', '09:30:00', 'confirmed', '2025-10-18 15:26:49'),
-(7, 1, 2, 2, NULL, '2025-10-19', '18:00:00', 'confirmed', '2025-10-19 08:08:26');
+INSERT INTO `appointments` (`appointment_id`, `customer_user_id`, `barber_id`, `service_id`, `appointment_date`, `appointment_time`, `status`, `created_at`) VALUES
+(1, 1, 1, 2, '2025-10-18', '10:00:00', 'completed', '2025-10-18 11:05:50'),
+(2, 1, 1, 2, '2025-10-18', '09:30:00', 'completed', '2025-10-18 11:16:48'),
+(3, 1, 1, 2, '2025-10-18', '09:30:00', 'completed', '2025-10-18 13:02:08'),
+(4, 1, 1, 1, '2025-10-18', '09:00:00', 'cancelled', '2025-10-18 13:39:08'),
+(5, 1, 3, 1, '2025-10-25', '09:30:00', 'cancelled', '2025-10-18 14:50:56'),
+(6, 1, 2, 2, '2025-10-18', '09:30:00', 'confirmed', '2025-10-18 15:26:49'),
+(7, 1, 2, 2, '2025-10-19', '18:00:00', 'cancelled', '2025-10-19 08:08:26'),
+(8, 1, 2, 1, '2025-10-20', '18:00:00', 'cancelled', '2025-10-20 05:41:17'),
+(9, 1, 1, 3, '2025-10-20', '09:00:00', 'cancelled', '2025-10-20 10:29:45'),
+(10, 1, 1, 3, '2025-10-21', '09:30:00', 'completed', '2025-10-21 11:15:01');
 
 -- --------------------------------------------------------
 
@@ -90,6 +92,29 @@ CREATE TABLE `barber_details` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `feedback`
+--
+
+CREATE TABLE `feedback` (
+  `feedback_id` int(11) NOT NULL,
+  `appointment_id` int(11) NOT NULL,
+  `customer_user_id` int(11) NOT NULL,
+  `barber_id` int(11) NOT NULL,
+  `rating` int(11) NOT NULL CHECK (`rating` >= 1 and `rating` <= 5),
+  `comment` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `feedback`
+--
+
+INSERT INTO `feedback` (`feedback_id`, `appointment_id`, `customer_user_id`, `barber_id`, `rating`, `comment`, `created_at`) VALUES
+(1, 1, 1, 1, 4, 'Good service!\n', '2025-10-20 06:06:49');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `schedules`
 --
 
@@ -106,21 +131,18 @@ CREATE TABLE `schedules` (
 --
 
 INSERT INTO `schedules` (`schedule_id`, `barber_id`, `day_of_week`, `start_time`, `end_time`) VALUES
-(1, 1, 'Monday', '09:00:00', '18:00:00'),
-(2, 1, 'Tuesday', '09:00:00', '18:00:00'),
-(3, 1, 'Wednesday', '09:00:00', '18:00:00'),
-(4, 1, 'Friday', '09:00:00', '18:00:00'),
-(5, 1, 'Saturday', '09:00:00', '18:00:00'),
-(6, 2, 'Monday', '09:00:00', '18:00:00'),
-(7, 2, 'Tuesday', '09:00:00', '18:00:00'),
-(8, 2, 'Wednesday', '09:00:00', '18:00:00'),
-(9, 2, 'Thursday', '09:00:00', '18:00:00'),
-(10, 2, 'Friday', '09:00:00', '18:00:00'),
-(11, 2, 'Saturday', '09:00:00', '18:00:00'),
-(12, 2, 'Sunday', '09:00:00', '18:00:00'),
-(13, 3, 'Monday', '09:00:00', '18:00:00'),
-(14, 3, 'Tuesday', '09:00:00', '18:00:00'),
-(15, 3, 'Wednesday', '09:00:00', '18:00:00');
+(16, 3, 'Monday', '09:00:00', '18:00:00'),
+(17, 3, 'Tuesday', '09:00:00', '18:00:00'),
+(18, 3, 'Wednesday', '09:00:00', '18:00:00'),
+(19, 3, 'Thursday', '09:00:00', '18:00:00'),
+(20, 3, 'Friday', '09:00:00', '18:00:00'),
+(21, 1, 'Monday', '09:00:00', '18:00:00'),
+(22, 1, 'Tuesday', '09:00:00', '18:00:00'),
+(23, 1, 'Wednesday', '09:00:00', '18:00:00'),
+(24, 2, 'Monday', '09:00:00', '18:00:00'),
+(25, 2, 'Tuesday', '09:00:00', '18:00:00'),
+(26, 2, 'Wednesday', '09:00:00', '18:00:00'),
+(27, 2, 'Thursday', '09:00:00', '18:00:00');
 
 -- --------------------------------------------------------
 
@@ -189,10 +211,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `email`, `phone_no`, `username`, `password`, `profile_photo`, `user_type`, `created_at`) VALUES
-(1, 'Brenan', 'Cervantes', 'brma.cervantes.up@phinmaed.com', '09384396040', 'brma789', '$2y$10$n7SCBGMOWRorZWwjtBDDCuq4XY0A05VTb0.jQsn3QgvE5x8ojuAlm', NULL, 'customer', '2025-10-18 10:14:30'),
-(2, 'Kuya', 'June', 'kuyajune@example.com', '0938639512', 'kuyaj24', '$2y$10$nBrTKCZId50KjXXCwW97dOrRU0gbVwR/cGFHzkjYN1nJ56DR4FozS', 'uploads/profile_photos/barber_2_1760800704.webp', 'barber', '2025-10-18 10:17:10'),
-(3, 'Stephanie', 'Mabalot', 'stephaniemb@example.com', '0938639513', 'stpnmblt', '$2y$10$8dCdcMSoKmRARw8XyGnxeumSmAhUmAkpBgQg/rFF3kl.kSoH.iFi6', 'uploads/profile_photos/barber_3_1760800804.jpg', 'barber', '2025-10-18 12:18:52'),
-(4, 'Jomari', 'Lucena', 'janonglucena@example.com', '09386399514', 'janonglangto', '$2y$10$yy68yfCCkvh7Gb0YBHutbOxgng0lT.1QSFrHPeUEPHGYJFZRu9/yK', 'uploads/profile_photos/barber_68f3a69b20e387.99783440.jpg', 'barber', '2025-10-18 14:39:23');
+(1, 'Brenan', 'Cervantes', 'brma.cervantes.up@phinmaed.com', '09384396042', 'brma789', '$2y$10$n7SCBGMOWRorZWwjtBDDCuq4XY0A05VTb0.jQsn3QgvE5x8ojuAlm', NULL, 'customer', '2025-10-18 10:14:30'),
+(2, 'Kuya', 'June', 'kuyajune@example.com', '09386399512', 'kuyaj24', '$2y$10$nBrTKCZId50KjXXCwW97dOrRU0gbVwR/cGFHzkjYN1nJ56DR4FozS', 'uploads/profile_photos/barber_2_1760876004.webp', 'barber', '2025-10-18 10:17:10'),
+(3, 'Stephanie', 'Mabalot', 'stephaniemb@example.com', '09386399513', 'stpnmblt', '$2y$10$8dCdcMSoKmRARw8XyGnxeumSmAhUmAkpBgQg/rFF3kl.kSoH.iFi6', 'uploads/profile_photos/barber_3_1760876010.jpg', 'barber', '2025-10-18 12:18:52'),
+(4, 'Jomari', 'Lucena', 'janonglucena@example.com', '09386399514', 'janonglangto', '$2y$10$yy68yfCCkvh7Gb0YBHutbOxgng0lT.1QSFrHPeUEPHGYJFZRu9/yK', 'uploads/profile_photos/barber_4_1760875982.jpg', 'barber', '2025-10-18 14:39:23'),
+(5, 'Ayban', 'Chen', 'ivfl.chen.up@example.com', '', 'sonnyhayes', '$2y$10$ntE1j98DD4dVdTkusJg/0OfAHjFMGV5gmOgVmHsHI/0L5sEHTiFyu', NULL, 'customer', '2025-10-20 04:37:28');
 
 -- --------------------------------------------------------
 
@@ -214,8 +237,7 @@ ALTER TABLE `appointments`
   ADD PRIMARY KEY (`appointment_id`),
   ADD KEY `customer_user_id` (`customer_user_id`),
   ADD KEY `barber_id` (`barber_id`),
-  ADD KEY `service_id` (`service_id`),
-  ADD KEY `schedule_id` (`schedule_id`);
+  ADD KEY `service_id` (`service_id`);
 
 --
 -- Indexes for table `barbers`
@@ -223,6 +245,15 @@ ALTER TABLE `appointments`
 ALTER TABLE `barbers`
   ADD PRIMARY KEY (`barber_id`),
   ADD UNIQUE KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `feedback`
+--
+ALTER TABLE `feedback`
+  ADD PRIMARY KEY (`feedback_id`),
+  ADD UNIQUE KEY `appointment_id` (`appointment_id`),
+  ADD KEY `customer_user_id` (`customer_user_id`),
+  ADD KEY `barber_id` (`barber_id`);
 
 --
 -- Indexes for table `schedules`
@@ -259,7 +290,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `barbers`
@@ -268,10 +299,16 @@ ALTER TABLE `barbers`
   MODIFY `barber_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT for table `feedback`
+--
+ALTER TABLE `feedback`
+  MODIFY `feedback_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `schedules`
 --
 ALTER TABLE `schedules`
-  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `services`
@@ -289,7 +326,7 @@ ALTER TABLE `trimbook_contact`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables
@@ -301,14 +338,21 @@ ALTER TABLE `users`
 ALTER TABLE `appointments`
   ADD CONSTRAINT `appointments_ibfk_1` FOREIGN KEY (`customer_user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `appointments_ibfk_2` FOREIGN KEY (`barber_id`) REFERENCES `barbers` (`barber_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `appointments_ibfk_3` FOREIGN KEY (`service_id`) REFERENCES `services` (`service_id`),
-  ADD CONSTRAINT `appointments_ibfk_4` FOREIGN KEY (`schedule_id`) REFERENCES `schedules` (`schedule_id`);
+  ADD CONSTRAINT `appointments_ibfk_3` FOREIGN KEY (`service_id`) REFERENCES `services` (`service_id`);
 
 --
 -- Constraints for table `barbers`
 --
 ALTER TABLE `barbers`
   ADD CONSTRAINT `barbers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `feedback`
+--
+ALTER TABLE `feedback`
+  ADD CONSTRAINT `feedback_ibfk_1` FOREIGN KEY (`appointment_id`) REFERENCES `appointments` (`appointment_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `feedback_ibfk_2` FOREIGN KEY (`customer_user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `feedback_ibfk_3` FOREIGN KEY (`barber_id`) REFERENCES `barbers` (`barber_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `schedules`
