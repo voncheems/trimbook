@@ -31,10 +31,6 @@ $title = "Contact Us | TrimBook";
       background-clip: text;
     }
     
-    .hero-gradient {
-      background: radial-gradient(ellipse at top, #1a1a2e 0%, #0a0a0f 100%);
-    }
-    
     .card-hover {
       transition: all 0.3s ease;
     }
@@ -52,11 +48,11 @@ $title = "Contact Us | TrimBook";
     <nav class="container mx-auto flex justify-between items-center py-5 px-6">
       <a href="index.php" class="text-2xl font-black tracking-tight">TRIMBOOK</a>
       <ul class="hidden md:flex space-x-8 font-medium text-sm">
-        <li><a href="index.php" class="text-gray-300 hover:text-white transition">Home</a></li>
+        <li><a href="../index.php" class="text-gray-300 hover:text-white transition">Home</a></li>
         <li><a href="index.php#about" class="text-gray-300 hover:text-white transition">About</a></li>
-        <li><a href="index.php#services" class="text-gray-300 hover:text-white transition">Services</a></li>
-        <li><a href="index.php#barbers" class="text-gray-300 hover:text-white transition">Our Barbers</a></li>
-        <li><a href="contact.php" class="text-white transition font-semibold">Contact</a></li>
+        <li><a href="../pages/services.php" class="text-gray-300 hover:text-white transition">Services</a></li>
+        <li><a href="../pages/ourBarbers_page.php" class="text-gray-300 hover:text-white transition">Our Barbers</a></li>
+        <li><a href="../pages/contact_page.php" class="text-white transition font-semibold">Contact</a></li>
       </ul>
       <div class="flex items-center space-x-4">
         <a href="pages/login_page.php" class="text-sm font-medium text-gray-300 hover:text-white transition">Login</a>
@@ -67,31 +63,21 @@ $title = "Contact Us | TrimBook";
     </nav>
   </header>
 
-  <!-- Hero Section -->
-  <section class="hero-gradient min-h-screen flex items-center justify-center px-6 pt-20">
-    <div class="container mx-auto text-center max-w-5xl">
-      <div class="inline-flex items-center space-x-2 bg-blue-600/20 border border-blue-500/30 rounded-full px-6 py-2 mb-8">
-        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-        <span class="text-sm font-medium text-blue-300">Get In Touch</span>
-      </div>
-      
-      <h1 class="text-5xl md:text-7xl font-black leading-tight mb-6 tracking-tight">
-        GET IN TOUCH.<br>
-        <span class="gradient-text">WE'RE HERE FOR YOU.</span>
-      </h1>
-      
-      <p class="text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-        Have questions? We'd love to hear from you. <br class="hidden md:block">
-        Reach out and let's make your appointment today.
-      </p>
-    </div>
-  </section>
-
   <!-- Contact Information Section -->
-  <section class="py-24 bg-black">
+  <section class="py-24 bg-gradient-to-b from-zinc-950 to-black pt-32">
     <div class="container mx-auto px-6 max-w-6xl">
-      <h2 class="text-4xl md:text-5xl font-black text-center mb-4">Contact Information</h2>
-      <p class="text-center text-gray-400 mb-16 text-lg">Multiple ways to reach us</p>
+      <div class="text-center mb-16">
+        <div class="inline-flex items-center space-x-2 bg-blue-600/20 border border-blue-500/30 rounded-full px-6 py-2 mb-6">
+          <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+          <span class="text-sm font-medium text-blue-300">Get In Touch</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-black mb-4">
+          Contact <span class="gradient-text">Information</span>
+        </h1>
+        <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+          Multiple ways to reach us. We're here to help with your appointment needs.
+        </p>
+      </div>
       
       <div class="grid md:grid-cols-2 gap-8">
         
@@ -176,10 +162,10 @@ $title = "Contact Us | TrimBook";
       <p class="text-gray-400 text-lg mb-10">Have any questions before booking? Feel free to reach out through any of the methods above, or book your appointment directly.</p>
       
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="pages/login_page.php" class="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full text-lg font-bold hover:shadow-xl hover:shadow-purple-500/50 transition transform hover:scale-105">
+        <a href="../pages/login_page.php" class="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full text-lg font-bold hover:shadow-xl hover:shadow-purple-500/50 transition transform hover:scale-105">
           Book Now
         </a>
-        <a href="index.php#services" class="inline-block bg-white/10 border border-white/20 text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-white/20 transition">
+        <a href="../pages/services.php" class="inline-block bg-white/10 border border-white/20 text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-white/20 transition">
           View Services
         </a>
       </div>
@@ -197,10 +183,10 @@ $title = "Contact Us | TrimBook";
         <div>
           <h4 class="font-bold mb-4">Quick Links</h4>
           <ul class="space-y-2 text-sm">
-            <li><a href="index.php" class="text-gray-400 hover:text-white transition">Home</a></li>
-            <li><a href="index.php#services" class="text-gray-400 hover:text-white transition">Services</a></li>
-            <li><a href="index.php#barbers" class="text-gray-400 hover:text-white transition">Our Barbers</a></li>
-            <li><a href="contact.php" class="text-gray-400 hover:text-white transition">Contact</a></li>
+            <li><a href="../index.php" class="text-gray-400 hover:text-white transition">Home</a></li>
+            <li><a href="../pages/services.php" class="text-gray-400 hover:text-white transition">Services</a></li>
+            <li><a href="../pages/ourBarbers.php" class="text-gray-400 hover:text-white transition">Our Barbers</a></li>
+            <li><a href="../pages/contact_page.php" class="text-gray-400 hover:text-white transition">Contact</a></li>
           </ul>
         </div>
         <div>
