@@ -115,6 +115,10 @@ if (isset($conn) && $conn) {
       margin-top: 10px;
       border-radius: 8px;
     }
+
+    .schedule-checkbox {
+      accent-color: #9333ea;
+    }
   </style>
   <script>
     function toggleSidebar() {
@@ -190,6 +194,13 @@ if (isset($conn) && $conn) {
           <span>All Appointments</span>
         </a>
 
+        <a href="admin_addBarber.php" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+          </svg>
+          <span>Add Barber</span>
+        </a>
+
         <a href="../dashboards/admin_allbarbers.php" class="flex items-center space-x-3 px-4 py-3 rounded-xl bg-gray-800/50 text-white font-medium hover:bg-gray-800 transition">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
@@ -226,7 +237,7 @@ if (isset($conn) && $conn) {
           <span>Manage Contacts</span>
         </a>
 
-        <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition">
+        <a href="../dashboards/admin_feedback.php" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
           </svg>
@@ -380,7 +391,7 @@ if (isset($conn) && $conn) {
 
   <!-- Edit Barber Modal -->
   <div id="editModal" class="modal fixed inset-0 z-50 items-center justify-center bg-black/60 backdrop-blur-sm">
-    <div class="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl w-full max-w-md mx-6 max-h-[90vh] overflow-y-auto">
+    <div class="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl w-full max-w-2xl mx-6 max-h-[90vh] overflow-y-auto">
       
       <!-- Modal Header -->
       <div class="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-6 sticky top-0">
@@ -398,6 +409,20 @@ if (isset($conn) && $conn) {
       <form id="editBarberForm" class="p-8 space-y-6">
         <input type="hidden" id="editBarberId" name="barber_id" value="">
         <input type="hidden" id="editUserId" name="user_id" value="">
+
+        <!-- Phone Number -->
+        <div>
+          <label for="editPhoneNo" class="block text-sm font-semibold text-gray-300 mb-2">
+            Phone Number
+          </label>
+          <input 
+            type="text" 
+            id="editPhoneNo" 
+            name="phone_no" 
+            class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition"
+            placeholder="e.g., 09123456789"
+          >
+        </div>
 
         <!-- Specialization -->
         <div>
@@ -426,6 +451,73 @@ if (isset($conn) && $conn) {
             class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition"
             placeholder="0"
           >
+        </div>
+
+        <!-- Schedule Section -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-300 mb-4">
+            Working Schedule
+          </label>
+          <div class="bg-gray-800/30 border border-gray-700 rounded-xl p-6 space-y-4">
+            
+            <!-- Days of Week -->
+            <div class="grid grid-cols-2 gap-4">
+              <div class="flex items-center space-x-3">
+                <input type="checkbox" id="schedMonday" name="schedule_days[]" value="Monday" class="schedule-checkbox w-5 h-5 rounded">
+                <label for="schedMonday" class="text-white cursor-pointer">Monday</label>
+              </div>
+              <div class="flex items-center space-x-3">
+                <input type="checkbox" id="schedTuesday" name="schedule_days[]" value="Tuesday" class="schedule-checkbox w-5 h-5 rounded">
+                <label for="schedTuesday" class="text-white cursor-pointer">Tuesday</label>
+              </div>
+              <div class="flex items-center space-x-3">
+                <input type="checkbox" id="schedWednesday" name="schedule_days[]" value="Wednesday" class="schedule-checkbox w-5 h-5 rounded">
+                <label for="schedWednesday" class="text-white cursor-pointer">Wednesday</label>
+              </div>
+              <div class="flex items-center space-x-3">
+                <input type="checkbox" id="schedThursday" name="schedule_days[]" value="Thursday" class="schedule-checkbox w-5 h-5 rounded">
+                <label for="schedThursday" class="text-white cursor-pointer">Thursday</label>
+              </div>
+              <div class="flex items-center space-x-3">
+                <input type="checkbox" id="schedFriday" name="schedule_days[]" value="Friday" class="schedule-checkbox w-5 h-5 rounded">
+                <label for="schedFriday" class="text-white cursor-pointer">Friday</label>
+              </div>
+              <div class="flex items-center space-x-3">
+                <input type="checkbox" id="schedSaturday" name="schedule_days[]" value="Saturday" class="schedule-checkbox w-5 h-5 rounded">
+                <label for="schedSaturday" class="text-white cursor-pointer">Saturday</label>
+              </div>
+              <div class="flex items-center space-x-3">
+                <input type="checkbox" id="schedSunday" name="schedule_days[]" value="Sunday" class="schedule-checkbox w-5 h-5 rounded">
+                <label for="schedSunday" class="text-white cursor-pointer">Sunday</label>
+              </div>
+            </div>
+
+            <!-- Time Inputs -->
+            <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-700">
+              <div>
+                <label for="editStartTime" class="block text-xs text-gray-400 uppercase tracking-wider mb-2">
+                  Start Time
+                </label>
+                <input 
+                  type="time" 
+                  id="editStartTime" 
+                  name="start_time" 
+                  class="w-full px-4 py-3 bg-gray-900/50 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-purple-500 transition"
+                >
+              </div>
+              <div>
+                <label for="editEndTime" class="block text-xs text-gray-400 uppercase tracking-wider mb-2">
+                  End Time
+                </label>
+                <input 
+                  type="time" 
+                  id="editEndTime" 
+                  name="end_time" 
+                  class="w-full px-4 py-3 bg-gray-900/50 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-purple-500 transition"
+                >
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Action Buttons -->
@@ -629,11 +721,43 @@ if (isset($conn) && $conn) {
       document.getElementById('detailsModal').classList.remove('show');
     }
 
-    function editBarber(barber) {
+    async function editBarber(barber) {
       document.getElementById('editBarberId').value = barber.barber_id;
       document.getElementById('editUserId').value = barber.user_id;
+      document.getElementById('editPhoneNo').value = barber.phone_no || '';
       document.getElementById('editSpecialization').value = barber.specialization || '';
       document.getElementById('editExperience').value = barber.experience_years || 0;
+
+      // Uncheck all schedule checkboxes first
+      const checkboxes = document.querySelectorAll('input[name="schedule_days[]"]');
+      checkboxes.forEach(cb => cb.checked = false);
+
+      // Reset time inputs
+      document.getElementById('editStartTime').value = '';
+      document.getElementById('editEndTime').value = '';
+
+      // Fetch barber's schedule
+      try {
+        const response = await fetch(`../auth/get_barber_schedule.php?barber_id=${barber.barber_id}`);
+        const data = await response.json();
+        
+        if (data.success && data.schedules.length > 0) {
+          // Check the appropriate days
+          data.schedules.forEach(schedule => {
+            const checkbox = document.getElementById('sched' + schedule.day_of_week);
+            if (checkbox) {
+              checkbox.checked = true;
+            }
+          });
+
+          // Set times from first schedule (assuming all have same times)
+          document.getElementById('editStartTime').value = data.schedules[0].start_time;
+          document.getElementById('editEndTime').value = data.schedules[0].end_time;
+        }
+      } catch (error) {
+        console.error('Error fetching schedule:', error);
+      }
+
       document.getElementById('editModal').classList.add('show');
     }
 
@@ -726,11 +850,21 @@ if (isset($conn) && $conn) {
       e.preventDefault();
       
       const formData = new FormData(this);
+      
+      // Get selected days
+      const selectedDays = [];
+      const checkboxes = document.querySelectorAll('input[name="schedule_days[]"]:checked');
+      checkboxes.forEach(cb => selectedDays.push(cb.value));
+
       const data = {
         barber_id: formData.get('barber_id'),
         user_id: formData.get('user_id'),
+        phone_no: formData.get('phone_no'),
         specialization: formData.get('specialization'),
-        experience_years: formData.get('experience_years')
+        experience_years: formData.get('experience_years'),
+        schedule_days: selectedDays,
+        start_time: formData.get('start_time'),
+        end_time: formData.get('end_time')
       };
 
       fetch('../auth/update_barber.php', {
