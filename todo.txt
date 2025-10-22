@@ -10,7 +10,6 @@
 
 -- ADMIN DASHBOARD --
 1. Recent Activities - Not yet Dynamic, Should be accurate atleast rather than real-time
-2. Manage Reports - Time is not accurate 
 
 -- LOGIN & SIGNUP -- 
 1. Error Messages - Should Make some
