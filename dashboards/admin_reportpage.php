@@ -1,6 +1,9 @@
 <?php
 session_start();
 
+// Set timezone to Philippine Standard Time
+date_default_timezone_set('Asia/Manila');
+
 // Get admin data from session
 $admin_name = $_SESSION['admin_name'] ?? 'Administrator';
 $admin_username = $_SESSION['admin_username'] ?? 'admin';
