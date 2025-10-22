@@ -16,6 +16,7 @@
 1. Error Messages - Should Make some
 2. Processing Delay - Should add for design
 3. Process login for admin - in the works
+4. Forgot Password - how to integrate
 
 barber sample photos file name (laptop ni brenan):
 - samplebarber
