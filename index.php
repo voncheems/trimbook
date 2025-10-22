@@ -9,10 +9,10 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['user_type'])) {
             header('Location: /trimbook/pages/homepage_loggedin.php');
             exit;
         case 'barber':
-            header('Location: /trimbook/pages/barber_dashboard.php');
+            header('Location: /trimbook/dashboards/barber_dashboard.php');
             exit;
         case 'admin':
-            header('Location: /trimbook/pages/admin_dashboard.php');
+            header('Location: /trimbook/dashboards/admin_dashboard.php');
             exit;
     }
 }
