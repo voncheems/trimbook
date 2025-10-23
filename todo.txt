@@ -12,6 +12,7 @@
 -- ADMIN DASHBOARD --
 1. Need a page for creating admin.
 2. Need page for editing admin password.
+3. Need page for creating appointments for walk-ins.
 
 -- LOGIN & SIGNUP -- 
 1. Error Messages - Should Make some
