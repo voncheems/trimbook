@@ -1,4 +1,4 @@
--- HOMEPAGE -- (October 20, 2025)
+-- HOMEPAGE -- (October 23, 2025)
 1. Homepage Design - Choose whether hardcoded or dynamic
 2. About page - not done yet
 3. Change happy customers to rating instead.
@@ -10,8 +10,8 @@
 1. Front page appointments should be limited to 3 or 5 similar to client dashboard.
 
 -- ADMIN DASHBOARD --
-1. Recent Activities - Change to Top Barbers Instead
-2. When I click add barber, sidebar is recognizing manage barbers instead. - fix
+1. Need a page for creating admin.
+2. Need page for editing admin password.
 
 -- LOGIN & SIGNUP -- 
 1. Error Messages - Should Make some
