@@ -1,6 +1,7 @@
 -- HOMEPAGE -- (October 20, 2025)
 1. Homepage Design - Choose whether hardcoded or dynamic
 2. About page - not done yet
+3. Change happy customers to rating instead.
 
 -- CLIENT DASHBOARD --
 1. Barbers who are off schedule, should not appear at select barbers page - need feature
@@ -9,7 +10,8 @@
 1. Front page appointments should be limited to 3 or 5 similar to client dashboard.
 
 -- ADMIN DASHBOARD --
-1. Recent Activities - Not yet Dynamic, Should be accurate atleast rather than real-time
+1. Recent Activities - Change to Top Barbers Instead
+2. When I click add barber, sidebar is recognizing manage barbers instead. - fix
 
 -- LOGIN & SIGNUP -- 
 1. Error Messages - Should Make some
