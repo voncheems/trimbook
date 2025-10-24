@@ -11,12 +11,14 @@
 1. Need a page for creating admin.
 2. Need page for editing admin password.
 3. Need page for creating appointments for walk-ins.
+4. Manage Barbers - need to be able to change barber password.
+5. Manage Clients - need to be able to change client password.
 
 -- LOGIN & SIGNUP -- 
 1. Error Messages - Should Make some
 2. Processing Delay - Should add for design
 3. Process login for admin - in the works
-4. Forgot Password - how to integrate
+4. Forgot Password - need page
 
 barber sample photos file name (laptop ni brenan):
 - samplebarber
