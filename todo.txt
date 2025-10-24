@@ -5,7 +5,6 @@
 1. Barbers who are off schedule, should not appear at select barbers page - need feature
 
 -- BARBER DASHBOARD --
-1. Front page appointments should be limited to 3 or 5 similar to client dashboard.
 
 -- ADMIN DASHBOARD --
 1. Need a page for creating admin.
