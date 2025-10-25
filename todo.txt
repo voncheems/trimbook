@@ -14,8 +14,7 @@
 -- LOGIN & SIGNUP -- 
 1. Error Messages - Should Make some 
 2. Processing Delay - Should add for design
-3. Process login for admin - in the works
-4. Forgot Password - need page
+3. Forgot Password - need page
 
 barber sample photos file name (laptop ni brenan):
 - samplebarber
