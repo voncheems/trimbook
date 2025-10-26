@@ -1,6 +1,12 @@
 <?php
 session_start();
 
+// Check authentication
+if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] !== 'admin') {
+    header("Location: ../pages/login_page.php");
+    exit();
+}
+
 $admin_name = $_SESSION['admin_name'] ?? 'Administrator';
 
 // Include database configuration
