@@ -49,7 +49,7 @@
     <a href="/trimbook/index.php" class="text-2xl font-black tracking-tight">TRIMBOOK</a>
     <ul class="hidden md:flex space-x-8 font-medium text-sm">
       <li><a href="/trimbook/index.php" class="text-gray-300 hover:text-white transition">Home</a></li>
-      <li><a href="/trimbook/index.php#about" class="text-gray-300 hover:text-white transition">About</a></li>
+      <li><a href="/trimbook/pages/about.php" class="text-gray-300 hover:text-white transition">About</a></li>
       <li><a href="/trimbook/pages/services.php" class="text-white font-semibold">Services</a></li>
       <li><a href="/trimbook/pages/ourBarbers_page.php" class="text-gray-300 hover:text-white transition">Our Barbers</a></li>
       <li><a href="/trimbook/index.php#contact" class="text-gray-300 hover:text-white transition">Contact</a></li>
