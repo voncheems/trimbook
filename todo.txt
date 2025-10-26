@@ -12,7 +12,6 @@
 
 -- LOGIN & SIGNUP -- 
 1. Error Messages - Should Make some 
-2. Forgot Password - need page
 
 barber sample photos file name (laptop ni brenan):
 - samplebarber
