@@ -24,6 +24,8 @@ $profile_data = [];
 $barber_data = [];
 $error = '';
 $success = '';
+$password_error = '';
+$password_success = '';
 $profile_photo = null;
 
 try {
@@ -63,7 +65,7 @@ try {
 }
 
 // Handle profile update
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $barber_user_id) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile']) && $barber_user_id) {
     $first_name_new = $_POST['first_name'] ?? '';
     $last_name_new = $_POST['last_name'] ?? '';
     $email_new = $_POST['email'] ?? '';
@@ -126,6 +128,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $barber_user_id) {
         }
     } else {
         $error = "Please fill in all required fields.";
+    }
+}
+
+// Handle password change
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password']) && $barber_user_id) {
+    $current_password = $_POST['current_password'] ?? '';
+    $new_password = $_POST['new_password'] ?? '';
+    $confirm_password = $_POST['confirm_password'] ?? '';
+    
+    if (!empty($current_password) && !empty($new_password) && !empty($confirm_password)) {
+        try {
+            // Verify current password
+            $query = "SELECT password FROM users WHERE user_id = ?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("i", $barber_user_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            
+            if ($result->num_rows > 0) {
+                $user_data = $result->fetch_assoc();
+                
+                if (password_verify($current_password, $user_data['password'])) {
+                    if ($new_password === $confirm_password) {
+                        if (strlen($new_password) >= 8) {
+                            $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
+                            $update_query = "UPDATE users SET password = ? WHERE user_id = ?";
+                            $update_stmt = $conn->prepare($update_query);
+                            $update_stmt->bind_param("si", $hashed_password, $barber_user_id);
+                            
+                            if ($update_stmt->execute()) {
+                                $password_success = "Password changed successfully!";
+                            } else {
+                                $password_error = "Error changing password. Please try again.";
+                            }
+                            $update_stmt->close();
+                        } else {
+                            $password_error = "New password must be at least 8 characters long.";
+                        }
+                    } else {
+                        $password_error = "New passwords do not match.";
+                    }
+                } else {
+                    $password_error = "Current password is incorrect.";
+                }
+            }
+            $stmt->close();
+        } catch (Exception $e) {
+            $password_error = "Error: " . $e->getMessage();
+        }
+    } else {
+        $password_error = "Please fill in all password fields.";
     }
 }
 
@@ -333,6 +386,7 @@ $specialization = $barber_data['specialization'] ?? '';
 
       <!-- Profile Information -->
       <form id="profileForm" method="POST" class="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden mb-8">
+        <input type="hidden" name="update_profile" value="1">
         <div class="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-6">
           <h2 class="text-2xl font-bold">Personal Information</h2>
         </div>
@@ -382,6 +436,57 @@ $specialization = $barber_data['specialization'] ?? '';
           </div>
         </div>
       </form>
+
+      <!-- Change Password Section -->
+      <div class="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
+        <div class="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-6">
+          <h2 class="text-2xl font-bold">Change Password</h2>
+        </div>
+        <div class="p-8">
+          <!-- Password Messages -->
+          <?php if (!empty($password_success)): ?>
+            <div class="mb-6 bg-green-500/20 border border-green-500/30 text-green-400 px-6 py-4 rounded-xl">
+              <?= htmlspecialchars($password_success) ?>
+            </div>
+          <?php endif; ?>
+
+          <?php if (!empty($password_error)): ?>
+            <div class="mb-6 bg-red-500/20 border border-red-500/30 text-red-400 px-6 py-4 rounded-xl">
+              <?= htmlspecialchars($password_error) ?>
+            </div>
+          <?php endif; ?>
+
+          <form method="POST" class="space-y-6">
+            <input type="hidden" name="change_password" value="1">
+            
+            <!-- Current Password -->
+            <div>
+              <label class="text-gray-400 text-sm font-medium block mb-3">Current Password</label>
+              <input type="password" name="current_password" class="w-full edit-input px-4 py-3 rounded-lg text-white text-lg" required />
+            </div>
+
+            <!-- New Password -->
+            <div>
+              <label class="text-gray-400 text-sm font-medium block mb-3">New Password</label>
+              <input type="password" name="new_password" class="w-full edit-input px-4 py-3 rounded-lg text-white text-lg" required minlength="8" />
+              <p class="text-gray-500 text-sm mt-2">Password must be at least 8 characters long</p>
+            </div>
+
+            <!-- Confirm New Password -->
+            <div>
+              <label class="text-gray-400 text-sm font-medium block mb-3">Confirm New Password</label>
+              <input type="password" name="confirm_password" class="w-full edit-input px-4 py-3 rounded-lg text-white text-lg" required minlength="8" />
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex justify-end">
+              <button type="submit" class="mt-4 md:mt-0 px-8 py-3 bg-purple-600 hover:bg-purple-700 rounded-xl font-semibold transition">
+                Change Password
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
 
     </div>
   </main>
