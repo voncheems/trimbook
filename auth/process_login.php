@@ -1,11 +1,7 @@
 <?php
 session_start();
+require_once('../includes/dbconfig.php');
 
-$conn = new mysqli("localhost", "root", "", "trimbookdb");
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
 
 $errors = [];
 
