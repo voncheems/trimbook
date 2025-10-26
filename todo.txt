@@ -12,6 +12,7 @@
 
 -- LOGIN & SIGNUP -- 
 1. Error Messages - Should Make some 
+2. Forgot Password - Working, but the headers are not fixed yet.
 
 barber sample photos file name (laptop ni brenan):
 - samplebarber
