@@ -1,6 +1,12 @@
 <?php
 session_start();
 
+// Check authentication
+if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] !== 'admin') {
+    header("Location: ../pages/login_page.php");
+    exit();
+}
+
 // Get admin data from session
 $admin_name = $_SESSION['admin_name'] ?? 'Administrator';
 $admin_username = $_SESSION['admin_username'] ?? 'admin';
@@ -17,6 +23,9 @@ $stats = [
     'active_barbers' => 0,
     'total_clients' => 0
 ];
+
+// Initialize top barbers array
+$top_barbers = [];
 
 // Check if connection exists
 if (isset($conn) && $conn) {
@@ -39,6 +48,23 @@ if (isset($conn) && $conn) {
     if ($result) {
         $row = $result->fetch_assoc();
         $stats['total_clients'] = $row['count'];
+    }
+    
+    // Fetch Top 3 Barbers by completed appointments
+    $result = $conn->query("
+        SELECT u.first_name, u.last_name, COUNT(*) as appointment_count
+        FROM appointments a
+        JOIN barbers b ON a.barber_id = b.barber_id
+        JOIN users u ON b.user_id = u.user_id
+        WHERE a.status = 'completed'
+        GROUP BY b.barber_id
+        ORDER BY appointment_count DESC
+        LIMIT 3
+    ");
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $top_barbers[] = $row;
+        }
     }
 }
 ?>
@@ -305,7 +331,7 @@ if (isset($conn) && $conn) {
         </div>
       </div>
 
-      <!-- Quick Actions & Recent Activities -->
+      <!-- Quick Actions & Top Barbers -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
         <!-- Quick Actions Card -->
         <div class="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
@@ -337,48 +363,50 @@ if (isset($conn) && $conn) {
                 <span>View Reports</span>
               </button>
             </a>
+            <a href="../dashboards/admin_managestatus.php" class="block">
+              <button class="w-full bg-gray-800/50 hover:bg-gray-800 text-white px-6 py-4 rounded-xl font-medium transition flex items-center space-x-3 group">
+                <svg class="w-5 h-5 text-purple-400 group-hover:text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                </svg>
+                <span>Manage Status</span>
+              </button>
+            </a>
+             <a href="/trimbook/dashboards/admin_walkins.php" class="block">
+              <button class="w-full bg-gray-800/50 hover:bg-gray-800 text-white px-6 py-4 rounded-xl font-medium transition flex items-center space-x-3 group">
+                <svg class="w-5 h-5 text-purple-400 group-hover:text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                <span>Add Appointment (Walk-ins)</span>
+              </button>
+            </a>
           </div>
         </div>
 
-        <!-- Recent Activities Card -->
+        <!-- Top Barbers Card -->
         <div class="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
           <div class="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-6">
-            <h2 class="text-2xl font-bold">Recent Activities</h2>
+            <h2 class="text-2xl font-bold">Top Barbers</h2>
           </div>
-          <div class="p-8 space-y-4">
-            <div class="flex items-center space-x-4 p-4 bg-gray-800/30 rounded-xl">
-              <div class="w-10 h-10 bg-blue-600/20 rounded-full flex items-center justify-center">
-                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                </svg>
+          <div class="p-8">
+            <?php if (empty($top_barbers)): ?>
+              <p class="text-gray-400">No barber data available yet.</p>
+            <?php else: ?>
+              <div class="space-y-4">
+                <?php foreach ($top_barbers as $index => $barber): ?>
+                  <div class="flex items-center justify-between p-4 bg-gray-800/50 rounded-xl">
+                    <div class="flex items-center space-x-4">
+                      <div class="w-10 h-10 bg-green-600/20 rounded-full flex items-center justify-center">
+                        <span class="text-green-400 font-bold">#<?= $index + 1 ?></span>
+                      </div>
+                      <div>
+                        <p class="font-semibold"><?= htmlspecialchars($barber['first_name'] . ' ' . $barber['last_name']) ?></p>
+                        <p class="text-sm text-gray-400"><?= $barber['appointment_count'] ?> appointments</p>
+                      </div>
+                    </div>
+                  </div>
+                <?php endforeach; ?>
               </div>
-              <div>
-                <p class="font-medium">New Appointment Booked</p>
-                <p class="text-sm text-gray-400">2 minutes ago</p>
-              </div>
-            </div>
-            <div class="flex items-center space-x-4 p-4 bg-gray-800/30 rounded-xl">
-              <div class="w-10 h-10 bg-green-600/20 rounded-full flex items-center justify-center">
-                <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                </svg>
-              </div>
-              <div>
-                <p class="font-medium">New Barber Added</p>
-                <p class="text-sm text-gray-400">1 hour ago</p>
-              </div>
-            </div>
-            <div class="flex items-center space-x-4 p-4 bg-gray-800/30 rounded-xl">
-              <div class="w-10 h-10 bg-purple-600/20 rounded-full flex items-center justify-center">
-                <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-              </div>
-              <div>
-                <p class="font-medium">Barber Updated Availability</p>
-                <p class="text-sm text-gray-400">3 hours ago</p>
-              </div>
-            </div>
+            <?php endif; ?>
           </div>
         </div>
       </div>
