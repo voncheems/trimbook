@@ -1,8 +1,14 @@
 <?php
 session_start();
 
-// Set timezone to Philippine Standard Time
+// Set timezone to Philippines
 date_default_timezone_set('Asia/Manila');
+
+// Check authentication
+if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] !== 'admin') {
+    header("Location: ../pages/login_page.php");
+    exit();
+}
 
 // Get admin data from session
 $admin_name = $_SESSION['admin_name'] ?? 'Administrator';
@@ -34,20 +40,20 @@ $week_start = date('Y-m-d', strtotime('monday this week'));
 $month_start = date('Y-m-01');
 
 if (isset($conn) && $conn) {
-    // Appointments Today
-    $result = $conn->query("SELECT COUNT(*) as count FROM appointments WHERE appointment_date = '$today'");
+    // Appointments Today - FIXED (excluding cancelled)
+    $result = $conn->query("SELECT COUNT(*) as count FROM appointments WHERE appointment_date = '$today' AND status != 'cancelled'");
     if ($result && $row = $result->fetch_assoc()) {
         $report_data['appointments_today'] = $row['count'];
     }
     
-    // Appointments This Week
-    $result = $conn->query("SELECT COUNT(*) as count FROM appointments WHERE appointment_date >= '$week_start'");
+    // Appointments This Week - FIXED (excluding cancelled)
+    $result = $conn->query("SELECT COUNT(*) as count FROM appointments WHERE appointment_date >= '$week_start' AND appointment_date <= '$today' AND status != 'cancelled'");
     if ($result && $row = $result->fetch_assoc()) {
         $report_data['appointments_this_week'] = $row['count'];
     }
     
-    // Appointments This Month
-    $result = $conn->query("SELECT COUNT(*) as count FROM appointments WHERE appointment_date >= '$month_start'");
+    // Appointments This Month - FIXED (excluding cancelled)
+    $result = $conn->query("SELECT COUNT(*) as count FROM appointments WHERE appointment_date >= '$month_start' AND appointment_date <= LAST_DAY('$month_start') AND status != 'cancelled'");
     if ($result && $row = $result->fetch_assoc()) {
         $report_data['appointments_this_month'] = $row['count'];
     }
@@ -68,11 +74,12 @@ if (isset($conn) && $conn) {
         $report_data['pending_appointments'] = $row['count'];
     }
     
-    // Top 5 Services
+    // Top 5 Services (excluding cancelled appointments)
     $result = $conn->query("
         SELECT s.service_name, COUNT(*) as booking_count
         FROM appointments a
         JOIN services s ON a.service_id = s.service_id
+        WHERE a.status != 'cancelled'
         GROUP BY s.service_id
         ORDER BY booking_count DESC
         LIMIT 5
@@ -83,7 +90,7 @@ if (isset($conn) && $conn) {
         }
     }
     
-    // Top 5 Barbers
+    // Top 5 Barbers (only completed appointments)
     $result = $conn->query("
         SELECT u.first_name, u.last_name, COUNT(*) as appointment_count
         FROM appointments a
@@ -120,12 +127,13 @@ if (isset($conn) && $conn) {
         }
     }
     
-    // Appointments by Month (Last 6 months)
+    // Appointments by Month (Last 6 months, excluding cancelled)
     $result = $conn->query("
         SELECT DATE_FORMAT(a.appointment_date, '%Y-%m') as month,
                COUNT(*) as appointments
         FROM appointments a
         WHERE a.appointment_date >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
+        AND a.status != 'cancelled'
         GROUP BY month
         ORDER BY month DESC
     ");
@@ -147,6 +155,7 @@ function getStatusColor($status) {
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -338,7 +347,7 @@ function getStatusColor($status) {
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
           </svg>
         </button>
-        <a href="#" class="text-2xl font-black tracking-tight">TRIMBOOK <span class="text-purple-500 text-sm">ADMIN</span></a>
+        <a href="../dashboards/admin_dashboard.php" class="text-2xl font-black tracking-tight">TRIMBOOK <span class="text-purple-500 text-sm">ADMIN</span></a>
       </div>
       <div class="flex items-center space-x-4">
         <button onclick="window.print()" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg font-medium transition flex items-center space-x-2">
@@ -375,6 +384,7 @@ function getStatusColor($status) {
             </div>
           </div>
           <p class="text-3xl font-black gradient-text"><?= $report_data['appointments_today'] ?></p>
+          <p class="text-xs text-gray-500 mt-1">Excludes cancelled</p>
         </div>
 
         <div class="stat-card rounded-2xl p-6">
@@ -387,6 +397,7 @@ function getStatusColor($status) {
             </div>
           </div>
           <p class="text-3xl font-black gradient-text"><?= $report_data['appointments_this_week'] ?></p>
+          <p class="text-xs text-gray-500 mt-1">Excludes cancelled</p>
         </div>
 
         <div class="stat-card rounded-2xl p-6">
@@ -399,6 +410,7 @@ function getStatusColor($status) {
             </div>
           </div>
           <p class="text-3xl font-black gradient-text"><?= $report_data['appointments_this_month'] ?></p>
+          <p class="text-xs text-gray-500 mt-1">Excludes cancelled</p>
         </div>
       </div>
 
@@ -453,6 +465,7 @@ function getStatusColor($status) {
         <div class="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
           <div class="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-6">
             <h2 class="text-2xl font-bold">Top Services</h2>
+            <p class="text-sm text-white/80 mt-1">Based on active bookings</p>
           </div>
           <div class="p-8">
             <?php if (empty($report_data['top_services'])): ?>
@@ -481,6 +494,7 @@ function getStatusColor($status) {
         <div class="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
           <div class="bg-gradient-to-r from-green-600 to-teal-600 px-8 py-6">
             <h2 class="text-2xl font-bold">Top Barbers</h2>
+            <p class="text-sm text-white/80 mt-1">Based on completed appointments</p>
           </div>
           <div class="p-8">
             <?php if (empty($report_data['top_barbers'])): ?>
@@ -510,6 +524,7 @@ function getStatusColor($status) {
       <div class="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
         <div class="bg-gradient-to-r from-orange-600 to-red-600 px-8 py-6">
           <h2 class="text-2xl font-bold">Recent Appointments</h2>
+          <p class="text-sm text-white/80 mt-1">Last 10 appointments (all statuses)</p>
         </div>
         <div class="p-8">
           <?php if (empty($report_data['recent_appointments'])): ?>
