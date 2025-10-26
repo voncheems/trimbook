@@ -162,6 +162,9 @@ function formatDateTime($date, $time) {
     $dateObj = new DateTime($date);
     return $dateObj->format('M d, Y') . ' at ' . date('g:i A', strtotime($time));
 }
+
+// Limit appointments to 3 for dashboard
+$recent_appointments = array_slice($appointments, 0, 3);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -282,12 +285,12 @@ function formatDateTime($date, $time) {
 
       <!-- Logout Button -->
       <div class="mt-8 pt-6 border-t border-gray-800">
-        <a href="../auth/logout.php" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 hover:text-red-300 transition">
+        <button onclick="confirmLogout()" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 hover:text-red-300 transition">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
           </svg>
           <span>Logout</span>
-        </a>
+        </button>
       </div>
     </div>
   </aside>
@@ -307,7 +310,7 @@ function formatDateTime($date, $time) {
 
       <div class="flex items-center space-x-6">
         <span class="text-gray-400 text-sm hidden md:block">Welcome, <span class="text-white font-semibold"><?= htmlspecialchars($first_name) ?></span></span>
-        <a href="../auth/logout.php" class="text-sm font-medium text-gray-300 hover:text-white transition hidden md:block">Logout</a>
+        <button onclick="confirmLogout()" class="text-sm font-medium text-gray-300 hover:text-white transition hidden md:block">Logout</button>
       </div>
     </nav>
   </header>
@@ -335,11 +338,11 @@ function formatDateTime($date, $time) {
       <div class="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
         <!-- Card Header -->
         <div class="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-6">
-          <h2 class="text-2xl font-bold">Your Scheduled Appointments</h2>
+          <h2 class="text-2xl font-bold">Recent Appointments</h2>
         </div>
 
         <!-- Table / Empty State -->
-        <?php if (count($appointments) > 0): ?>
+        <?php if (count($recent_appointments) > 0): ?>
           <!-- Appointments Table -->
           <div class="overflow-x-auto">
             <table class="w-full">
@@ -354,7 +357,7 @@ function formatDateTime($date, $time) {
                 </tr>
               </thead>
               <tbody>
-                <?php foreach ($appointments as $apt): ?>
+                <?php foreach ($recent_appointments as $apt): ?>
                   <tr class="border-b border-gray-800 hover:bg-gray-800/50 transition">
                     <td class="px-8 py-6 font-medium"><?= htmlspecialchars($apt['customer_first_name'] . ' ' . $apt['customer_last_name']) ?></td>
                     <td class="px-8 py-6 text-gray-300"><?= htmlspecialchars($apt['customer_phone'] ?? 'N/A') ?></td>
@@ -372,6 +375,15 @@ function formatDateTime($date, $time) {
               </tbody>
             </table>
           </div>
+          
+          <!-- View All Link -->
+          <?php if (count($appointments) > 3): ?>
+            <div class="px-8 py-4 border-t border-gray-800 text-center">
+              <a href="../dashboards/barber_appointments.php" class="text-blue-400 hover:text-blue-300 font-semibold transition">
+                View All Appointments →
+              </a>
+            </div>
+          <?php endif; ?>
         <?php else: ?>
           <!-- Empty State -->
           <div class="px-8 py-16 text-center">
@@ -394,8 +406,39 @@ function formatDateTime($date, $time) {
     <p class="text-gray-500 text-sm">&copy; <?= date("Y") ?> TrimBook. All Rights Reserved.</p>
   </footer>
 
+  <!-- Logout Confirmation Modal -->
+  <div id="logoutModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-2xl p-8 max-w-md w-full">
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+          </svg>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">Confirm Logout</h3>
+        <p class="text-gray-400">Are you sure you want to log out?</p>
+      </div>
+      <div class="flex space-x-3">
+        <button onclick="closeLogoutModal()" class="flex-1 px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-xl font-semibold transition">
+          Cancel
+        </button>
+        <a href="../auth/logout.php" class="flex-1 px-6 py-3 bg-red-600 hover:bg-red-700 rounded-xl font-semibold transition text-center">
+          Logout
+        </a>
+      </div>
+    </div>
+  </div>
+
   <!-- JavaScript -->
   <script>
+    function confirmLogout() {
+      document.getElementById('logoutModal').classList.remove('hidden');
+    }
+
+    function closeLogoutModal() {
+      document.getElementById('logoutModal').classList.add('hidden');
+    }
+
     function toggleSidebar() {
       const sidebar = document.getElementById('sidebar');
       const overlay = document.getElementById('overlay');
@@ -409,7 +452,11 @@ function formatDateTime($date, $time) {
       if (event.key === 'Escape') {
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
-        if (sidebar.classList.contains('open')) {
+        const logoutModal = document.getElementById('logoutModal');
+        
+        if (logoutModal && !logoutModal.classList.contains('hidden')) {
+          closeLogoutModal();
+        } else if (sidebar.classList.contains('open')) {
           sidebar.classList.remove('open');
           overlay.classList.remove('show');
         }
