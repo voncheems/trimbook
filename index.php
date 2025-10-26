@@ -22,15 +22,14 @@ $barber_result = $conn->query("SELECT COUNT(*) as barber_count FROM barbers");
 $barber_row = $barber_result->fetch_assoc();
 $expert_barbers = $barber_row['barber_count'] ?? 0;
 
-// Get count of happy clients (customers with any appointment)
-$customer_result = $conn->query("
-    SELECT COUNT(DISTINCT u.user_id) as customer_count 
-    FROM users u
-    INNER JOIN appointments a ON u.user_id = a.customer_user_id
-    WHERE u.user_type = 'customer'
+// Get average rating from feedback
+$rating_result = $conn->query("
+    SELECT ROUND(AVG(rating), 1) as avg_rating, COUNT(*) as total_reviews
+    FROM feedback
 ");
-$customer_row = $customer_result->fetch_assoc();
-$happy_clients = $customer_row['customer_count'] ?? 0;
+$rating_row = $rating_result->fetch_assoc();
+$avg_rating = $rating_row['avg_rating'] ?? 0;
+$total_reviews = $rating_row['total_reviews'] ?? 0;
 
 $title = "TrimBook | Your Barber Appointment System";
 ?>
@@ -57,63 +56,133 @@ $title = "TrimBook | Your Barber Appointment System";
     
     .hero-gradient {
       background: radial-gradient(ellipse at top, #1a1a2e 0%, #0a0a0f 100%);
+      position: relative;
+    }
+    
+    .hero-gradient::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 50%);
+      pointer-events: none;
     }
     
     .card-hover {
       transition: all 0.3s ease;
     }
     
-    .card-hover:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+    .card-hover:hover .service-image {
+      transform: scale(1.05);
+    }
+
+    .service-image {
+      transition: all 0.3s ease;
+    }
+
+    .stat-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .stat-card:hover::before {
+      opacity: 1;
+    }
+
+    .mobile-menu {
+      display: none;
+    }
+
+    .mobile-menu.active {
+      display: block;
     }
   </style>
 </head>
 <body class="bg-black text-white antialiased">
 
-  <!-- Navbars -->
+  <!-- Navbar -->
   <header class="fixed w-full top-0 left-0 z-50 bg-black/80 backdrop-blur-lg border-b border-gray-800">
     <nav class="container mx-auto flex justify-between items-center py-5 px-6">
       <a href="/trimbook/index.php" class="text-2xl font-black tracking-tight">TRIMBOOK</a>
+      
+      <!-- Desktop Menu -->
       <ul class="hidden md:flex space-x-8 font-medium text-sm">
-        <li><a href="/trimbook/index.php" class="text-gray-300 hover:text-white transition">Home</a></li>
-        <li><a href="#about" class="text-gray-300 hover:text-white transition">About</a></li>
+        <li><a href="/trimbook/index.php" class="text-white transition">Home</a></li>
+        <li><a href="/trimbook/pages/about.php" class="text-gray-300 hover:text-white transition">About</a></li>
         <li><a href="/trimbook/pages/services.php" class="text-gray-300 hover:text-white transition">Services</a></li>
         <li><a href="/trimbook/pages/ourBarbers_page.php" class="text-gray-300 hover:text-white transition">Our Barbers</a></li>
         <li><a href="#contact" class="text-gray-300 hover:text-white transition">Contact</a></li>
       </ul>
-      <div class="flex items-center space-x-4">
+      
+      <div class="hidden md:flex items-center space-x-4">
         <a href="/trimbook/pages/login_page.php" class="text-sm font-medium text-gray-300 hover:text-white transition">Login</a>
         <a href="/trimbook/pages/signup_page.php" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition">
           Sign Up
         </a>
       </div>
+
+      <!-- Mobile Menu Button -->
+      <button class="md:hidden text-white" onclick="toggleMobileMenu()">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
     </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mobile-menu md:hidden bg-black/95 backdrop-blur-lg border-t border-gray-800">
+      <ul class="flex flex-col space-y-4 p-6">
+        <li><a href="/trimbook/index.php" class="text-white block">Home</a></li>
+        <li><a href="/trimbook/pages/about.php" class="text-gray-300 hover:text-white block">About</a></li>
+        <li><a href="/trimbook/pages/services.php" class="text-gray-300 hover:text-white block">Services</a></li>
+        <li><a href="/trimbook/pages/ourBarbers_page.php" class="text-gray-300 hover:text-white block">Our Barbers</a></li>
+        <li><a href="#contact" class="text-gray-300 hover:text-white block">Contact</a></li>
+        <li class="pt-4 border-t border-gray-800">
+          <a href="/trimbook/pages/login_page.php" class="text-gray-300 hover:text-white block mb-3">Login</a>
+          <a href="/trimbook/pages/signup_page.php" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold inline-block">
+            Sign Up
+          </a>
+        </li>
+      </ul>
+    </div>
   </header>
 
   <!-- Hero Section -->
   <section id="home" class="hero-gradient min-h-screen flex items-center justify-center px-6 pt-20">
-    <div class="container mx-auto text-center max-w-5xl">
-      <div class="inline-flex items-center space-x-2 bg-blue-600/20 border border-blue-500/30 rounded-full px-6 py-2 mb-8">
-        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+    <div class="container mx-auto text-center max-w-5xl relative z-10">
+      <div class="inline-flex items-center space-x-2 bg-blue-600/20 border border-blue-500/30 rounded-full px-6 py-2 mb-8 animate-pulse">
+        <span class="w-2 h-2 bg-green-500 rounded-full"></span>
         <span class="text-sm font-medium text-blue-300">Book 24/7 • Walk-ins Welcome</span>
       </div>
       
-      <h1 class="text-5xl md:text-7xl font-black leading-tight mb-6 tracking-tight">
+      <h1 class="text-5xl md:text-7xl lg:text-8xl font-black leading-tight mb-6 tracking-tight">
         BOOK SMARTER.<br>
         <span class="gradient-text">LOOK SHARPER.</span>
       </h1>
       
-      <p class="text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-        Introducing TrimBook — a seamless booking experience, <br class="hidden md:block">
-        designed for those who value their time and their style.
+      <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-12 leading-relaxed">
+        Introducing TrimBook — a seamless booking experience designed for those who value their time and their style.
       </p>
       
       <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-        <a href="/trimbook/pages/login_page.php" class="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full text-lg font-bold hover:shadow-xl hover:shadow-purple-500/50 transition transform hover:scale-105">
+        <a href="/trimbook/pages/login_page.php" class="w-full sm:w-auto inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full text-lg font-bold hover:shadow-xl hover:shadow-purple-500/50 transition transform hover:scale-105">
           GET STARTED TODAY
         </a>
-        <a href="#services" class="inline-block bg-white/10 border border-white/20 text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-white/20 transition">
+        <a href="#services" class="w-full sm:w-auto inline-block bg-white/10 border border-white/20 text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-white/20 transition">
           Explore Services
         </a>
       </div>
@@ -121,210 +190,236 @@ $title = "TrimBook | Your Barber Appointment System";
   </section>
 
   <!-- Quick Stats Section -->
-  <section class="py-16 bg-zinc-950 border-y border-gray-800">
+  <section class="py-20 bg-zinc-950 border-y border-gray-800">
     <div class="container mx-auto px-6">
-      <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto text-center">
-        <div>
-          <div class="text-4xl font-black gradient-text mb-2"><?= $expert_barbers ?></div>
-          <p class="text-gray-400">Expert Barbers</p>
+      <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div class="stat-card text-center p-8 rounded-2xl border border-gray-800 relative">
+          <div class="text-5xl font-black gradient-text mb-3"><?= $expert_barbers ?>+</div>
+          <p class="text-gray-400 font-medium">Expert Barbers</p>
         </div>
-        <div>
-          <div class="text-4xl font-black gradient-text mb-2"><?= $happy_clients ?></div>
-          <p class="text-gray-400">Happy Clients</p>
+        <div class="stat-card text-center p-8 rounded-2xl border border-gray-800 relative">
+          <div class="text-5xl font-black gradient-text mb-3"><?= number_format($avg_rating, 1) ?><span class="text-3xl">★</span></div>
+          <p class="text-gray-400 font-medium">Average Rating</p>
+          <p class="text-gray-500 text-sm mt-1"><?= $total_reviews ?> reviews</p>
         </div>
-        <div>
-          <div class="text-4xl font-black gradient-text mb-2">24/7</div>
-          <p class="text-gray-400">Online Booking</p>
+        <div class="stat-card text-center p-8 rounded-2xl border border-gray-800 relative">
+          <div class="text-5xl font-black gradient-text mb-3">24/7</div>
+          <p class="text-gray-400 font-medium">Online Booking</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- About Section -->
-  <section id="about" class="py-24 bg-black">
-    <div class="container mx-auto px-6 text-center">
-      <h2 class="text-4xl md:text-5xl font-black mb-6">Why Choose TrimBook?</h2>
-      <p class="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed mb-12">
-        TrimBook is a smart scheduling system that connects barbers and clients seamlessly.
-        Manage appointments, avoid long waits, and stay stylish — all in one place.
-      </p>
+  <section id="about" class="py-28 bg-black">
+    <div class="container mx-auto px-6">
+      <div class="text-center max-w-4xl mx-auto mb-20">
+        <h2 class="text-4xl md:text-6xl font-black mb-6">Why Choose TrimBook?</h2>
+        <p class="text-lg md:text-xl text-gray-400 leading-relaxed">
+          TrimBook is a smart scheduling system that connects barbers and clients seamlessly. Manage appointments, avoid long waits, and stay stylish — all in one place.
+        </p>
+      </div>
       
       <!-- Feature Cards -->
-      <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mt-16">
-        <div class="text-center">
-          <div class="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div class="text-center bg-gradient-to-br from-gray-900/50 to-gray-800/50 border border-gray-800 rounded-3xl p-10 card-hover">
+          <div class="w-20 h-20 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
           </div>
-          <h3 class="text-xl font-bold mb-2">Easy Booking</h3>
-          <p class="text-gray-400 text-sm">Book appointments in seconds, anytime, anywhere</p>
+          <h3 class="text-2xl font-bold mb-3">Easy Booking</h3>
+          <p class="text-gray-400 leading-relaxed">Book appointments in seconds, anytime, anywhere with our intuitive platform</p>
         </div>
-        <div class="text-center">
-          <div class="w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="text-center bg-gradient-to-br from-gray-900/50 to-gray-800/50 border border-gray-800 rounded-3xl p-10 card-hover">
+          <div class="w-20 h-20 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
           </div>
-          <h3 class="text-xl font-bold mb-2">No Wait Time</h3>
-          <p class="text-gray-400 text-sm">Skip the queue with scheduled appointments</p>
+          <h3 class="text-2xl font-bold mb-3">No Wait Time</h3>
+          <p class="text-gray-400 leading-relaxed">Skip the queue with scheduled appointments and arrive right on time</p>
         </div>
-        <div class="text-center">
-          <div class="w-16 h-16 bg-gradient-to-br from-pink-600 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="text-center bg-gradient-to-br from-gray-900/50 to-gray-800/50 border border-gray-800 rounded-3xl p-10 card-hover">
+          <div class="w-20 h-20 bg-gradient-to-br from-pink-600 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
             </svg>
           </div>
-          <h3 class="text-xl font-bold mb-2">Top Rated</h3>
-          <p class="text-gray-400 text-sm">5-star service from professional barbers</p>
+          <h3 class="text-2xl font-bold mb-3">Top Rated</h3>
+          <p class="text-gray-400 leading-relaxed">5-star service from professional barbers you can trust</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Services Section -->
-  <section id="services" class="py-24 bg-zinc-950">
+  <section id="services" class="py-28 bg-zinc-950">
     <div class="container mx-auto px-6">
-      <h2 class="text-4xl md:text-5xl font-black text-center mb-4">Our Services</h2>
-      <p class="text-center text-gray-400 mb-16 text-lg">Premium grooming services tailored for you</p>
-      
-      <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-        
-        <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl p-8">
-          <div class="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mb-6">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-          </div>
-          <h3 class="text-2xl font-bold mb-3">Classic Haircut</h3>
-          <p class="text-gray-400 leading-relaxed mb-4">Get a fresh, stylish haircut from expert barbers.</p>
-          <p class="text-2xl font-bold gradient-text">₱250</p>
-        </div>
-
-        <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl p-8">
-          <div class="w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center mb-6">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
-            </svg>
-          </div>
-          <h3 class="text-2xl font-bold mb-3">Beard Trim</h3>
-          <p class="text-gray-400 leading-relaxed mb-4">Shape and style your beard to perfection.</p>
-          <p class="text-2xl font-bold gradient-text">₱150</p>
-        </div>
-
-        <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl p-8">
-          <div class="w-16 h-16 bg-gradient-to-br from-pink-600 to-orange-600 rounded-2xl flex items-center justify-center mb-6">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
-            </svg>
-          </div>
-          <h3 class="text-2xl font-bold mb-3">Hot Towel Shave</h3>
-          <p class="text-gray-400 leading-relaxed mb-4">Experience the classic barber shave treatment.</p>
-          <p class="text-2xl font-bold gradient-text">₱200</p>
-        </div>
-        
+      <div class="text-center mb-20">
+        <h2 class="text-4xl md:text-6xl font-black mb-4">Our Services</h2>
+        <p class="text-gray-400 text-lg">Premium grooming services tailored for you</p>
       </div>
-    </div>
-  </section>
-
-  <!-- Barbers Section -->
-  <section id="barbers" class="py-24 bg-black">
-    <div class="container mx-auto px-6">
-      <h2 class="text-4xl md:text-5xl font-black text-center mb-4">Meet Our Expert Barbers</h2>
-      <p class="text-center text-gray-400 mb-16 text-lg">Skilled professionals dedicated to your style</p>
       
-      <div class="grid md:grid-cols-4 gap-8 max-w-6xl mx-auto">
-        <div class="text-center">
-          <div class="w-32 h-32 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full mx-auto mb-4 flex items-center justify-center text-4xl font-bold">
-            JD
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+        
+        <!-- Service 1: Classic Haircut -->
+        <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
+          <div class="relative h-48 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-purple-600/20"></div>
+            <img src="assets/images/classic.jpeg" alt="Classic Haircut" class="service-image w-full h-full object-cover">
           </div>
-          <h3 class="text-xl font-bold mb-2">John Doe</h3>
-          <p class="text-gray-400 text-sm mb-2">Master Barber</p>
-          <div class="flex justify-center items-center space-x-1">
-            <svg class="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-            </svg>
-            <span class="text-sm text-gray-400">4.9</span>
-          </div>
-        </div>
-        <div class="text-center">
-          <div class="w-32 h-32 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full mx-auto mb-4 flex items-center justify-center text-4xl font-bold">
-            MS
-          </div>
-          <h3 class="text-xl font-bold mb-2">Mike Smith</h3>
-          <p class="text-gray-400 text-sm mb-2">Senior Stylist</p>
-          <div class="flex justify-center items-center space-x-1">
-            <svg class="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-            </svg>
-            <span class="text-sm text-gray-400">5.0</span>
-          </div>
-        </div>
-        <div class="text-center">
-          <div class="w-32 h-32 bg-gradient-to-br from-pink-600 to-orange-600 rounded-full mx-auto mb-4 flex items-center justify-center text-4xl font-bold">
-            RJ
-          </div>
-          <h3 class="text-xl font-bold mb-2">Robert Jones</h3>
-          <p class="text-gray-400 text-sm mb-2">Fade Specialist</p>
-          <div class="flex justify-center items-center space-x-1">
-            <svg class="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-            </svg>
-            <span class="text-sm text-gray-400">4.8</span>
+          <div class="p-8">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-2xl font-bold">Classic Haircut</h3>
+              <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+            </div>
+            <p class="text-gray-400 leading-relaxed mb-4">Clean, sharp and timeless</p>
+            <div class="flex items-center text-sm text-gray-400 mb-4">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              35-45 minutes
+            </div>
+            <div class="flex items-center justify-between">
+              <p class="text-3xl font-black gradient-text">₱350</p>
+              <a href="/trimbook/pages/login_page.php" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
+                Book
+              </a>
+            </div>
           </div>
         </div>
-        <div class="text-center">
-          <div class="w-32 h-32 bg-gradient-to-br from-orange-600 to-red-600 rounded-full mx-auto mb-4 flex items-center justify-center text-4xl font-bold">
-            TW
+
+        <!-- Service 2: Fade & Line Up -->
+        <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
+          <div class="relative h-48 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-pink-600/20"></div>
+            <img src="assets/images/fade.jpeg" alt="Fade & Line Up" class="service-image w-full h-full object-cover">
           </div>
-          <h3 class="text-xl font-bold mb-2">Tom Wilson</h3>
-          <p class="text-gray-400 text-sm mb-2">Beard Expert</p>
-          <div class="flex justify-center items-center space-x-1">
-            <svg class="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-            </svg>
-            <span class="text-sm text-gray-400">4.9</span>
+          <div class="p-8">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-2xl font-bold">Fade & Line Up</h3>
+              <div class="w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+              </div>
+            </div>
+            <p class="text-gray-400 leading-relaxed mb-4">Sharp fades with clean edges</p>
+            <div class="flex items-center text-sm text-gray-400 mb-4">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              35-45 minutes
+            </div>
+            <div class="flex items-center justify-between">
+              <p class="text-3xl font-black gradient-text">₱400</p>
+              <a href="/trimbook/pages/login_page.php" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
+                Book
+              </a>
+            </div>
           </div>
         </div>
+
+        <!-- Service 3: Kid's Haircut -->
+        <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
+          <div class="relative h-48 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-pink-600/20 to-orange-600/20"></div>
+            <img src="assets/images/kid.jpeg" alt="Kid's Haircut" class="service-image w-full h-full object-cover">
+          </div>
+          <div class="p-8">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-2xl font-bold">Kid's Haircut</h3>
+              <div class="w-12 h-12 bg-gradient-to-br from-pink-600 to-orange-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+            </div>
+            <p class="text-gray-400 leading-relaxed mb-4">Gentle and stylish cuts for kids</p>
+            <div class="flex items-center text-sm text-gray-400 mb-4">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              20-30 minutes
+            </div>
+            <div class="flex items-center justify-between">
+              <p class="text-3xl font-black gradient-text">₱200</p>
+              <a href="/trimbook/pages/login_page.php" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
+                Book
+              </a>
+            </div>
+          </div>
+        </div>
+       
+      </div>
+
+      <div class="text-center mt-16">
+        <a href="/trimbook/pages/services.php" class="inline-block bg-white/10 border border-white/20 text-white px-8 py-4 rounded-full text-base font-bold hover:bg-white/20 transition">
+          View All Services
+        </a>
       </div>
     </div>
   </section>
 
   <!-- CTA Section -->
-  <section class="py-24 bg-gradient-to-b from-zinc-950 to-black">
+  <section class="py-28 bg-gradient-to-b from-black to-zinc-950">
     <div class="container mx-auto px-6 text-center">
-      <h2 class="text-4xl md:text-5xl font-black mb-6">Ready to Look Sharp?</h2>
-      <p class="text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-        Join thousands of satisfied clients. Create your account and book your first appointment today.
-      </p>
-      <a href="/trimbook/pages/login_page.php" class="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-10 py-5 rounded-full text-lg font-bold hover:shadow-xl hover:shadow-purple-500/50 transition transform hover:scale-105">
-        Get Started Free
-      </a>
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-4xl md:text-6xl font-black mb-6 leading-tight">Ready to Look Sharp?</h2>
+        <p class="text-lg md:text-xl text-gray-400 mb-12 leading-relaxed">
+          Join thousands of satisfied clients. Create your account and book your first appointment today.
+        </p>
+        <a href="/trimbook/pages/signup_page.php" class="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-12 py-5 rounded-full text-lg font-bold hover:shadow-2xl hover:shadow-purple-500/50 transition transform hover:scale-105">
+          Get Started Free
+        </a>
+      </div>
     </div>
   </section>
 
   <!-- Footer -->
-  <footer id="contact" class="bg-zinc-950 border-t border-gray-800 py-12">
+  <footer id="contact" class="bg-zinc-950 border-t border-gray-800 py-16">
     <div class="container mx-auto px-6">
-      <div class="grid md:grid-cols-3 gap-8 mb-8">
-        <div>
-          <h3 class="text-xl font-black mb-4">TRIMBOOK</h3>
-          <p class="text-gray-400 text-sm">Your trusted barber appointment system. Book smarter, look sharper.</p>
+      <div class="grid md:grid-cols-4 gap-12 mb-12">
+        <div class="md:col-span-2">
+          <h3 class="text-3xl font-black mb-4 gradient-text">TRIMBOOK</h3>
+          <p class="text-gray-400 leading-relaxed max-w-md">Your trusted barber appointment system. Book smarter, look sharper. Experience hassle-free scheduling with the best barbers in town.</p>
         </div>
         <div>
-          <h4 class="font-bold mb-4">Services</h4>
-          <ul class="space-y-2 text-sm">
-            <li><a href="#services" class="text-gray-400 hover:text-white transition">Classic Haircut</a></li>
-            <li><a href="#services" class="text-gray-400 hover:text-white transition">Beard Trim</a></li>
-            <li><a href="#services" class="text-gray-400 hover:text-white transition">Hot Towel Shave</a></li>
+          <h4 class="font-bold mb-4 text-lg">Quick Links</h4>
+          <ul class="space-y-3 text-sm">
+            <li><a href="/trimbook/pages/about.php" class="text-gray-400 hover:text-white transition">About Us</a></li>
+            <li><a href="/trimbook/pages/services.php" class="text-gray-400 hover:text-white transition">Services</a></li>
+            <li><a href="/trimbook/pages/ourBarbers_page.php" class="text-gray-400 hover:text-white transition">Our Barbers</a></li>
+            <li><a href="/trimbook/pages/login_page.php" class="text-gray-400 hover:text-white transition">Login</a></li>
           </ul>
         </div>
         <div>
-          <h4 class="font-bold mb-4">Contact</h4>
-          <ul class="space-y-2 text-sm text-gray-400">
-            <li>Email: info@trimbook.com</li>
-            <li>Phone: (123) 456-7890</li>
-            <li>Address: Baguio City, Philippines</li>
+          <h4 class="font-bold mb-4 text-lg">Contact Us</h4>
+          <ul class="space-y-3 text-sm text-gray-400">
+            <li class="flex items-start">
+              <svg class="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+              </svg>
+              info@trimbook.com
+            </li>
+            <li class="flex items-start">
+              <svg class="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+              </svg>
+              (123) 456-7890
+            </li>
+            <li class="flex items-start">
+              <svg class="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              </svg>
+              Baguio City, Philippines
+            </li>
           </ul>
         </div>
       </div>
@@ -333,6 +428,32 @@ $title = "TrimBook | Your Barber Appointment System";
       </div>
     </div>
   </footer>
+
+  <script>
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobileMenu');
+      menu.classList.toggle('active');
+    }
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const href = this.getAttribute('href');
+        if (href !== '#') {
+          e.preventDefault();
+          const target = document.querySelector(href);
+          if (target) {
+            target.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+            // Close mobile menu if open
+            document.getElementById('mobileMenu').classList.remove('active');
+          }
+        }
+      });
+    });
+  </script>
 
 </body>
 </html>
