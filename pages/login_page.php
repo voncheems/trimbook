@@ -65,7 +65,7 @@ $title = "Login | TrimBook";
 
           <!-- Forgot Password -->
           <div class="text-right">
-            <a href="forgot_password.php" class="text-sm text-blue-500 hover:text-blue-400">
+            <a href="../pages/forgot_password.php" class="text-sm text-blue-500 hover:text-blue-400">
               Forgot password?
             </a>
           </div>
