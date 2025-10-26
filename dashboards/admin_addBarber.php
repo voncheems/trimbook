@@ -2,6 +2,12 @@
 session_start();
 require_once('../includes/dbconfig.php');
 
+// Check authentication
+if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] !== 'admin') {
+    header("Location: ../pages/login_page.php");
+    exit();
+}
+
 // Get admin data from session
 $admin_name = $_SESSION['admin_name'] ?? 'Administrator';
 $admin_username = $_SESSION['admin_username'] ?? 'admin';
