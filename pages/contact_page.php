@@ -49,7 +49,7 @@ $title = "Contact Us | TrimBook";
       <a href="index.php" class="text-2xl font-black tracking-tight">TRIMBOOK</a>
       <ul class="hidden md:flex space-x-8 font-medium text-sm">
         <li><a href="../index.php" class="text-gray-300 hover:text-white transition">Home</a></li>
-        <li><a href="index.php#about" class="text-gray-300 hover:text-white transition">About</a></li>
+        <li><a href="../pages/about.php" class="text-gray-300 hover:text-white transition">About</a></li>
         <li><a href="../pages/services.php" class="text-gray-300 hover:text-white transition">Services</a></li>
         <li><a href="../pages/ourBarbers_page.php" class="text-gray-300 hover:text-white transition">Our Barbers</a></li>
         <li><a href="../pages/contact_page.php" class="text-white transition font-semibold">Contact</a></li>
