@@ -2,6 +2,12 @@
 session_start();
 require_once('../includes/dbconfig.php');
 
+// Check authentication
+if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] !== 'admin') {
+    header("Location: ../pages/login_page.php");
+    exit();
+}
+
 // Get admin data from session
 $admin_name = $_SESSION['admin_name'] ?? 'Administrator';
 $admin_username = $_SESSION['admin_username'] ?? 'admin';
@@ -246,6 +252,22 @@ function formatDate($date) {
         </div>
       <?php endif; ?>
 
+      <!-- Success Message -->
+      <?php if (isset($_SESSION['success_message'])): ?>
+        <div class="mb-6 bg-green-500/20 border border-green-500/30 text-green-400 px-6 py-4 rounded-xl">
+          <p><?= htmlspecialchars($_SESSION['success_message']) ?></p>
+        </div>
+        <?php unset($_SESSION['success_message']); ?>
+      <?php endif; ?>
+
+      <!-- Error Message from Form -->
+      <?php if (isset($_SESSION['error_message'])): ?>
+        <div class="mb-6 bg-red-500/20 border border-red-500/30 text-red-400 px-6 py-4 rounded-xl">
+          <p><?= htmlspecialchars($_SESSION['error_message']) ?></p>
+        </div>
+        <?php unset($_SESSION['error_message']); ?>
+      <?php endif; ?>
+
       <!-- Clients Table -->
       <div class="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
         <!-- Card Header -->
@@ -359,12 +381,83 @@ function formatDate($date) {
           </button>
           <button 
             type="button"
+            onclick="openPasswordModal()"
             class="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-xl hover:shadow-purple-500/50 transition transform hover:scale-105"
           >
-            Contact Client
+            Reset Password
           </button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Password Reset Modal -->
+  <div id="passwordModal" class="modal fixed inset-0 z-50 items-center justify-center bg-black/60 backdrop-blur-sm">
+    <div class="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl w-full max-w-md mx-6">
+      
+      <!-- Modal Header -->
+      <div class="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-6">
+        <div class="flex items-center justify-between">
+          <h2 class="text-2xl font-bold">Reset Password</h2>
+          <button onclick="closePasswordModal()" class="text-white hover:text-gray-200 transition">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal Content -->
+      <form id="passwordResetForm" method="POST" action="../auth/reset_client_password.php" class="p-8 space-y-6">
+        <input type="hidden" id="resetUserId" name="user_id">
+        
+        <div>
+          <p class="text-gray-400 mb-4">Reset password for: <span class="text-white font-semibold" id="resetClientName"></span></p>
+          
+          <label for="newPassword" class="block text-sm font-medium text-gray-300 mb-2">New Password</label>
+          <input 
+            type="password" 
+            id="newPassword" 
+            name="new_password" 
+            required
+            minlength="6"
+            class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-purple-500 transition"
+            placeholder="Enter new password (min. 6 characters)"
+          >
+        </div>
+
+        <div>
+          <label for="confirmPassword" class="block text-sm font-medium text-gray-300 mb-2">Confirm Password</label>
+          <input 
+            type="password" 
+            id="confirmPassword" 
+            name="confirm_password" 
+            required
+            minlength="6"
+            class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-purple-500 transition"
+            placeholder="Confirm new password"
+          >
+        </div>
+
+        <div id="passwordError" class="hidden bg-red-500/20 border border-red-500/30 text-red-400 px-4 py-3 rounded-xl text-sm"></div>
+
+        <!-- Action Buttons -->
+        <div class="flex items-center justify-end space-x-4 pt-4">
+          <button 
+            type="button" 
+            onclick="closePasswordModal()"
+            class="px-8 py-3 bg-gray-800 text-white rounded-xl font-semibold hover:bg-gray-700 transition"
+          >
+            Cancel
+          </button>
+          <button 
+            type="submit"
+            class="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-xl hover:shadow-purple-500/50 transition transform hover:scale-105"
+          >
+            Reset Password
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -375,9 +468,12 @@ function formatDate($date) {
 
   <!-- JavaScript -->
   <script>
+    let currentClientId = null;
+
     document.addEventListener('keydown', function(event) {
       if (event.key === 'Escape') {
         closeClientModal();
+        closePasswordModal();
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
         if (sidebar.classList.contains('open')) {
@@ -388,6 +484,7 @@ function formatDate($date) {
     });
 
     function openClientModal(client) {
+      currentClientId = client.user_id;
       document.getElementById('modalClientName').textContent = client.first_name + ' ' + client.last_name;
       document.getElementById('modalClientEmail').textContent = client.email;
       document.getElementById('modalClientPhone').textContent = client.phone_no || 'N/A';
@@ -402,17 +499,61 @@ function formatDate($date) {
       document.getElementById('clientModal').classList.remove('show');
     }
 
+    function openPasswordModal() {
+      const clientName = document.getElementById('modalClientName').textContent;
+      document.getElementById('resetUserId').value = currentClientId;
+      document.getElementById('resetClientName').textContent = clientName;
+      document.getElementById('newPassword').value = '';
+      document.getElementById('confirmPassword').value = '';
+      document.getElementById('passwordError').classList.add('hidden');
+      document.getElementById('passwordModal').classList.add('show');
+    }
+
+    function closePasswordModal() {
+      document.getElementById('passwordModal').classList.remove('show');
+    }
+
     function formatDate(dateStr) {
       if (!dateStr) return 'Never';
       const date = new Date(dateStr);
       return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     }
 
-    // Close modal when clicking outside
+    // Close modals when clicking outside
     document.getElementById('clientModal').addEventListener('click', function(e) {
       if (e.target === this) {
         closeClientModal();
       }
+    });
+
+    document.getElementById('passwordModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closePasswordModal();
+      }
+    });
+
+    // Password form validation
+    document.getElementById('passwordResetForm').addEventListener('submit', function(e) {
+      const password = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const errorDiv = document.getElementById('passwordError');
+
+      if (password !== confirmPassword) {
+        e.preventDefault();
+        errorDiv.textContent = 'Passwords do not match!';
+        errorDiv.classList.remove('hidden');
+        return false;
+      }
+
+      if (password.length < 6) {
+        e.preventDefault();
+        errorDiv.textContent = 'Password must be at least 6 characters long!';
+        errorDiv.classList.remove('hidden');
+        return false;
+      }
+
+      errorDiv.classList.add('hidden');
+      return true;
     });
   </script>
 
