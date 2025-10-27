@@ -6,8 +6,7 @@
 -- BARBER DASHBOARD --
 
 -- ADMIN DASHBOARD --
-1. Need page for editing admin password.
-2. Manage Barbers - need to be able to change barber password.
+1. Manage Barbers - need to be able to change barber password.
 
 -- LOGIN & SIGNUP -- 
 
