@@ -1,3 +1,18 @@
+<?php
+session_start();
+
+// Get messages from session
+$errors = $_SESSION['reset_errors'] ?? [];
+$success = $_SESSION['reset_success'] ?? '';
+$email_input = $_SESSION['reset_email'] ?? '';
+$phone_input = $_SESSION['reset_phone'] ?? '';
+
+// Clear session messages after retrieving them
+unset($_SESSION['reset_errors']);
+unset($_SESSION['reset_success']);
+unset($_SESSION['reset_email']);
+unset($_SESSION['reset_phone']);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,6 +40,21 @@
 
     .form-input:focus {
       box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+    }
+
+    .alert {
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
@@ -64,31 +94,37 @@
         <p class="text-gray-400 text-lg">Submit a password reset request to the admin</p>
       </div>
 
-      <!-- Success Message (hidden by default, shown via URL parameter) -->
-      <div id="successMessage" class="mb-8 bg-green-500/10 border border-green-500/50 rounded-2xl p-6 hidden">
-        <div class="flex items-start">
-          <svg class="w-6 h-6 text-green-500 mt-0.5 mr-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-          </svg>
-          <div>
-            <p class="text-lg font-semibold text-green-400 mb-1">Request Submitted!</p>
-            <p class="text-sm text-green-300/80">Your password reset request has been sent to the admin. They will contact you shortly.</p>
+      <!-- Success Message -->
+      <?php if ($success): ?>
+        <div class="alert mb-8 bg-green-500/10 border border-green-500/50 rounded-2xl p-6">
+          <div class="flex items-start">
+            <svg class="w-6 h-6 text-green-500 mt-0.5 mr-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+            <div>
+              <p class="text-lg font-semibold text-green-400 mb-1">Request Submitted!</p>
+              <p class="text-sm text-green-300/80"><?= htmlspecialchars($success) ?></p>
+            </div>
           </div>
         </div>
-      </div>
+      <?php endif; ?>
 
       <!-- Error Messages -->
-      <div id="errorMessage" class="mb-8 bg-red-500/10 border border-red-500/50 rounded-2xl p-6 hidden">
-        <div class="flex items-start">
-          <svg class="w-6 h-6 text-red-500 mt-0.5 mr-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-          </svg>
-          <div>
-            <p class="text-lg font-semibold text-red-400 mb-1" id="errorTitle">Submission Failed</p>
-            <p class="text-sm text-red-300/80" id="errorText">There was an error submitting your request. Please try again.</p>
+      <?php if (!empty($errors)): ?>
+        <div class="alert mb-8 bg-red-500/10 border border-red-500/50 rounded-2xl p-6">
+          <div class="flex items-start">
+            <svg class="w-6 h-6 text-red-500 mt-0.5 mr-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+            </svg>
+            <div>
+              <p class="text-lg font-semibold text-red-400 mb-1">Submission Failed</p>
+              <?php foreach ($errors as $error): ?>
+                <p class="text-sm text-red-300/80"><?= htmlspecialchars($error) ?></p>
+              <?php endforeach; ?>
+            </div>
           </div>
         </div>
-      </div>
+      <?php endif; ?>
 
       <!-- Form Card -->
       <div class="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
@@ -122,7 +158,8 @@
             <input 
               type="email" 
               id="email" 
-              name="email" 
+              name="email"
+              value="<?= htmlspecialchars($email_input) ?>"
               required
               class="form-input w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500"
               placeholder="your.email@example.com"
@@ -137,7 +174,8 @@
             <input 
               type="tel" 
               id="phone" 
-              name="phone" 
+              name="phone"
+              value="<?= htmlspecialchars($phone_input) ?>"
               class="form-input w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500"
               placeholder="+1 (555) 123-4567"
             >
@@ -147,7 +185,7 @@
           <!-- Action Buttons -->
           <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-gray-700">
             <a 
-              href="login.php" 
+              href="login_page.php" 
               class="text-sm text-gray-400 hover:text-purple-400 transition font-medium"
             >
               Remember your password? <span class="text-purple-400">Sign In</span>
@@ -174,7 +212,7 @@
       <!-- Additional Help -->
       <div class="mt-8 text-center">
         <p class="text-gray-500 text-sm">
-          Need help? <a href="contact.php" class="text-purple-400 hover:text-purple-300 font-medium">Contact Support</a>
+          Need help? <a href="contact_page.php" class="text-purple-400 hover:text-purple-300 font-medium">Contact Support</a>
         </p>
       </div>
 
@@ -185,43 +223,6 @@
   <footer class="bg-zinc-950 border-t border-gray-800 py-8 text-center">
     <p class="text-gray-500 text-sm">&copy; 2024 TrimBook. All Rights Reserved.</p>
   </footer>
-
-  <script>
-    // Show success/error messages based on URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    if (urlParams.get('success') === 'sent') {
-      document.getElementById('successMessage').classList.remove('hidden');
-    }
-    
-    // Handle different error types
-    const error = urlParams.get('error');
-    if (error) {
-      const errorMessage = document.getElementById('errorMessage');
-      const errorTitle = document.getElementById('errorTitle');
-      const errorText = document.getElementById('errorText');
-      
-      errorMessage.classList.remove('hidden');
-      
-      switch(error) {
-        case 'invalid_email':
-          errorTitle.textContent = 'Invalid Email';
-          errorText.textContent = 'Please enter a valid email address.';
-          break;
-        case 'duplicate_request':
-          errorTitle.textContent = 'Request Already Exists';
-          errorText.textContent = 'You already have a pending password reset request. Please wait for admin response.';
-          break;
-        case 'failed':
-          errorTitle.textContent = 'Submission Failed';
-          errorText.textContent = 'There was an error submitting your request. Please try again.';
-          break;
-        default:
-          errorTitle.textContent = 'Error';
-          errorText.textContent = 'An unexpected error occurred. Please try again.';
-      }
-    }
-  </script>
 
 </body>
 </html>
