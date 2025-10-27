@@ -2,8 +2,8 @@
 session_start();
 require_once('../includes/dbconfig.php');
 
-
 $errors = [];
+$login_input = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $login_input = trim($_POST['username_or_email'] ?? '');
@@ -79,16 +79,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->close();
         }
     }
-    
-    // If we get here, there were errors
-    $_SESSION['login_errors'] = $errors;
-    $_SESSION['login_username_or_email'] = $login_input;
     $conn->close();
-    header('Location: ../pages/login_page.php');
-    exit;
-    
-} else {
-    header('Location: ../pages/login_page.php');
-    exit;
+}
+
+// Store errors in session for the login page to display
+if (!empty($errors)) {
+    $_SESSION['login_errors'] = $errors;
+    $_SESSION['login_input'] = $login_input;
 }
 ?>
