@@ -10,8 +10,7 @@
 2. Manage Barbers - need to be able to change barber password.
 
 -- LOGIN & SIGNUP -- 
-1. Error Messages - Should Make some 
-2. Forgot Password - Working, but the headers are not fixed yet.
+1. Forgot Password - Working, but the headers are not fixed yet.
 
 barber sample photos file name (laptop ni brenan):
 - samplebarber
