@@ -7,8 +7,7 @@
 
 -- ADMIN DASHBOARD --
 1. Need page for editing admin password.
-2. Need page for creating appointments for walk-ins.
-3. Manage Barbers - need to be able to change barber password.
+2. Manage Barbers - need to be able to change barber password.
 
 -- LOGIN & SIGNUP -- 
 1. Error Messages - Should Make some 
