@@ -347,12 +347,20 @@ if (isset($conn) && $conn) {
                 </div>
 
                 <!-- Actions -->
-                <div class="grid grid-cols-3 gap-2 pt-4">
+                <div class="grid grid-cols-2 gap-2 pt-4">
                   <button onclick='viewBarberDetails(<?= htmlspecialchars(json_encode($barber)) ?>)' class="bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition text-sm">
                     View
                   </button>
                   <button onclick='editBarber(<?= htmlspecialchars(json_encode($barber)) ?>)' class="bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-xl transition text-sm" title="Edit">
                     Edit
+                  </button>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <button onclick='openPasswordModal(<?= htmlspecialchars(json_encode($barber)) ?>)' class="bg-amber-600 hover:bg-amber-700 text-white py-3 rounded-xl transition text-sm flex items-center justify-center space-x-2" title="Change Password">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path>
+                    </svg>
+                    <span>Password</span>
                   </button>
                   <button onclick='confirmDeleteBarber(<?= htmlspecialchars(json_encode($barber)) ?>)' class="bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl transition text-sm" title="Delete">
                     Delete
@@ -388,7 +396,8 @@ if (isset($conn) && $conn) {
           <h2 class="text-2xl font-bold" id="detailsModalTitle">Barber Details</h2>
           <button onclick="closeDetailsModal()" class="text-white hover:text-gray-200 transition">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L
+              18 6M6 6l12 12"></path>
             </svg>
           </button>
         </div>
@@ -552,6 +561,83 @@ if (isset($conn) && $conn) {
     </div>
   </div>
 
+  <!-- Change Password Modal -->
+  <div id="passwordModal" class="modal fixed inset-0 z-50 items-center justify-center bg-black/60 backdrop-blur-sm">
+    <div class="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl w-full max-w-md mx-6 max-h-[90vh] overflow-y-auto">
+      
+      <!-- Modal Header -->
+      <div class="bg-gradient-to-r from-amber-600 to-orange-600 px-8 py-6 sticky top-0">
+        <div class="flex items-center justify-between">
+          <h2 class="text-2xl font-bold">Change Password</h2>
+          <button onclick="closePasswordModal()" class="text-white hover:text-gray-200 transition">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal Form -->
+      <form id="passwordChangeForm" class="p-8 space-y-6">
+        <input type="hidden" id="passwordUserId" name="user_id" value="">
+        
+        <div class="text-center mb-4">
+          <p class="text-gray-300">Changing password for: <span id="passwordBarberName" class="text-white font-semibold"></span></p>
+        </div>
+
+        <!-- New Password -->
+        <div>
+          <label for="newPassword" class="block text-sm font-semibold text-gray-300 mb-2">
+            New Password
+          </label>
+          <input 
+            type="password" 
+            id="newPassword" 
+            name="new_password" 
+            required
+            minlength="6"
+            class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition"
+            placeholder="Enter new password"
+          >
+          <p class="text-xs text-gray-400 mt-1">Minimum 6 characters</p>
+        </div>
+
+        <!-- Confirm Password -->
+        <div>
+          <label for="confirmPassword" class="block text-sm font-semibold text-gray-300 mb-2">
+            Confirm Password
+          </label>
+          <input 
+            type="password" 
+            id="confirmPassword" 
+            name="confirm_password" 
+            required
+            minlength="6"
+            class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition"
+            placeholder="Confirm new password"
+          >
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-700">
+          <button 
+            type="button" 
+            onclick="closePasswordModal()"
+            class="px-8 py-3 bg-gray-800 text-white rounded-xl font-semibold hover:bg-gray-700 transition"
+          >
+            Cancel
+          </button>
+          <button 
+            type="submit" 
+            class="px-8 py-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-xl font-semibold hover:shadow-xl hover:shadow-amber-500/50 transition transform hover:scale-105"
+          >
+            Change Password
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Photo Upload Modal -->
   <div id="photoModal" class="modal fixed inset-0 z-50 items-center justify-center bg-black/60 backdrop-blur-sm">
     <div class="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl w-full max-w-md mx-6 max-h-[90vh] overflow-y-auto">
@@ -675,6 +761,7 @@ if (isset($conn) && $conn) {
         closeEditModal();
         closePhotoModal();
         closeDeleteModal();
+        closePasswordModal();
       }
     });
 
@@ -777,6 +864,18 @@ if (isset($conn) && $conn) {
       document.getElementById('editModal').classList.remove('show');
     }
 
+    function openPasswordModal(barber) {
+      document.getElementById('passwordUserId').value = barber.user_id;
+      document.getElementById('passwordBarberName').textContent = `${barber.first_name} ${barber.last_name}`;
+      document.getElementById('newPassword').value = '';
+      document.getElementById('confirmPassword').value = '';
+      document.getElementById('passwordModal').classList.add('show');
+    }
+
+    function closePasswordModal() {
+      document.getElementById('passwordModal').classList.remove('show');
+    }
+
     function openPhotoModal(barber) {
       document.getElementById('photoUserId').value = barber.user_id;
       document.getElementById('photoFileInput').value = '';
@@ -850,6 +949,10 @@ if (isset($conn) && $conn) {
       if (e.target === this) closeEditModal();
     });
 
+    document.getElementById('passwordModal').addEventListener('click', function(e) {
+      if (e.target === this) closePasswordModal();
+    });
+
     document.getElementById('photoModal').addEventListener('click', function(e) {
       if (e.target === this) closePhotoModal();
     });
@@ -902,20 +1005,53 @@ if (isset($conn) && $conn) {
       });
     });
 
-    document.getElementById('photoUploadForm').addEventListener('submit', function(e) {
+    document.getElementById('passwordChangeForm').addEventListener('submit', function(e) {
       e.preventDefault();
       
-      const fileInput = document.getElementById('photoFileInput');
-      const userId = document.getElementById('photoUserId').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
 
-      if (!fileInput.files[0]) {
-        alert('Please select a photo');
+      if (newPassword !== confirmPassword) {
+        alert('Passwords do not match!');
         return;
       }
 
-      const formData = new FormData();
-      formData.append('user_id', userId);
-      formData.append('profile_photo', fileInput.files[0]);
+      if (newPassword.length < 6) {
+        alert('Password must be at least 6 characters long!');
+        return;
+      }
+
+      const data = {
+        user_id: document.getElementById('passwordUserId').value,
+        new_password: newPassword
+      };
+
+      fetch('../auth/change_barber_password.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('Password changed successfully');
+          closePasswordModal();
+        } else {
+          alert('Error: ' + data.message);
+        }
+      })
+      .catch(err => {
+        console.error('Error:', err);
+        alert('An error occurred while changing password');
+      });
+    });
+
+    document.getElementById('photoUploadForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(this);
 
       fetch('../auth/upload_barber_photo.php', {
         method: 'POST',
@@ -933,10 +1069,9 @@ if (isset($conn) && $conn) {
       })
       .catch(err => {
         console.error('Error:', err);
-        alert('An error occurred while uploading');
+        alert('An error occurred while uploading photo');
       });
     });
   </script>
-
 </body>
 </html>
