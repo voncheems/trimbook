@@ -3,6 +3,11 @@ header('Content-Type: application/json');
 session_start();
 
 try {
+    // Check authentication - IMPORTANT!
+    if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] !== 'admin') {
+        throw new Exception("Unauthorized access");
+    }
+
     // Database connection
     $conn = new mysqli("localhost", "root", "", "trimbookdb");
     
@@ -103,3 +108,4 @@ try {
         'message' => $e->getMessage()
     ]);
 }
+?>
