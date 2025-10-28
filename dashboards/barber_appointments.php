@@ -3,7 +3,7 @@ session_start();
 
 // Check authentication
 if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] !== 'barber') {
-    header("Location: ../auth/login.php");
+    header("Location: ../pages/login_page.php");
     exit();
 }
 
