@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 27, 2025 at 09:59 AM
+-- Generation Time: Oct 28, 2025 at 07:22 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -75,7 +75,8 @@ CREATE TABLE `barbers` (
 INSERT INTO `barbers` (`barber_id`, `user_id`, `specialization`, `experience_years`) VALUES
 (1, 2, 'Modern Haircut', 18),
 (2, 3, 'Hairstyling', 5),
-(3, 4, 'Kids Haircut', 5);
+(3, 4, 'Kids Haircut', 5),
+(4, 508, 'Hairstyling', 7);
 
 -- --------------------------------------------------------
 
@@ -203,7 +204,10 @@ INSERT INTO `schedules` (`schedule_id`, `barber_id`, `day_of_week`, `start_time`
 (24, 2, 'Monday', '09:00:00', '18:00:00'),
 (25, 2, 'Tuesday', '09:00:00', '18:00:00'),
 (26, 2, 'Wednesday', '09:00:00', '18:00:00'),
-(27, 2, 'Thursday', '09:00:00', '18:00:00');
+(27, 2, 'Thursday', '09:00:00', '18:00:00'),
+(28, 4, 'Wednesday', '09:00:00', '18:00:00'),
+(29, 4, 'Friday', '09:00:00', '18:00:00'),
+(30, 4, 'Saturday', '09:00:00', '18:00:00');
 
 -- --------------------------------------------------------
 
@@ -273,9 +277,9 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `email`, `phone_no`, `username`, `password`, `profile_photo`, `user_type`, `created_at`) VALUES
 (1, 'Brenan', 'Cervantes', 'brma.cervantes.up@phinmaed.com', '09384396042', 'brma789', '$2y$10$CN1a4KhFEh/.E1.UgJls2u9a04KXWFxkgfRXST.cdzhrCgpKG6z/6', NULL, 'customer', '2025-10-18 10:14:30'),
-(2, 'Kuya', 'June', 'kuyajune@example.com', '09386399512', 'kuyaj24', '$2y$10$IpQRv5na.ukSdPyVLY9.hud/44zhLB5r5oTtVlitAMzrbDztAm.DK', 'uploads/profile_photos/barber_2_1760876004.webp', 'barber', '2025-10-18 10:17:10'),
+(2, 'Kuya', 'June', 'kuyajune@example.com', '09386399512', 'kuyaj24', '$2y$10$Wq3xMk2yIUFHPO4v3VHZaeD5g4dZaQI9zzKAGR25n9JCVZgrV.5dS', 'uploads/profile_photos/barber_2_1760876004.webp', 'barber', '2025-10-18 10:17:10'),
 (3, 'Stephanie', 'Mabalot', 'stephaniemb@example.com', '09386399513', 'stpnmblt', '$2y$10$8dCdcMSoKmRARw8XyGnxeumSmAhUmAkpBgQg/rFF3kl.kSoH.iFi6', 'uploads/profile_photos/barber_3_1760876010.jpg', 'barber', '2025-10-18 12:18:52'),
-(4, 'Jomari', 'Lucena', 'janonglucena@example.com', '09386399514', 'janonglangto', '$2y$10$yy68yfCCkvh7Gb0YBHutbOxgng0lT.1QSFrHPeUEPHGYJFZRu9/yK', 'uploads/profile_photos/barber_4_1761223537.jpg', 'barber', '2025-10-18 14:39:23'),
+(4, 'Jomari', 'Lucena', 'janonglucena@example.com', '09386399514', 'janonglangto', '$2y$10$yy68yfCCkvh7Gb0YBHutbOxgng0lT.1QSFrHPeUEPHGYJFZRu9/yK', 'uploads/profile_photos/barber_4_1761631313.jpg', 'barber', '2025-10-18 14:39:23'),
 (5, 'Ayban', 'Chen', 'ivfl.chen.up@example.com', '', 'sonnyhayes', '$2y$10$dMHjhgVAJ8Q4DBN/Hx3SN.iRfrvjSbgqLA2snLznEO/20VYcArEwy', NULL, 'customer', '2025-10-20 04:37:28'),
 (6, 'Shane', 'Mack', 'shane.mack001@example.com', '09730979023', 'smack001', '$2b$12$rVZmfkN8sDcHTaB/HHXwQuZbU7FUAEVM6NYzHNCHw9MYEWNURycVi', NULL, 'customer', '2025-10-24 15:10:56'),
 (7, 'Linda', 'Lewis', 'linda.lewis002@example.com', '09622710067', 'llewis002', '$2b$12$rVZmfkN8sDcHTaB/HHXwQuZbU7FUAEVM6NYzHNCHw9MYEWNURycVi', NULL, 'customer', '2025-10-24 15:10:56'),
@@ -778,8 +782,9 @@ INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `email`, `phone_no`, 
 (503, 'Courtney', 'Torres', 'courtney.torres498@example.com', '09131248823', 'ctorres498', '$2b$12$rVZmfkN8sDcHTaB/HHXwQuZbU7FUAEVM6NYzHNCHw9MYEWNURycVi', NULL, 'customer', '2025-10-24 15:10:59'),
 (504, 'Kristina', 'Brown', 'kristina.brown499@example.com', '09381727736', 'kbrown499', '$2b$12$rVZmfkN8sDcHTaB/HHXwQuZbU7FUAEVM6NYzHNCHw9MYEWNURycVi', NULL, 'customer', '2025-10-24 15:10:59'),
 (505, 'Natalie', 'Edwards', 'natalie.edwards500@example.com', '09419489728', 'nedwards500', '$2b$12$rVZmfkN8sDcHTaB/HHXwQuZbU7FUAEVM6NYzHNCHw9MYEWNURycVi', NULL, 'customer', '2025-10-24 15:10:59'),
-(506, 'System', 'Admin', 'admin@trimbook.com', NULL, 'superadmin', '$2y$10$9P297ZzKvf3AiRgVnET5VeExI2mYGUIp6nvUYvtTIykwh1dj/jPGG', NULL, 'admin', '2025-10-25 12:11:31'),
-(507, 'Ivoon', 'Cheen', '', '09386399531', 'ivoonc750', '$2y$10$jk56ypbaQs8WLPNMlzoSKOKbSPLiBZbbIyTuO4cFLNCewCi29Ovf2', NULL, 'customer', '2025-10-27 02:41:45');
+(506, 'System', 'Admin', 'admin@trimbook.com', NULL, 'superadmin', '$2y$10$LaXzfIGeqKO.IXxjYdzA/ers0mkz7q/HPjfs1SoiIZE93h6rl3bZG', NULL, 'admin', '2025-10-25 12:11:31'),
+(507, 'Ivoon', 'Cheen', '', '09386399531', 'ivoonc750', '$2y$10$jk56ypbaQs8WLPNMlzoSKOKbSPLiBZbbIyTuO4cFLNCewCi29Ovf2', NULL, 'customer', '2025-10-27 02:41:45'),
+(508, 'Kenver', 'Petines', 'kequ.petines.up@example.com', '09123456781', 'kreyzii', '$2y$10$EuFebMEOYme/OD4yt0l/XO0IL3N9MY6ZkZIY1BjbBEwMi2is1XPXy', NULL, 'barber', '2025-10-28 06:17:13');
 
 -- --------------------------------------------------------
 
@@ -877,7 +882,7 @@ ALTER TABLE `appointments`
 -- AUTO_INCREMENT for table `barbers`
 --
 ALTER TABLE `barbers`
-  MODIFY `barber_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `barber_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `feedback`
@@ -901,7 +906,7 @@ ALTER TABLE `password_reset_requests`
 -- AUTO_INCREMENT for table `schedules`
 --
 ALTER TABLE `schedules`
-  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `services`
@@ -919,7 +924,7 @@ ALTER TABLE `trimbook_contact`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=508;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=509;
 
 --
 -- Constraints for dumped tables
