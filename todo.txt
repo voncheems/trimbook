@@ -1,7 +1,6 @@
 -- HOMEPAGE -- (October 25, 2025)
 
 -- CLIENT DASHBOARD --
-1. Barbers who are off schedule, should not appear at select barbers page - need feature
 
 -- BARBER DASHBOARD --
 
