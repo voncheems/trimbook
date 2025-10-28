@@ -22,7 +22,10 @@ $first_name = $_SESSION['first_name'] ?? 'Guest';
 $last_name = $_SESSION['last_name'] ?? '';
 $full_name = trim($first_name . ' ' . $last_name);
 
-// Fetch all barbers from database with profile photos
+// Get current day of the week
+$current_day = date('l'); // Returns: Monday, Tuesday, Wednesday, etc.
+
+// Fetch barbers who have a schedule for TODAY
 $query = "
 SELECT 
   b.barber_id,
@@ -34,6 +37,12 @@ SELECT
 FROM barbers b
 JOIN users u ON b.user_id = u.user_id
 WHERE u.user_type = 'barber'
+  AND EXISTS (
+    SELECT 1 
+    FROM schedules s 
+    WHERE s.barber_id = b.barber_id
+      AND s.day_of_week = '$current_day'
+  )
 ORDER BY b.barber_id ASC
 ";
 
@@ -208,8 +217,8 @@ $barbers = mysqli_fetch_all($result, MYSQLI_ASSOC);
           <svg class="w-24 h-24 text-gray-600 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
           </svg>
-          <h3 class="text-2xl font-bold mb-2">No Barbers Available</h3>
-          <p class="text-gray-400 mb-6">Our barber team is currently unavailable. Please check back soon.</p>
+          <h3 class="text-2xl font-bold mb-2">No Barbers Available Today</h3>
+          <p class="text-gray-400 mb-6">All our barbers are off schedule today (<?= $current_day ?>). Please check back on another day or contact us for availability.</p>
           <a href="/trimbook/dashboards/client_dashboard.php" class="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition">
             Back to Dashboard
           </a>
