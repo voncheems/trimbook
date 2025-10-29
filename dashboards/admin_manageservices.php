@@ -19,12 +19,12 @@ $initials = strtoupper(substr($admin_name, 0, 2));
 $services = [];
 $db_error = null;
     
-    $query = "SELECT service_id, service_name, description, price FROM services ORDER BY service_name ASC";
-    $result = $conn->query($query);
-    
-    while ($row = $result->fetch_assoc()) {
-        $services[] = $row;
-    }
+$query = "SELECT service_id, service_name, description, price FROM services ORDER BY service_name ASC";
+$result = $conn->query($query);
+
+while ($row = $result->fetch_assoc()) {
+    $services[] = $row;
+}
     
 ?>
 <!DOCTYPE html>
@@ -83,14 +83,6 @@ $db_error = null;
       background-color: rgba(255, 255, 255, 0.05);
     }
   </style>
-  <script>
-    function toggleSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      const overlay = document.getElementById('overlay');
-      sidebar.classList.toggle('open');
-      overlay.classList.toggle('show');
-    }
-  </script>
 </head>
 <body class="bg-black text-white antialiased">
 
@@ -188,12 +180,21 @@ $db_error = null;
           </svg>
           <span>Customer Feedback</span>
         </a>
-         <a href="../dashboards/admin_walkins.php" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition">
+
+        <a href="../dashboards/admin_feedback.php" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path>
+          </svg>
+          <span>Password Resets</span>
+        </a>
+
+        <a href="../dashboards/admin_walkins.php" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
           </svg>
           <span>Add Appointment</span>
         </a>
+
         <a href="../dashboards/admin_editpass.php" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
@@ -205,12 +206,12 @@ $db_error = null;
 
       <!-- Logout Button -->
       <div class="mt-8 pt-6 border-t border-gray-800">
-        <a href="../auth/logout.php" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 hover:text-red-300 transition">
+        <button onclick="confirmLogout()" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 hover:text-red-300 transition">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
           </svg>
           <span>Logout</span>
-        </a>
+        </button>
       </div>
     </div>
   </aside>
@@ -228,7 +229,7 @@ $db_error = null;
       </div>
       <div class="flex items-center space-x-6">
         <span class="text-gray-400 text-sm hidden md:block">Welcome, <span class="text-white font-semibold"><?= htmlspecialchars($admin_name) ?></span></span>
-        <a href="../auth/logout.php" class="text-sm font-medium text-gray-300 hover:text-white transition hidden md:block">Logout</a>
+        <button onclick="confirmLogout()" class="text-sm font-medium text-gray-300 hover:text-white transition hidden md:block">Logout</button>
       </div>
     </nav>
   </header>
@@ -291,12 +292,12 @@ $db_error = null;
                     <td class="px-8 py-6 font-bold text-blue-400">₱<?= number_format($service['price'], 2) ?></td>
                     <td class="px-8 py-6 text-center">
                       <div class="flex items-center justify-center space-x-3">
-                        <button onclick="editService(<?= htmlspecialchars(json_encode($service)) ?>)" class="text-blue-400 hover:text-blue-300 transition">
+                        <button onclick='editService(<?= json_encode($service) ?>)' class="text-blue-400 hover:text-blue-300 transition">
                           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                           </svg>
                         </button>
-                        <button onclick="deleteService(<?= $service['service_id'] ?>, '<?= htmlspecialchars($service['service_name']) ?>')" class="text-red-400 hover:text-red-300 transition">
+                        <button onclick="deleteService(<?= $service['service_id'] ?>, '<?= htmlspecialchars(addslashes($service['service_name'])) ?>')" class="text-red-400 hover:text-red-300 transition">
                           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                           </svg>
@@ -324,6 +325,11 @@ $db_error = null;
 
     </div>
   </main>
+
+  <!-- Footer -->
+  <footer class="bg-zinc-950 border-t border-gray-800 py-8 text-center no-print">
+    <p class="text-gray-500 text-sm">&copy; <?= date("Y") ?> TrimBook. All Rights Reserved.</p>
+  </footer>
 
   <!-- Add/Edit Service Modal -->
   <div id="serviceModal" class="modal fixed inset-0 z-50 items-center justify-center bg-black/60 backdrop-blur-sm">
@@ -412,25 +418,69 @@ $db_error = null;
     </div>
   </div>
 
-  <!-- Footer -->
-  <footer class="bg-zinc-950 border-t border-gray-800 py-8 text-center no-print">
-    <p class="text-gray-500 text-sm">&copy; <?= date("Y") ?> TrimBook. All Rights Reserved.</p>
-  </footer>
+  <!-- Logout Confirmation Modal -->
+  <div id="logoutModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-2xl p-8 max-w-md w-full">
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+          </svg>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">Confirm Logout</h3>
+        <p class="text-gray-400">Are you sure you want to log out?</p>
+      </div>
+      <div class="flex space-x-3">
+        <button onclick="closeLogoutModal()" class="flex-1 px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-xl font-semibold transition">
+          Cancel
+        </button>
+        <a href="../auth/logout.php" class="flex-1 px-6 py-3 bg-red-600 hover:bg-red-700 rounded-xl font-semibold transition text-center">
+          Logout
+        </a>
+      </div>
+    </div>
+  </div>
 
   <!-- JavaScript -->
   <script>
+    // Logout Modal Functions
+    function confirmLogout() {
+      document.getElementById('logoutModal').classList.remove('hidden');
+    }
+
+    function closeLogoutModal() {
+      document.getElementById('logoutModal').classList.add('hidden');
+    }
+
+    // Sidebar Functions
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+      
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('show');
+    }
+
+    // Escape Key Handler
     document.addEventListener('keydown', function(event) {
       if (event.key === 'Escape') {
-        closeModal();
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
-        if (sidebar.classList.contains('open')) {
+        const logoutModal = document.getElementById('logoutModal');
+        const serviceModal = document.getElementById('serviceModal');
+        
+        if (logoutModal && !logoutModal.classList.contains('hidden')) {
+          closeLogoutModal();
+        } else if (serviceModal.classList.contains('show')) {
+          closeModal();
+        } else if (sidebar.classList.contains('open')) {
           sidebar.classList.remove('open');
           overlay.classList.remove('show');
         }
       }
     });
 
+    // Service Modal Functions
     function openModal() {
       document.getElementById('serviceId').value = '';
       document.getElementById('serviceName').value = '';
@@ -456,7 +506,7 @@ $db_error = null;
     }
 
     function deleteService(serviceId, serviceName) {
-      if (confirm(`Are you sure you want to delete "${serviceName}"?`)) {
+      if (confirm(`Are you sure you want to delete "${serviceName}"?\n\nThis action cannot be undone.`)) {
         fetch('../auth/delete_service.php', {
           method: 'POST',
           headers: {
@@ -469,7 +519,7 @@ $db_error = null;
         .then(response => response.json())
         .then(data => {
           if (data.success) {
-            alert('Service deleted successfully');
+            alert(data.message);
             location.reload();
           } else {
             alert('Error: ' + data.message);
@@ -477,7 +527,7 @@ $db_error = null;
         })
         .catch(err => {
           console.error('Error:', err);
-          alert('An error occurred');
+          alert('An error occurred while deleting the service');
         });
       }
     }
@@ -489,10 +539,43 @@ $db_error = null;
       }
     });
 
-    document.getElementById('serviceForm').addEventListener('submit', function(e)) {
+    // Form Submit Handler
+    document.getElementById('serviceForm').addEventListener('submit', function(e) {
       e.preventDefault();
-    }
-
-</script>
+      
+      const submitBtn = document.getElementById('submitBtn');
+      const originalText = submitBtn.textContent;
+      
+      // Disable button and show loading state
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Saving...';
+      
+      const formData = new FormData(this);
+      
+      fetch('../auth/save_service.php', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert(data.message);
+          location.reload();
+        } else {
+          alert('Error: ' + data.message);
+          // Re-enable button
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        }
+      })
+      .catch(err => {
+        console.error('Error:', err);
+        alert('An error occurred while saving the service');
+        // Re-enable button
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      });
+    });
+  </script>
 </body>
 </html>
