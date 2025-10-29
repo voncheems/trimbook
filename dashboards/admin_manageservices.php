@@ -441,8 +441,7 @@ while ($row = $result->fetch_assoc()) {
     </div>
   </div>
 
-  <!-- JavaScript -->
-  <script>
+ <script>
     // Logout Modal Functions
     function confirmLogout() {
       document.getElementById('logoutModal').classList.remove('hidden');
@@ -496,6 +495,7 @@ while ($row = $result->fetch_assoc()) {
     }
 
     function editService(service) {
+      console.log('Editing service:', service);
       document.getElementById('serviceId').value = service.service_id;
       document.getElementById('serviceName').value = service.service_name;
       document.getElementById('serviceDescription').value = service.description || '';
@@ -545,6 +545,7 @@ while ($row = $result->fetch_assoc()) {
       
       const submitBtn = document.getElementById('submitBtn');
       const originalText = submitBtn.textContent;
+      const serviceId = document.getElementById('serviceId').value;
       
       // Disable button and show loading state
       submitBtn.disabled = true;
@@ -552,18 +553,29 @@ while ($row = $result->fetch_assoc()) {
       
       const formData = new FormData(this);
       
+      console.log('Submitting service_id:', serviceId);
+      
       fetch('../auth/save_service.php', {
         method: 'POST',
         body: formData
       })
       .then(response => response.json())
       .then(data => {
+        console.log('Response:', data);
+        
         if (data.success) {
           alert(data.message);
-          location.reload();
+          
+          // Close modal and reload page to show updated data
+          closeModal();
+          
+          // Small delay to ensure database is updated
+          setTimeout(function() {
+            location.reload();
+          }, 300);
+          
         } else {
           alert('Error: ' + data.message);
-          // Re-enable button
           submitBtn.disabled = false;
           submitBtn.textContent = originalText;
         }
@@ -571,7 +583,6 @@ while ($row = $result->fetch_assoc()) {
       .catch(err => {
         console.error('Error:', err);
         alert('An error occurred while saving the service');
-        // Re-enable button
         submitBtn.disabled = false;
         submitBtn.textContent = originalText;
       });
