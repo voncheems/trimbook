@@ -1,32 +1,21 @@
 <?php
 session_start();
 
-// Debug: Check session
-error_log("=== BARBER DASHBOARD DEBUG ===");
-error_log("Session ID: " . session_id());
-error_log("Session data: " . json_encode($_SESSION));
-
-// Check what we have in session
-if (!isset($_SESSION['user_id'])) {
-    error_log("ERROR: No user_id in session");
-    die("DEBUG: No user_id. Session: " . json_encode($_SESSION));
-}
-
-if (!isset($_SESSION['user_type'])) {
-    error_log("ERROR: No user_type in session");
-    die("DEBUG: No user_type. Session: " . json_encode($_SESSION));
+// Check authentication
+if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] !== 'barber') {
+    header("Location: ../pages/login.php");
+    exit();
 }
 
 error_log("user_type value: '" . $_SESSION['user_type'] . "'");
 error_log("user_type length: " . strlen($_SESSION['user_type']));
-
-// Check if it's barber (case-sensitive exact match)
-if ($_SESSION['user_type'] !== 'barber') {
-    error_log("ERROR: user_type is not 'barber', it is: '" . $_SESSION['user_type'] . "'");
-    die("DEBUG: user_type mismatch. Got: '" . $_SESSION['user_type'] . "' Expected: 'barber'");
-}
-
 error_log("User authenticated as barber successfully");
+
+// Check if user has correct role
+if ($_SESSION['user_type'] !== 'barber') {
+    header('Location: ../unauthorized.php');
+    exit;
+}
 
 $barber_user_id = $_SESSION['user_id'];
 $first_name = $_SESSION['first_name'] ?? 'Barber';
