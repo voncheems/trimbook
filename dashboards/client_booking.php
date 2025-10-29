@@ -3,7 +3,13 @@ session_start();
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header("Location: /trimbook/auth/login.php");
+    header("Location: /trimbook/pages/login.php");
+    exit;
+}
+
+// Check if user has correct role
+if ($_SESSION['user_type'] !== 'customer') {
+    header('Location: ../unauthorized.php');
     exit;
 }
 
