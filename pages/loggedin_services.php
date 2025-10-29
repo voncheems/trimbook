@@ -20,17 +20,6 @@ $username = $_SESSION['username'] ?? 'guest';
 $full_name = trim($first_name . ' ' . $last_name);
 $initials = strtoupper(substr($first_name, 0, 1) . substr($last_name, 0, 1));
 
-require_once('../includes/dbconfig.php');
-
-// Get services from database
-$services = [];
-$services_result = $conn->query("SELECT * FROM services");
-if ($services_result) {
-    while ($row = $services_result->fetch_assoc()) {
-        $services[] = $row;
-    }
-}
-
 $title = "Services | TrimBook";
 ?>
 <!DOCTYPE html>
@@ -42,52 +31,27 @@ $title = "Services | TrimBook";
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-    
+
     body {
       font-family: 'Inter', sans-serif;
-    }
-
-    .sidebar {
-      transform: translateX(-100%);
-      transition: transform 0.3s ease-in-out;
-    }
-
-    .sidebar.open {
-      transform: translateX(0);
-    }
-
-    .overlay {
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease-in-out;
-    }
-
-    .overlay.show {
-      opacity: 1;
-      pointer-events: auto;
     }
 
     .card-hover {
       transition: all 0.3s ease;
     }
-
     .card-hover:hover {
       transform: translateY(-8px);
       box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
     }
-
     .service-image {
       transition: all 0.3s ease;
     }
-
     .card-hover:hover .service-image {
       transform: scale(1.05);
     }
   </style>
 </head>
 <body class="bg-black text-white antialiased">
-
-
 
   <!-- Header -->
   <header class="fixed w-full top-0 left-0 z-40 bg-black/80 backdrop-blur-lg border-b border-gray-800">
@@ -121,61 +85,203 @@ $title = "Services | TrimBook";
       <!-- Services Grid -->
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
         
-        <?php if (!empty($services)): ?>
-          <?php foreach ($services as $service): ?>
-            <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
-              <div class="relative h-48 overflow-hidden">
-                <div class="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-purple-600/20"></div>
-                <?php if (!empty($service['image_path'])): ?>
-                  <img src="<?= htmlspecialchars($service['image_path']) ?>" alt="<?= htmlspecialchars($service['service_name']) ?>" class="service-image w-full h-full object-cover">
-                <?php else: ?>
-                  <div class="service-image w-full h-full bg-gradient-to-br from-blue-600/30 to-purple-600/30 flex items-center justify-center">
-                    <svg class="w-16 h-16 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0l9.172 9.172M4 16l4.586-4.586a2 2 0 012.828 0l9.172 9.172m0 0L21 21m-4.586-4.586l4.586 4.586"></path>
-                    </svg>
-                  </div>
-                <?php endif; ?>
-              </div>
-              <div class="p-8">
-                <div class="flex items-center justify-between mb-3">
-                  <h3 class="text-2xl font-bold"><?= htmlspecialchars($service['service_name']) ?></h3>
-                  <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                  </div>
-                </div>
-                <p class="text-gray-400 leading-relaxed mb-4"><?= htmlspecialchars($service['description'] ?? 'Premium grooming service') ?></p>
-                <div class="flex items-center text-sm text-gray-400 mb-4">
-                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                  </svg>
-                  <?= htmlspecialchars($service['duration'] ?? '30-40 minutes') ?>
-                </div>
-                <div class="flex items-center justify-between">
-                  <p class="text-3xl font-bold gradient-text">₱<?= htmlspecialchars(number_format($service['price'], 2)) ?></p>
-                  <a href="/trimbook/dashboards/client_selectBarber.php" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
-                    Book
-                  </a>
-                </div>
+        <!-- Service 1 -->
+        <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
+          <div class="relative h-48 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-purple-600/20"></div>
+            <img src="../assets/images/classic.jpeg" alt="Classic Haircut" class="service-image w-full h-full object-cover">
+          </div>
+          <div class="p-8">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-2xl font-bold">Classic Haircut</h3>
+              <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
               </div>
             </div>
-          <?php endforeach; ?>
-        <?php else: ?>
-          <div class="col-span-full p-12 text-center">
-            <svg class="w-16 h-16 mx-auto text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-            </svg>
-            <p class="text-gray-400 text-lg">No services available at the moment</p>
+            <p class="text-gray-400 leading-relaxed mb-4">Clean, Sharp and Timeless.</p>
+            <div class="flex items-center text-sm text-gray-400 mb-4">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              35-45 minutes
+            </div>
+            <div class="flex items-center justify-between">
+              <p class="text-3xl font-bold">₱250.00</p>
+              <a href="/trimbook/dashboards/client_selectBarber.php" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
+                Book
+              </a>
+            </div>
           </div>
-        <?php endif; ?>
+        </div>
+
+        <!-- Service 2 -->
+        <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
+          <div class="relative h-48 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-purple-600/20"></div>
+            <img src="../assets/images/fade.jpeg" alt="Beard Trim & Shape" class="service-image w-full h-full object-cover">
+          </div>
+          <div class="p-8">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-2xl font-bold">Fade & Line up</h3>
+              <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+            </div>
+            <p class="text-gray-400 leading-relaxed mb-4">Sharp fades with clean edges.</p>
+            <div class="flex items-center text-sm text-gray-400 mb-4">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              35-45 minutes
+            </div>
+            <div class="flex items-center justify-between">
+              <p class="text-3xl font-bold">₱300.00</p>
+              <a href="/trimbook/dashboards/client_selectBarber.php" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
+                Book
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service 3 -->
+        <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
+          <div class="relative h-48 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-purple-600/20"></div>
+            <img src="../assets/images/kids.jpeg" alt="Premium Hair & Beard Combo" class="service-image w-full h-full object-cover">
+          </div>
+          <div class="p-8">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-2xl font-bold">Kid's Haircut</h3>
+              <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+            </div>
+            <p class="text-gray-400 leading-relaxed mb-4">Gentle and stylish cuts for kids.</p>
+            <div class="flex items-center text-sm text-gray-400 mb-4">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              50-60 minutes
+            </div>
+            <div class="flex items-center justify-between">
+              <p class="text-3xl font-bold">₱200.00</p>
+              <a href="/trimbook/dashboards/client_selectBarber.php" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
+                Book
+              </a>
+            </div>
+          </div>
+        </div>
+
+      <!-- Service 4 -->
+        <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
+          <div class="relative h-48 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-purple-600/20"></div>
+            <img src="../assets/images/towel.jpeg" alt="Premium Hair & Beard Combo" class="service-image w-full h-full object-cover">
+          </div>
+          <div class="p-8">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-2xl font-bold">Shave & Towel</h3>
+              <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+            </div>
+            <p class="text-gray-400 leading-relaxed mb-4">Smooth shave with relaxing hot towel.</p>
+            <div class="flex items-center text-sm text-gray-400 mb-4">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              25-35 minutes
+            </div>
+            <div class="flex items-center justify-between">
+              <p class="text-3xl font-bold">₱300.00</p>
+              <a href="/trimbook/dashboards/client_selectBarber.php" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
+                Book
+              </a>
+            </div>
+          </div>
+        </div>
+        
+      <!-- Service 5 -->
+        <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
+          <div class="relative h-48 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-purple-600/20"></div>
+            <img src="../assets/images/modern.jpeg" alt="Premium Hair & Beard Combo" class="service-image w-full h-full object-cover">
+          </div>
+          <div class="p-8">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-2xl font-bold">Modern & Trendy</h3>
+              <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+            </div>
+            <p class="text-gray-400 leading-relaxed mb-4">Styled/Fresh cuts for the latest look.</p>
+            <div class="flex items-center text-sm text-gray-400 mb-4">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              40-50 minutes
+            </div>
+            <div class="flex items-center justify-between">
+              <p class="text-3xl font-bold">₱300.00</p>
+              <a href="/trimbook/dashboards/client_selectBarber.php" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
+                Book
+              </a>
+            </div>
+          </div>
+        </div>
+
+      <!-- Service 6 -->
+        <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
+          <div class="relative h-48 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-purple-600/20"></div>
+            <img src="../assets/images/beard.jpeg" alt="Premium Hair & Beard Combo" class="service-image w-full h-full object-cover">
+          </div>
+          <div class="p-8">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-2xl font-bold">Beard Grooming</h3>
+              <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+            </div>
+            <p class="text-gray-400 leading-relaxed mb-4">Beard shaping, trimming & styling.</p>
+            <div class="flex items-center text-sm text-gray-400 mb-4">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              20-30 minutes
+            </div>
+            <div class="flex items-center justify-between">
+              <p class="text-3xl font-bold">₱250.00</p>
+              <a href="/trimbook/dashboards/client_selectBarber.php" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
+                Book
+              </a>
+            </div>
+          </div>
+        </div>
+
       </div>
 
-      <!-- CTA Section -->
-      <div class="mt-20 bg-gradient-to-r from-blue-600/10 to-purple-600/10 border border-blue-500/20 rounded-3xl p-12 text-center">
-        <h2 class="text-3xl md:text-4xl font-black mb-4">Ready to Book?</h2>
-        <p class="text-gray-400 text-lg max-w-2xl mx-auto mb-8">Choose your preferred barber and time slot to get started</p>
-        <a href="/trimbook/dashboards/client_selectBarber.php" class="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-10 py-4 rounded-full font-bold hover:shadow-xl hover:shadow-purple-500/50 transition transform hover:scale-105">
+      
+
+      <!-- CTA Section (Full-Width and Centered) -->
+      <div class="mt-24 w-full bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/30 rounded-3xl py-16 px-8 flex flex-col md:flex-row items-center justify-between gap-10 max-w-7xl mx-auto">
+        <div class="max-w-xl">
+          <h2 class="text-5xl font-black mb-3 leading-tight">Ready to Book?</h2>
+          <p class="text-gray-300 text-lg">Choose your preferred barber and time slot to get started</p>
+        </div>
+        <a href="/trimbook/dashboards/client_selectBarber.php" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-14 py-5 rounded-full font-bold text-lg hover:shadow-xl hover:shadow-purple-500/50 transition transform hover:scale-105">
           Book Your Appointment
         </a>
       </div>
@@ -213,14 +319,6 @@ $title = "Services | TrimBook";
       </div>
     </div>
   </footer>
-
-  <script>
-    document.addEventListener('keydown', function(event) {
-      if (event.key === 'Escape') {
-        // No sidebar to close anymore
-      }
-    });
-  </script>
 
 </body>
 </html>
