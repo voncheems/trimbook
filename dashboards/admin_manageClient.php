@@ -98,14 +98,6 @@ function formatDate($date) {
       background-color: rgba(255, 255, 255, 0.05);
     }
   </style>
-  <script>
-    function toggleSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      const overlay = document.getElementById('overlay');
-      sidebar.classList.toggle('open');
-      overlay.classList.toggle('show');
-    }
-  </script>
 </head>
 <body class="bg-black text-white antialiased">
 
@@ -203,7 +195,15 @@ function formatDate($date) {
           </svg>
           <span>Customer Feedback</span>
         </a>
-         <a href="../dashboards/admin_walkins.php" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition">
+
+        <a href="../dashboards/admin_feedback.php" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path>
+          </svg>
+          <span>Password Resets</span>
+        </a>
+
+        <a href="../dashboards/admin_walkins.php" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
           </svg>
@@ -220,12 +220,12 @@ function formatDate($date) {
 
       <!-- Logout Button -->
       <div class="mt-8 pt-6 border-t border-gray-800">
-        <a href="../auth/logout.php" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 hover:text-red-300 transition">
+        <button onclick="confirmLogout()" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 hover:text-red-300 transition">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
           </svg>
           <span>Logout</span>
-        </a>
+        </button>
       </div>
     </div>
   </aside>
@@ -243,7 +243,7 @@ function formatDate($date) {
       </div>
       <div class="flex items-center space-x-6">
         <span class="text-gray-400 text-sm hidden md:block">Welcome, <span class="text-white font-semibold"><?= htmlspecialchars($admin_name) ?></span></span>
-        <a href="../auth/logout.php" class="text-sm font-medium text-gray-300 hover:text-white transition hidden md:block">Logout</a>
+        <button onclick="confirmLogout()" class="text-sm font-medium text-gray-300 hover:text-white transition hidden md:block">Logout</button>
       </div>
     </nav>
   </header>
@@ -300,7 +300,7 @@ function formatDate($date) {
                   <th class="px-8 py-5 text-center">Total Appointments</th>
                   <th class="px-8 py-5 text-left">Last Visit</th>
                   <th class="px-8 py-5 text-left">Joined</th>
-                  <th class="px-8 py-5 text-center">Action</th>
+                  <th class="px-8 py-5 text-center">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -313,9 +313,14 @@ function formatDate($date) {
                     <td class="px-8 py-6 text-gray-300"><?= formatDate($client['last_appointment_date']) ?></td>
                     <td class="px-8 py-6 text-gray-300"><?= formatDate($client['created_at']) ?></td>
                     <td class="px-8 py-6 text-center">
-                      <button onclick="openClientModal(<?= htmlspecialchars(json_encode($client)) ?>)" class="text-blue-400 hover:text-blue-300 font-medium transition">
-                        View
-                      </button>
+                      <div class="flex items-center justify-center space-x-3">
+                        <button onclick="openClientModal(<?= htmlspecialchars(json_encode($client)) ?>)" class="text-blue-400 hover:text-blue-300 font-medium transition">
+                          View
+                        </button>
+                        <button onclick="confirmDelete(<?= $client['user_id'] ?>, '<?= htmlspecialchars($client['first_name'] . ' ' . $client['last_name']) ?>')" class="text-red-400 hover:text-red-300 font-medium transition">
+                          Delete
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 <?php endforeach; ?>
@@ -338,6 +343,11 @@ function formatDate($date) {
 
     </div>
   </main>
+
+  <!-- Footer -->
+  <footer class="bg-zinc-950 border-t border-gray-800 py-8 text-center no-print">
+    <p class="text-gray-500 text-sm">&copy; <?= date("Y") ?> TrimBook. All Rights Reserved.</p>
+  </footer>
 
   <!-- Client Details Modal -->
   <div id="clientModal" class="modal fixed inset-0 z-50 items-center justify-center bg-black/60 backdrop-blur-sm">
@@ -474,22 +484,102 @@ function formatDate($date) {
     </div>
   </div>
 
-  <!-- Footer -->
-  <footer class="bg-zinc-950 border-t border-gray-800 py-8 text-center no-print">
-    <p class="text-gray-500 text-sm">&copy; <?= date("Y") ?> TrimBook. All Rights Reserved.</p>
-  </footer>
+  <!-- Delete Confirmation Modal -->
+  <div id="deleteModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-2xl p-8 max-w-md w-full">
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+          </svg>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">Delete Client</h3>
+        <p class="text-gray-400">Are you sure you want to delete <span class="text-white font-semibold" id="deleteClientName"></span>?</p>
+        <p class="text-red-400 text-sm mt-2">⚠️ This will also delete all their appointments!</p>
+      </div>
+      <form id="deleteForm" method="POST" action="../auth/delete_client.php" class="flex space-x-3">
+        <input type="hidden" id="deleteUserId" name="user_id">
+        <button type="button" onclick="closeDeleteModal()" class="flex-1 px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-xl font-semibold transition">
+          Cancel
+        </button>
+        <button type="submit" class="flex-1 px-6 py-3 bg-red-600 hover:bg-red-700 rounded-xl font-semibold transition">
+          Delete
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Logout Confirmation Modal -->
+  <div id="logoutModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-2xl p-8 max-w-md w-full">
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+          </svg>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">Confirm Logout</h3>
+        <p class="text-gray-400">Are you sure you want to log out?</p>
+      </div>
+      <div class="flex space-x-3">
+        <button onclick="closeLogoutModal()" class="flex-1 px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-xl font-semibold transition">
+          Cancel
+        </button>
+        <a href="../auth/logout.php" class="flex-1 px-6 py-3 bg-red-600 hover:bg-red-700 rounded-xl font-semibold transition text-center">
+          Logout
+        </a>
+      </div>
+    </div>
+  </div>
 
   <!-- JavaScript -->
   <script>
     let currentClientId = null;
 
+    function confirmLogout() {
+      document.getElementById('logoutModal').classList.remove('hidden');
+    }
+
+    function closeLogoutModal() {
+      document.getElementById('logoutModal').classList.add('hidden');
+    }
+
+    function confirmDelete(userId, clientName) {
+      document.getElementById('deleteUserId').value = userId;
+      document.getElementById('deleteClientName').textContent = clientName;
+      document.getElementById('deleteModal').classList.remove('hidden');
+    }
+
+    function closeDeleteModal() {
+      document.getElementById('deleteModal').classList.add('hidden');
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+      
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('show');
+    }
+
     document.addEventListener('keydown', function(event) {
       if (event.key === 'Escape') {
-        closeClientModal();
-        closePasswordModal();
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
-        if (sidebar.classList.contains('open')) {
+        const logoutModal = document.getElementById('logoutModal');
+        const clientModal = document.getElementById('clientModal');
+        const passwordModal = document.getElementById('passwordModal');
+        const deleteModal = document.getElementById('deleteModal');
+        
+        if (deleteModal && !deleteModal.classList.contains('hidden')) {
+          closeDeleteModal();
+        } else if (logoutModal && !logoutModal.classList.contains('hidden')) {
+          closeLogoutModal();
+        } else if (passwordModal.classList.contains('show')) {
+          closePasswordModal();
+        } else if (clientModal.classList.contains('show')) {
+          closeClientModal();
+        } else if (sidebar.classList.contains('open')) {
           sidebar.classList.remove('open');
           overlay.classList.remove('show');
         }
