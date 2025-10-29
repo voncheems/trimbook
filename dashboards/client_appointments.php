@@ -4,6 +4,18 @@ session_start();
 // Include database connection
 require_once '../includes/dbconfig.php';
 
+// Check if user is logged in
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_type'])) {
+    header('Location: /trimbook/pages/login_page.php');
+    exit;
+}
+
+// Check if user has correct role
+if ($_SESSION['user_type'] !== 'customer') {
+    header('Location: ../unauthorized.php');
+    exit;
+}
+
 // Get user data from session
 $first_name = $_SESSION['first_name'] ?? 'Guest';
 $last_name = $_SESSION['last_name'] ?? '';
