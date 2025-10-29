@@ -31,6 +31,13 @@
       transform: translateY(-8px);
       box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
     }
+
+    .dev-image {
+      width: 100%;
+      height: 192px;
+      object-fit: cover;
+      object-position: center;
+    }
   </style>
 </head>
 <body class="bg-black text-white antialiased">
@@ -197,75 +204,102 @@
       </p>
 
       <div class="grid md:grid-cols-3 gap-8">
-        <!-- Developer 1 -->
+        <!-- Developer 1  -->
         <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-2xl overflow-hidden">
           <div class="relative">
             <div class="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-600 blur-xl opacity-50"></div>
-            <div class="relative w-full h-48 bg-gray-700 flex items-center justify-center">
-              <svg class="w-24 h-24 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+            <div class="relative w-full h-48 bg-gray-700 flex items-center justify-center overflow-hidden">
+              <img src="../assets/images/ivan.png" alt="Developer !" class="dev-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+              <svg class="w-24 h-24 text-gray-500" style="display:none;" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
               </svg>
             </div>
           </div>
           <div class="p-6 text-center">
-            <h3 class="text-xl font-bold mb-1">CJ Cendana</h3>
-            <p class="text-blue-400 font-semibold text-sm mb-3">Full Stack Developer</p>
-            <p class="text-gray-400 text-sm">Passionate about building seamless user experiences and robust backend systems</p>
+            <h3 class="text-xl font-bold mb-1">Ivan Chen</h3>
+            <p class="text-blue-400 font-semibold text-sm mb-3">Project Manager</p>
+            <p class="text-gray-400 text-sm">Oversees project progress, team coordination, and final review.</p>
           </div>
         </div>
         
+        <!-- Developer 2 - Middle Developer -->
         <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-2xl overflow-hidden">
           <div class="relative">
             <div class="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-600 blur-xl opacity-50"></div>
-            <div class="relative w-full h-48 bg-gray-700 flex items-center justify-center">
-              <svg class="w-24 h-24 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+            <div class="relative w-full h-48 bg-gray-700 flex items-center justify-center overflow-hidden">
+              <img src="../assets/images/cj.jpg" alt="Developer 2" class="dev-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+              <svg class="w-24 h-24 text-gray-500" style="display:none;" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
               </svg>
             </div>
           </div>
           <div class="p-6 text-center">
-            <h3 class="text-xl font-bold mb-1">Developer Name</h3>
+            <h3 class="text-xl font-bold mb-1">Cj Cendana</h3>
             <p class="text-blue-400 font-semibold text-sm mb-3">Full Stack Developer</p>
-            <p class="text-gray-400 text-sm">Passionate about building seamless user experiences and robust backend systems</p>
-          </div>
-        </div>
-
-        <!-- Developer 2 -->
-        <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-2xl overflow-hidden">
-          <div class="relative">
-            <div class="absolute inset-0 bg-gradient-to-br from-purple-600 to-pink-600 blur-xl opacity-50"></div>
-            <div class="relative w-full h-48 bg-gray-700 flex items-center justify-center">
-              <svg class="w-24 h-24 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-              </svg>
-            </div>
-          </div>
-          <div class="p-6 text-center">
-            <h3 class="text-xl font-bold mb-1">IVAN MIGUEL F CHEN</h3>
-            <p class="text-purple-400 font-semibold text-sm mb-3">Frontend Developer</p>
-            <p class="text-gray-400 text-sm">Creative thinker focused on beautiful designs and intuitive interfaces</p>
+            <p class="text-gray-400 text-sm">Passionate about building seamless user experiences and robust backend systems.</p>
           </div>
         </div>
 
         <!-- Developer 3 -->
         <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-2xl overflow-hidden">
           <div class="relative">
-            <div class="absolute inset-0 bg-gradient-to-br from-pink-600 to-orange-600 blur-xl opacity-50"></div>
-            <div class="relative w-full h-48 bg-gray-700 flex items-center justify-center">
-              <svg class="w-24 h-24 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+            <div class="absolute inset-0 bg-gradient-to-br from-purple-600 to-pink-600 blur-xl opacity-50"></div>
+            <div class="relative w-full h-48 bg-gray-700 flex items-center justify-center overflow-hidden">
+              <img src="../assets/images/kenver.jpg" alt="Developer 3" class="dev-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+              <svg class="w-24 h-24 text-gray-500" style="display:none;" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
               </svg>
             </div>
           </div>
           <div class="p-6 text-center">
-            <h3 class="text-xl font-bold mb-1">Developer Name</h3>
-            <p class="text-pink-400 font-semibold text-sm mb-3">Backend Developer</p>
-            <p class="text-gray-400 text-sm">Expert in creating scalable systems and optimizing database performance</p>
+            <h3 class="text-xl font-bold mb-1">Brenan Josh Cervantes</h3>
+            <p class="text-purple-400 font-semibold text-sm mb-3">Database Administrator</p>
+            <p class="text-gray-400 text-sm">Designs and manages the MySQL database.</p>
+          </div>
+        </div>
+
+      <!-- Developer 4 -->
+        <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-2xl overflow-hidden">
+          <div class="relative">
+            <div class="absolute inset-0 bg-gradient-to-br from-purple-600 to-pink-600 blur-xl opacity-50"></div>
+            <div class="relative w-full h-48 bg-gray-700 flex items-center justify-center overflow-hidden">
+              <!-- Replace 'path/to/ivan-photo.jpg' with actual image path -->
+              <img src="../assets/images/steph.jpg" alt="Developer 4" class="dev-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+              <svg class="w-24 h-24 text-gray-500" style="display:none;" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="p-6 text-center">
+            <h3 class="text-xl font-bold mb-1">Stephanie Mabalot</h3>
+            <p class="text-purple-400 font-semibold text-sm mb-3">UI/UX Designer / Documentation Specialist</p>
+            <p class="text-gray-400 text-sm">Creates interface design and compiles reports and diagrams.</p>
+          </div>
+        </div>
+
+
+        <!-- Developer 5 -->
+        <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-2xl overflow-hidden">
+          <div class="relative">
+            <div class="absolute inset-0 bg-gradient-to-br from-pink-600 to-orange-600 blur-xl opacity-50"></div>
+            <div class="relative w-full h-48 bg-gray-700 flex items-center justify-center overflow-hidden">
+              <!-- Replace 'path/to/dev4-photo.jpg' with actual image path -->
+              <img src="../assets/images/zel.jpg" alt="Developer 5" class="dev-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+              <svg class="w-24 h-24 text-gray-500" style="display:none;" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="p-6 text-center">
+            <h3 class="text-xl font-bold mb-1">Denzel Manalo</h3>
+            <p class="text-pink-400 font-semibold text-sm mb-3">QA Tester</p>
+            <p class="text-gray-400 text-sm">Tests the system and ensures all requirements are met.</p>
           </div>
         </div>
       </div>
     </div>
   </section>
+  
   <!-- CTA Section -->
   <section class="py-20 bg-gradient-to-b from-black to-zinc-950">
     <div class="container mx-auto px-6 text-center">
