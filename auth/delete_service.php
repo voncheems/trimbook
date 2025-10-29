@@ -1,52 +1,41 @@
 <?php
 session_start();
+require_once('../includes/dbconfig.php');
+
 header('Content-Type: application/json');
 
-try {
-    $conn = new mysqli("localhost", "root", "", "trimbook");
-    
-    if ($conn->connect_error) {
-        throw new Exception("Connection failed: " . $conn->connect_error);
-    }
-    
-    // Get POST data
-    $data = json_decode(file_get_contents("php://input"), true);
-    $service_id = intval($data['service_id'] ?? 0);
-    
-    if (!$service_id) {
-        throw new Exception("Invalid service ID");
-    }
-    
-    // Check if service exists
-    $check = $conn->prepare("SELECT service_id FROM services WHERE service_id = ?");
-    $check->bind_param("i", $service_id);
-    $check->execute();
-    
-    if ($check->get_result()->num_rows === 0) {
-        throw new Exception("Service not found");
-    }
-    $check->close();
-    
-    // Delete the service
-    $delete = $conn->prepare("DELETE FROM services WHERE service_id = ?");
-    $delete->bind_param("i", $service_id);
-    
-    if ($delete->execute()) {
-        echo json_encode([
-            'success' => true,
-            'message' => 'Service deleted successfully'
-        ]);
-    } else {
-        throw new Exception("Failed to delete service: " . $delete->error);
-    }
-    
-    $delete->close();
-    $conn->close();
-    
-} catch (Exception $e) {
-    echo json_encode([
-        'success' => false,
-        'message' => $e->getMessage()
-    ]);
+// Check authentication
+if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] !== 'admin') {
+    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+    exit();
 }
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $service_id = $data['service_id'] ?? null;
+
+    if (!$service_id) {
+        echo json_encode(['success' => false, 'message' => 'Service ID is required']);
+        exit();
+    }
+
+    try {
+        $stmt = $conn->prepare("DELETE FROM services WHERE service_id = ?");
+        $stmt->bind_param("i", $service_id);
+
+        if ($stmt->execute()) {
+            echo json_encode(['success' => true, 'message' => 'Service deleted successfully']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Failed to delete service']);
+        }
+
+        $stmt->close();
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+    }
+} else {
+    echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+}
+
+$conn->close();
 ?>
