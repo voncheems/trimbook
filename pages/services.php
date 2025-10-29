@@ -109,7 +109,7 @@
               35-45 minutes
             </div>
             <div class="flex items-center justify-between">
-              <p class="text-3xl font-bold gradient-text">₱350</p>
+              <p class="text-3xl font-bold gradient-text">₱250</p>
               <a href="Bookapp.php" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
                 Book
               </a>
@@ -140,7 +140,7 @@
               35-45 minutes
             </div>
             <div class="flex items-center justify-between">
-              <p class="text-3xl font-bold gradient-text">₱400</p>
+              <p class="text-3xl font-bold gradient-text">₱300</p>
               <a href="Bookapp.php" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
                 Book
               </a>
@@ -233,7 +233,7 @@
               40-50 minutes
             </div>
             <div class="flex items-center justify-between">
-              <p class="text-3xl font-bold gradient-text">₱450</p>
+              <p class="text-3xl font-bold gradient-text">₱300</p>
               <a href="Bookapp.php" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
                 Book
               </a>
