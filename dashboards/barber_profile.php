@@ -3,8 +3,14 @@ session_start();
 
 // Check authentication
 if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] !== 'barber') {
-    header("Location: ../auth/login.php");
+    header("Location: ../pages/login.php");
     exit();
+}
+
+// Check if user has correct role
+if ($_SESSION['user_type'] !== 'barber') {
+    header('Location: ../unauthorized.php');
+    exit;
 }
 
 $barber_user_id = $_SESSION['user_id'];
