@@ -152,7 +152,7 @@
         <div class="card-hover bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-3xl overflow-hidden">
           <div class="relative h-48 overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-br from-pink-600/20 to-orange-600/20"></div>
-            <img src="../assets/images/kid.jpeg" alt="Kid's Haircut" class="service-image w-full h-full object-cover">
+            <img src="../assets/images/kids.jpeg" alt="Kid's Haircut" class="service-image w-full h-full object-cover">
           </div>
           <div class="p-8">
             <div class="flex items-center justify-between mb-3">
