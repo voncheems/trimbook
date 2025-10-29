@@ -55,8 +55,8 @@ $title = "Contact Us | TrimBook";
         <li><a href="../pages/contact_page.php" class="text-white transition font-semibold">Contact</a></li>
       </ul>
       <div class="flex items-center space-x-4">
-        <a href="pages/login_page.php" class="text-sm font-medium text-gray-300 hover:text-white transition">Login</a>
-        <a href="pages/signup_page.php" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition">
+        <a href="../pages/login_page.php" class="text-sm font-medium text-gray-300 hover:text-white transition">Login</a>
+        <a href="../pages/signup_page.php" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition">
           Sign Up
         </a>
       </div>
