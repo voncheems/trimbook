@@ -7,6 +7,12 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] !== 'barber') {
     exit();
 }
 
+// Check if user has correct role
+if ($_SESSION['user_type'] !== 'barber') {
+    header('Location: ../unauthorized.php');
+    exit;
+}
+
 // Include database connection
 require_once '../includes/dbconfig.php';
 
