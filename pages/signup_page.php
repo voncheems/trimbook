@@ -153,7 +153,7 @@ $title = "Sign Up | TrimBook";
               class="mt-1 w-4 h-4 rounded border-gray-600 text-blue-600 focus:ring-blue-500"
             >
             <label for="terms" class="text-sm text-gray-300">
-              I agree to the <a href="terms.php" class="text-blue-500 hover:text-blue-400 underline">Terms of Services</a>
+              I agree to the <a href="#" onclick="openTermsModal(); return false;" class="text-blue-500 hover:text-blue-400 underline">Terms of Services</a>
             </label>
           </div>
 
@@ -172,6 +172,274 @@ $title = "Sign Up | TrimBook";
       </div>
     </div>
 
+  </div>
+
+  <!-- Terms & Privacy Modal -->
+  <div id="termsModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-zinc-900 rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between p-6 border-b border-zinc-800">
+        <h2 class="text-2xl font-bold">Terms & Privacy</h2>
+        <button onclick="closeTermsModal()" class="text-gray-400 hover:text-white transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Tab Navigation -->
+      <div class="flex space-x-4 px-6 pt-4 border-b border-zinc-800">
+        <button 
+          onclick="showModalTab('terms')" 
+          id="modalTermsTab"
+          class="px-4 py-3 font-medium border-b-2 border-blue-500 text-blue-500 transition"
+        >
+          Terms of Service
+        </button>
+        <button 
+          onclick="showModalTab('privacy')" 
+          id="modalPrivacyTab"
+          class="px-4 py-3 font-medium border-b-2 border-transparent text-gray-400 hover:text-white transition"
+        >
+          Privacy Policy
+        </button>
+      </div>
+
+      <!-- Modal Content -->
+      <div class="flex-1 overflow-y-auto p-6">
+        
+        <!-- Terms of Service Content -->
+        <div id="modalTermsContent" class="space-y-6">
+          
+          <section>
+            <h3 class="text-xl font-semibold mb-3">1. Acceptance of Terms</h3>
+            <p class="text-gray-300 text-sm leading-relaxed">
+              By accessing and using TrimBook, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
+            </p>
+          </section>
+
+          <section>
+            <h3 class="text-xl font-semibold mb-3">2. User Accounts</h3>
+            <p class="text-gray-300 text-sm leading-relaxed mb-2">
+              When you create an account with us, you must provide information that is accurate, complete, and current at all times. Failure to do so constitutes a breach of the Terms.
+            </p>
+            <p class="text-gray-300 text-sm leading-relaxed">
+              You are responsible for safeguarding the password that you use to access the service and for any activities or actions under your password.
+            </p>
+          </section>
+
+          <section>
+            <h3 class="text-xl font-semibold mb-3">3. User Content</h3>
+            <p class="text-gray-300 text-sm leading-relaxed mb-2">
+              You retain all rights to the content you post on TrimBook. By posting content, you grant us a worldwide, non-exclusive, royalty-free license to use, reproduce, and display your content.
+            </p>
+            <p class="text-gray-300 text-sm leading-relaxed">
+              You are solely responsible for the content you post and the consequences of posting or publishing it.
+            </p>
+          </section>
+
+          <section>
+            <h3 class="text-xl font-semibold mb-3">4. Prohibited Conduct</h3>
+            <p class="text-gray-300 text-sm leading-relaxed mb-2">You agree not to:</p>
+            <ul class="space-y-1.5 text-gray-300 text-sm ml-6">
+              <li class="flex items-start">
+                <span class="mr-2">•</span>
+                <span>Use the service for any illegal purpose</span>
+              </li>
+              <li class="flex items-start">
+                <span class="mr-2">•</span>
+                <span>Harass, abuse, or harm another person or group</span>
+              </li>
+              <li class="flex items-start">
+                <span class="mr-2">•</span>
+                <span>Post false, inaccurate, or misleading content</span>
+              </li>
+              <li class="flex items-start">
+                <span class="mr-2">•</span>
+                <span>Upload or transmit viruses or malicious code</span>
+              </li>
+              <li class="flex items-start">
+                <span class="mr-2">•</span>
+                <span>Attempt to gain unauthorized access to the service</span>
+              </li>
+            </ul>
+          </section>
+
+          <section>
+            <h3 class="text-xl font-semibold mb-3">5. Intellectual Property</h3>
+            <p class="text-gray-300 text-sm leading-relaxed">
+              The service and its original content, features, and functionality are and will remain the exclusive property of TrimBook and its licensors.
+            </p>
+          </section>
+
+          <section>
+            <h3 class="text-xl font-semibold mb-3">6. Termination</h3>
+            <p class="text-gray-300 text-sm leading-relaxed">
+              We may terminate or suspend your account immediately, without prior notice or liability, for any reason whatsoever, including if you breach the Terms.
+            </p>
+          </section>
+
+          <section>
+            <h3 class="text-xl font-semibold mb-3">7. Limitation of Liability</h3>
+            <p class="text-gray-300 text-sm leading-relaxed">
+              In no event shall TrimBook be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, data, or goodwill.
+            </p>
+          </section>
+
+          <section>
+            <h3 class="text-xl font-semibold mb-3">8. Contact Us</h3>
+            <p class="text-gray-300 text-sm leading-relaxed">
+              Questions? Contact us at <a href="mailto:support@trimbook.com" class="text-blue-500 hover:text-blue-400">support@trimbook.com</a>
+            </p>
+          </section>
+
+        </div>
+
+        <!-- Privacy Policy Content -->
+        <div id="modalPrivacyContent" class="space-y-6 hidden">
+          
+          <section>
+            <h3 class="text-xl font-semibold mb-3">1. Information We Collect</h3>
+            <p class="text-gray-300 text-sm leading-relaxed mb-2">
+              We collect information that you provide directly to us when you create an account:
+            </p>
+            <ul class="space-y-1.5 text-gray-300 text-sm ml-6">
+              <li class="flex items-start">
+                <span class="mr-2">•</span>
+                <span>Personal information (name, email, phone number)</span>
+              </li>
+              <li class="flex items-start">
+                <span class="mr-2">•</span>
+                <span>Account credentials (username and password)</span>
+              </li>
+              <li class="flex items-start">
+                <span class="mr-2">•</span>
+                <span>Content you post or share on the platform</span>
+              </li>
+            </ul>
+          </section>
+
+          <section>
+            <h3 class="text-xl font-semibold mb-3">2. How We Use Your Information</h3>
+            <p class="text-gray-300 text-sm leading-relaxed mb-2">We use the information we collect to:</p>
+            <ul class="space-y-1.5 text-gray-300 text-sm ml-6">
+              <li class="flex items-start">
+                <span class="mr-2">•</span>
+                <span>Provide, maintain, and improve our services</span>
+              </li>
+              <li class="flex items-start">
+                <span class="mr-2">•</span>
+                <span>Process your transactions and send related information</span>
+              </li>
+              <li class="flex items-start">
+                <span class="mr-2">•</span>
+                <span>Send you technical notices and support messages</span>
+              </li>
+              <li class="flex items-start">
+                <span class="mr-2">•</span>
+                <span>Monitor and analyze trends and activities</span>
+              </li>
+              <li class="flex items-start">
+                <span class="mr-2">•</span>
+                <span>Detect, prevent, and address security issues</span>
+              </li>
+            </ul>
+          </section>
+
+          <section>
+            <h3 class="text-xl font-semibold mb-3">3. Information Sharing</h3>
+            <p class="text-gray-300 text-sm leading-relaxed mb-2">
+              We do not sell your personal information. We may share your information:
+            </p>
+            <ul class="space-y-1.5 text-gray-300 text-sm ml-6">
+              <li class="flex items-start">
+                <span class="mr-2">•</span>
+                <span>With your consent or at your direction</span>
+              </li>
+              <li class="flex items-start">
+                <span class="mr-2">•</span>
+                <span>With service providers who perform services on our behalf</span>
+              </li>
+              <li class="flex items-start">
+                <span class="mr-2">•</span>
+                <span>To comply with legal obligations</span>
+              </li>
+              <li class="flex items-start">
+                <span class="mr-2">•</span>
+                <span>To protect the rights and safety of TrimBook and users</span>
+              </li>
+            </ul>
+          </section>
+
+          <section>
+            <h3 class="text-xl font-semibold mb-3">4. Data Security</h3>
+            <p class="text-gray-300 text-sm leading-relaxed">
+              We implement appropriate technical and organizational measures to protect your personal information. However, no method of transmission over the Internet is 100% secure.
+            </p>
+          </section>
+
+          <section>
+            <h3 class="text-xl font-semibold mb-3">5. Your Rights</h3>
+            <p class="text-gray-300 text-sm leading-relaxed mb-2">You have the right to:</p>
+            <ul class="space-y-1.5 text-gray-300 text-sm ml-6">
+              <li class="flex items-start">
+                <span class="mr-2">•</span>
+                <span>Access and receive a copy of your personal information</span>
+              </li>
+              <li class="flex items-start">
+                <span class="mr-2">•</span>
+                <span>Correct or update your personal information</span>
+              </li>
+              <li class="flex items-start">
+                <span class="mr-2">•</span>
+                <span>Delete your personal information</span>
+              </li>
+              <li class="flex items-start">
+                <span class="mr-2">•</span>
+                <span>Object to or restrict certain processing</span>
+              </li>
+            </ul>
+          </section>
+
+          <section>
+            <h3 class="text-xl font-semibold mb-3">6. Cookies and Tracking</h3>
+            <p class="text-gray-300 text-sm leading-relaxed">
+              We use cookies and similar tracking technologies to track activity on our service. You can instruct your browser to refuse all cookies.
+            </p>
+          </section>
+
+          <section>
+            <h3 class="text-xl font-semibold mb-3">7. Children's Privacy</h3>
+            <p class="text-gray-300 text-sm leading-relaxed">
+              Our service is not intended for users under 13. We do not knowingly collect personal information from children under 13.
+            </p>
+          </section>
+
+          <section>
+            <h3 class="text-xl font-semibold mb-3">8. Changes to Privacy Policy</h3>
+            <p class="text-gray-300 text-sm leading-relaxed">
+              We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page.
+            </p>
+          </section>
+
+          <section>
+            <h3 class="text-xl font-semibold mb-3">9. Contact Us</h3>
+            <p class="text-gray-300 text-sm leading-relaxed">
+              Questions? Contact us at <a href="mailto:privacy@trimbook.com" class="text-blue-500 hover:text-blue-400">privacy@trimbook.com</a>
+            </p>
+          </section>
+
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-6 border-t border-zinc-800">
+        <p class="text-xs text-gray-400 text-center">Last updated: October 29, 2025</p>
+      </div>
+
+    </div>
   </div>
 
   <script>
@@ -234,6 +502,56 @@ $title = "Sign Up | TrimBook";
 
     blockNumbersOnly(document.getElementById('first_name'));
     blockNumbersOnly(document.getElementById('last_name'));
+
+    // Terms Modal Functions
+    function openTermsModal() {
+      document.getElementById('termsModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeTermsModal() {
+      document.getElementById('termsModal').classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+
+    function showModalTab(tab) {
+      const termsTab = document.getElementById('modalTermsTab');
+      const privacyTab = document.getElementById('modalPrivacyTab');
+      const termsContent = document.getElementById('modalTermsContent');
+      const privacyContent = document.getElementById('modalPrivacyContent');
+
+      if (tab === 'terms') {
+        termsTab.classList.remove('border-transparent', 'text-gray-400');
+        termsTab.classList.add('border-blue-500', 'text-blue-500');
+        privacyTab.classList.remove('border-blue-500', 'text-blue-500');
+        privacyTab.classList.add('border-transparent', 'text-gray-400');
+        
+        termsContent.classList.remove('hidden');
+        privacyContent.classList.add('hidden');
+      } else {
+        privacyTab.classList.remove('border-transparent', 'text-gray-400');
+        privacyTab.classList.add('border-blue-500', 'text-blue-500');
+        termsTab.classList.remove('border-blue-500', 'text-blue-500');
+        termsTab.classList.add('border-transparent', 'text-gray-400');
+        
+        privacyContent.classList.remove('hidden');
+        termsContent.classList.add('hidden');
+      }
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('termsModal')?.addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeTermsModal();
+      }
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && !document.getElementById('termsModal').classList.contains('hidden')) {
+        closeTermsModal();
+      }
+    });
   </script>
 
 </body>
