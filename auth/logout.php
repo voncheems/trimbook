@@ -1,3 +1,4 @@
+
 <?php
 // logout.php
 // Place this file in the auth/ folder
