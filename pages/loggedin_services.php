@@ -113,7 +113,7 @@ $title = "Services | TrimBook";
     <div class="container mx-auto max-w-7xl">
       
       <!-- Page Header -->
-      <div class="mb-10">
+      <div class="mb-10 text-center">
         <h1 class="text-4xl md:text-5xl font-black mb-2">Our Services</h1>
         <p class="text-gray-400 text-lg">Premium grooming services tailored for you</p>
       </div>
