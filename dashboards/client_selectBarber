@@ -22,10 +22,14 @@ $first_name = $_SESSION['first_name'] ?? 'Guest';
 $last_name = $_SESSION['last_name'] ?? '';
 $full_name = trim($first_name . ' ' . $last_name);
 
+// Set timezone (adjust to your timezone)
+date_default_timezone_set('Asia/Manila');
+
 // Get current day of the week
 $current_day = date('l'); // Returns: Monday, Tuesday, Wednesday, etc.
 
 // Fetch barbers who have a schedule for TODAY
+// Using prepared statement to prevent SQL injection
 $query = "
 SELECT 
   b.barber_id,
@@ -41,18 +45,22 @@ WHERE u.user_type = 'barber'
     SELECT 1 
     FROM schedules s 
     WHERE s.barber_id = b.barber_id
-      AND s.day_of_week = '$current_day'
+      AND s.day_of_week = ?
   )
 ORDER BY b.barber_id ASC
 ";
 
-$result = mysqli_query($conn, $query);
+$stmt = mysqli_prepare($conn, $query);
+mysqli_stmt_bind_param($stmt, "s", $current_day);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
 
 if (!$result) {
     die('Database query failed: ' . mysqli_error($conn));
 }
 
 $barbers = mysqli_fetch_all($result, MYSQLI_ASSOC);
+mysqli_stmt_close($stmt);
 ?>
 
 <!DOCTYPE html>
@@ -147,6 +155,7 @@ $barbers = mysqli_fetch_all($result, MYSQLI_ASSOC);
           Choose Your <span class="gradient-text">Barber</span>
         </h1>
         <p class="text-gray-400 text-lg">Select an expert barber to book your appointment</p>
+        <p class="text-gray-500 text-sm mt-2">Today is <?= $current_day ?></p>
       </div>
 
       <?php if (count($barbers) > 0): ?>
