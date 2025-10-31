@@ -38,3 +38,6 @@ The goal of our System
 - Make booking more convenient for customers  
 - Help barbers manage appointments efficiently  
 
+BARBER PHOTO
+- Dont forget to reupload from the admin dashboard.
+
