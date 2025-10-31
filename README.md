@@ -41,3 +41,17 @@ The goal of our System
 BARBER PHOTO
 - Dont forget to reupload from the admin dashboard.
 
+SAMPLE USERS:
+
+**Client:**
+username: zell
+password: denzelmanalo
+
+**Barber**
+username: kuyaj24
+password: 123123
+
+**Admin**
+username: superadmin
+password: 123123123
+
